@@ -11,7 +11,7 @@ class Munge::Model::RSS::Feed::Item {
             qw|
               title
               link
-              content
+              summary
               |
         ],
     );
@@ -22,9 +22,21 @@ class Munge::Model::RSS::Feed::Item {
         lazy_build => 1,
     );
 
+    has uuid_bin => (
+        is         => 'ro',
+        isa        => 'Value',
+        lazy_build => 1,
+    );
+
     method _build_uuid {
         my $uuid = new Data::UUID;
         return $uuid->create_from_name_str( NameSpace_URL, $self->link );
+    }
+
+    method _build_uuid_bin {
+        my $uuid = new Data::UUID;
+
+        return $uuid->from_string( $self->uuid );
     }
 
 }
