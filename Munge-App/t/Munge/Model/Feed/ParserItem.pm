@@ -1,9 +1,9 @@
 use MooseX::Declare;
 
-class t::Munge::Model::RSS::Feed::Item {
+class t::Munge::Model::Feed::ParserItem {
 
     use File::Slurp qw|read_file|;
-    use Munge::Model::RSS::Feed::Item;
+    use Munge::Model::Feed::ParserItem;
     use XML::Feed;
     use Data::UUID;
     use Test::Sweet;
@@ -20,7 +20,7 @@ class t::Munge::Model::RSS::Feed::Item {
         my $feed = XML::Feed->parse( \$self->atom_data );
         my ($entry) = $feed->entries;
 
-        my $item = Munge::Model::RSS::Feed::Item->new( entry => $entry );
+        my $item = Munge::Model::Feed::ParserItem->new( entry => $entry );
 
         is(
             $item->uuid,
@@ -33,7 +33,7 @@ class t::Munge::Model::RSS::Feed::Item {
         my $feed = XML::Feed->parse( \$self->atom_data );
         my ($entry) = $feed->entries;
 
-        my $item = Munge::Model::RSS::Feed::Item->new( entry => $entry );
+        my $item = Munge::Model::Feed::ParserItem->new( entry => $entry );
         my $ug   = Data::UUID->new;
         my $bin  = $ug->from_string('82E912E1-ECD6-3263-B4EC-677489F59D4E');
 
@@ -49,7 +49,7 @@ class t::Munge::Model::RSS::Feed::Item {
 
         my $feed    = XML::Feed->parse( \$self->atom_data );
         my ($entry) = $feed->entries;
-        my $item    = Munge::Model::RSS::Feed::Item->new( entry => $entry );
+        my $item    = Munge::Model::Feed::ParserItem->new( entry => $entry );
 
         foreach my $key ( keys %expected ) {
             $expected{$key} = '' . $item->$key;

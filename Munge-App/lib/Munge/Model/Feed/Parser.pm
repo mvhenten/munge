@@ -1,8 +1,8 @@
 use MooseX::Declare;
 
-class Munge::Model::RSS::Feed {
+class Munge::Model::Feed::Parser {
     use XML::Feed;
-    use Munge::Model::RSS::Feed::Item;
+    use Munge::Model::Feed::ParserItem;
 
     has content => (
         is       => 'ro',
@@ -12,7 +12,7 @@ class Munge::Model::RSS::Feed {
 
     has items => (
         is         => 'ro',
-        isa        => 'ArrayRef[Munge::Model::RSS::Feed::Item]',
+        isa        => 'ArrayRef[Munge::Model::Feed::ParserItem]',
         auto_deref => 1,
         lazy_build => 1,
     );
@@ -37,7 +37,7 @@ class Munge::Model::RSS::Feed {
 
     method _build_items {
         my @items =
-          map { Munge::Model::RSS::Feed::Item->new( entry => $_ ) }
+          map { Munge::Model::Feed::ParserItem->new( entry => $_ ) }
           $self->_xml_feed->entries;
 
         return \@items;

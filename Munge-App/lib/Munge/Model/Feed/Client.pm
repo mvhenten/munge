@@ -1,6 +1,6 @@
 use MooseX::Declare;
 
-class Munge::Model::RSS::Client {
+class Munge::Model::Feed::Client {
     use HTTP::Status qw|:constants|;
     use DateTime::Format::HTTP;
     use LWP::UserAgent;

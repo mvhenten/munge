@@ -2,8 +2,8 @@
 
 use MooseX::Declare;
 
-class t::Munge::Model::RSS::Client {
-    use Munge::Model::RSS::Client;
+class t::Munge::Model::Feed::Client {
+    use Munge::Model::Feed::Client;
     use Test::Sweet;
     use DateTime;
     use URI;
@@ -16,7 +16,7 @@ class t::Munge::Model::RSS::Client {
     test feed_updated {
         my $dt = DateTime->now->subtract( 'years' => 1 );
 
-        my $client = Munge::Model::RSS::Client->new(
+        my $client = Munge::Model::Feed::Client->new(
             last_modified_since => $dt,
             feed_uri            => SAMPLE_FEED
         );
@@ -30,7 +30,7 @@ class t::Munge::Model::RSS::Client {
     test feed_not_updated {
         my $dt = DateTime->now->add( 'years' => 1 );
 
-        my $client = Munge::Model::RSS::Client->new(
+        my $client = Munge::Model::Feed::Client->new(
             last_modified_since => $dt,
             feed_uri            => SAMPLE_FEED
         );

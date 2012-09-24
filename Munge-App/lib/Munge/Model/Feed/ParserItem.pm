@@ -1,6 +1,6 @@
 use MooseX::Declare;
 
-class Munge::Model::RSS::Feed::Item {
+class Munge::Model::Feed::ParserItem {
     use Data::UUID qw|NameSpace_URL|;
 
     has entry => (
