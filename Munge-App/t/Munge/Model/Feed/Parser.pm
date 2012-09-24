@@ -16,7 +16,8 @@ class t::Munge::Model::Feed::Parser {
     );
 
     test items {
-        my $feed = Munge::Model::Feed::Parser->new( content => $self->atom_data );
+        my $feed =
+          Munge::Model::Feed::Parser->new( content => $self->atom_data );
         my @items = $feed->items;
 
         is( scalar @items, 1, 'One item in sample feed' );
@@ -28,7 +29,8 @@ class t::Munge::Model::Feed::Parser {
     }
 
     test handle_basics {
-        my $feed = Munge::Model::Feed::Parser->new( content => $self->atom_data );
+        my $feed =
+          Munge::Model::Feed::Parser->new( content => $self->atom_data );
 
         is( $feed->content, $self->atom_data, 'Content passed correctly' );
 

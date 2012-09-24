@@ -10,7 +10,8 @@ class t::Munge::Model::Feed::Client {
 
     # won't hurt feedburner
     sub SAMPLE_FEED {
-        return URI->new( 'http://feeds.feedburner.com/feedburnerstatus?format=xml' );
+        return URI->new(
+            'http://feeds.feedburner.com/feedburnerstatus?format=xml');
     }
 
     test feed_updated {

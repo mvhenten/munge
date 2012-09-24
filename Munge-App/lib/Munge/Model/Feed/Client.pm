@@ -34,9 +34,9 @@ class Munge::Model::Feed::Client {
         isa        => 'HTTP::Response',
         lazy_build => 1,
         handles    => {
-            response_code  => 'code',
-            status_line => 'status_line',
-            success     => 'is_success',
+            response_code => 'code',
+            status_line   => 'status_line',
+            success       => 'is_success',
         }
     );
 
@@ -46,7 +46,11 @@ class Munge::Model::Feed::Client {
 
     method _build__response {
         my $ua = LWP::UserAgent->new;
-        $ua->default_header( 'If-Modified-Since' => DateTime::Format::HTTP->format_datetime( $self->last_modified_since ) );
+        $ua->default_header(
+            'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
+                $self->last_modified_since
+            )
+        );
 
         return $ua->get( $self->feed_uri );
     }
