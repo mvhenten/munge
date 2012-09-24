@@ -2,8 +2,11 @@ Config::General
 Dancer
 Dancer::Plugin::DBIC
 Dancer::Test
+Data::Dumper
+Data::UUID
 DateTime
 DateTime::Format::HTTP
+DBICx::TestDatabase
 DBIx::Class::TimeStamp
 ExtUtils::MakeMaker
 FindBin
@@ -15,3 +18,4 @@ Plack::Runner
 Test::More
 Test::Sweet
 URI
+XML::Feed
