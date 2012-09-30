@@ -17,12 +17,24 @@ class t::Munge::Schema {
     }
 
     test test_schema {
-        my ( $row, $item_row );
+        my ( $account, $row, $item_row );
+
+        lives_ok {
+            $account = $self->resultset('Account')->create(
+                {
+                    email        => 'foo@example.com',
+                    password     => 'lskdjflaskj93023',
+                    verification => '',
+                    verified     => 1,
+                }
+            )->insert();
+        }
+        'insert Feed';
 
         lives_ok {
             $row = $self->resultset('Feed')->create(
                 {
-                    account_id  => 1,
+                    account_id  => $account->id,
                     link        => 'http://example.com/feed',
                     title       => 'abc',
                     description => 'abc',
