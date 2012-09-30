@@ -19,3 +19,4 @@ Test::More
 Test::Sweet
 URI
 XML::Feed
+File::Slurp
