@@ -1,8 +1,8 @@
 use MooseX::Declare;
 
 class t::Munge::Schema {
-    use Test::Sweet;
     use Munge::Schema;
+    use Test::Sweet;
     use DBICx::TestDatabase;
 
     has 'schema' => (
@@ -16,16 +16,16 @@ class t::Munge::Schema {
         return DBICx::TestDatabase->connect('Munge::Schema');
     }
 
-    test schema {
+    test test_schema {
         my ( $row, $item_row );
 
         lives_ok {
             $row = $self->resultset('Feed')->create(
                 {
-                    guid        => 'abc',
-                    link        => 'abc',
-                    title       => 'test',
-                    description => 'test'
+                    account_id  => 1,
+                    link        => 'http://example.com/feed',
+                    title       => 'abc',
+                    description => 'abc',
                 }
             )->insert();
         }
@@ -36,15 +36,15 @@ class t::Munge::Schema {
         lives_ok {
             $item_row = $self->resultset('FeedItem')->create(
                 {
-                    guid        => 'abc',
-                    link        => 'abc',
-                    title       => 'test',
-                    description => 'test',
+                    account_id  => $row->account_id,
                     feed_id     => $row->id,
+                    uuid        => 'abc',
+                    link        => 'abc',
+                    title       => 'abc',
+                    description => 'abc',
                 }
             )->insert();
         }
         'insert FeedItem';
     }
-
 }

@@ -12,5 +12,4 @@ role Munge::Role::Schema {
     method _build_schema {
         return Munge::Schema->connect();
     }
-
 }
