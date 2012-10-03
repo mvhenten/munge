@@ -1,5 +1,23 @@
 use MooseX::Declare;
 
+=head1 NAME
+
+Munge::Model::Feed::Parser
+
+=head1 DESCRIPTION
+
+Wrapper around XML::Feed
+
+=head1 SYNOPSIS
+
+    my $parsed_feed = Munge::Model::Feed::Parser->new(
+        content => $response->content,
+    );
+    
+    my @items = $parsed_feed->item_list;
+
+=cut
+
 class Munge::Model::Feed::Parser {
     use XML::Feed;
     use Munge::Model::Feed::ParserItem;
@@ -11,6 +29,8 @@ class Munge::Model::Feed::Parser {
     );
 
     has items => (
+
+        #        traits     => ['Array'],
         is         => 'ro',
         isa        => 'ArrayRef[Munge::Model::Feed::ParserItem]',
         auto_deref => 1,

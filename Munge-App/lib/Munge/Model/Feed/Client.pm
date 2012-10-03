@@ -13,7 +13,7 @@ class Munge::Model::Feed::Client {
 
     has last_modified_since => (
         is       => 'ro',
-        isa      => 'DateTime',
+        isa      => 'Maybe[DateTime]',
         required => 1,
     );
 
@@ -45,12 +45,16 @@ class Munge::Model::Feed::Client {
     }
 
     method _build__response {
+
         my $ua = LWP::UserAgent->new;
-        $ua->default_header(
-            'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
-                $self->last_modified_since
-            )
-        );
+
+        if ( $self->last_modified_since ) {
+            $ua->default_header(
+                'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
+                    $self->last_modified_since
+                )
+            );
+        }
 
         return $ua->get( $self->feed_uri );
     }
