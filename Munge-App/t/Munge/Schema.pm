@@ -17,7 +17,7 @@ class t::Munge::Schema {
     }
 
     test test_schema {
-        my ( $account, $row, $item_row );
+        my ( $account, $row, $item_row, $found_row );
 
         lives_ok {
             $account = $self->resultset('Account')->create(
@@ -44,6 +44,13 @@ class t::Munge::Schema {
         'insert Feed';
 
         ok( $row->id, 'id got set' );
+
+        lives_ok {
+            $found_row = $self->resultset('Feed')->find( { id => $row->id } );
+        }
+        'insert Feed';
+
+        is( $row->id, $found_row->id, 'id got set' );
 
         lives_ok {
             $item_row = $self->resultset('FeedItem')->create(

@@ -1,43 +1,35 @@
 use MooseX::Declare;
 
 class t::Munge::Model::Feed {
-    use DBICx::TestDatabase;
     use Munge::Model::Feed;
     use Test::Sweet;
+    use URI;
 
-    has 'schema' => (
-        is         => 'ro',
-        isa        => 'Munge::Schema',
-        lazy_build => 1,
-        handles    => ['resultset'],
-    );
+    with 'Test::Munge::Role::Schema';
+    with 'Test::Munge::Role::Account';
 
-    has account => (
-        is         => 'ro',
-        isa        => 'Munge::Schema::Result::Account',
-        lazy_build => 1,
-    );
+    method create_feed_rs {
+        my $uri     = URI->new('http://example.com/feed');
+        my $account = $self->create_test_account;
 
-    method _build_schema {
-        return DBICx::TestDatabase->connect('Munge::Schema');
-    }
-
-    method _build_account {
-        return $self->resultset('Account')->create(
+        my $rs = $self->resultset('Feed')->create(
             {
-                email        => 'foo@example.com',
-                password     => 'lskdjflaskj93023',
-                verification => '',
-                verified     => 1,
+                account_id => $account->id,
+                created    => DateTime->now(),
+                link       => $uri,
             }
         )->insert();
+
+        return $rs;
+
     }
 
     test feed_new {
+        my $rs = $self->create_feed_rs;
+
         lives_ok {
-            my $feed = Munge::Model::Feed->new( account => $self->account, );
+            my $feed = Munge::Model::Feed->new( feed_resultset => $rs );
         }
         'instantiates';
-
     }
 }

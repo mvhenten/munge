@@ -1,6 +1,8 @@
 use MooseX::Declare;
 
-role Munge::Role::Schema {
+role Test::Munge::Role::Schema {
+    use DBICx::TestDatabase;
+    use Munge::Schema;
 
     has schema => (
         is         => 'ro',
@@ -10,7 +12,6 @@ role Munge::Role::Schema {
     );
 
     method _build_schema {
-        warn 'builder';
-        return Munge::Schema->connect();
+        return DBICx::TestDatabase->connect('Munge::Schema');
     }
 }
