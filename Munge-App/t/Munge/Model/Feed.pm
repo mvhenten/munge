@@ -15,8 +15,6 @@ class t::Munge::Model::Feed {
         $uri ||= URI->new('http://example.com/feed');
         $account ||= $self->create_test_account;
         
-        warn $uri;
-
         my $rs = $self->resultset('Feed')->create(
             {
                 account_id => $account->id,
@@ -39,14 +37,14 @@ class t::Munge::Model::Feed {
     }
     
     test feed_synchronize {
-        my $uri = URI->new('file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml');
-
+        my $uri  = URI->new('file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml');
         my $rs   = $self->create_feed_rs( $uri );
         my $feed = Munge::Model::Feed->new( feed_resultset => $rs );
-        
+                        
         is( $feed->updated, undef, 'Updated is not yet defined' );
         is( $feed->title, undef, 'Title is not yet set');
         is( $feed->description, undef, 'Description is not yet set');
+        is_deeply( [$feed->feed_items], [], 'items is empty array' );
         
         lives_ok {
             $feed->synchronize();
@@ -55,5 +53,19 @@ class t::Munge::Model::Feed {
  
         is( $feed->title, 'Example Feed', 'Updated title' );
         is( $feed->description, '', 'FIXME find feed with description');
+        
+        my @items = $feed->feed_items;
+        
+        for my $item ( @items ){
+            is( $item->title, 'Atom-Powered Robots Run Amok', 'got proper title');
+            is( $item->description, 'Some text.', 'got proper description');
+        }
+
+        lives_ok {
+            $feed->synchronize();
+        }
+        'feed syncs yet another time';
+        
+        is_deeply( \@items, [$feed->feed_items], 'No new items were created' );
     }
 }

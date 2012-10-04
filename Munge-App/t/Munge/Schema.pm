@@ -1,9 +1,11 @@
 use MooseX::Declare;
 
 class t::Munge::Schema {
+
+    use Data::UUID qw|NameSpace_URL|;       
+    use DBICx::TestDatabase;
     use Munge::Schema;
     use Test::Sweet;
-    use DBICx::TestDatabase;
 
     has 'schema' => (
         is         => 'ro',
@@ -12,6 +14,8 @@ class t::Munge::Schema {
         handles    => ['resultset'],
     );
 
+    with 'Test::Munge::Role::Account';
+    
     method _build_schema {
         return DBICx::TestDatabase->connect('Munge::Schema');
     }
@@ -51,6 +55,7 @@ class t::Munge::Schema {
         'insert Feed';
 
         is( $row->id, $found_row->id, 'id got set' );
+        
 
         lives_ok {
             $item_row = $self->resultset('FeedItem')->create(
@@ -65,5 +70,44 @@ class t::Munge::Schema {
             )->insert();
         }
         'insert FeedItem';
+    }
+    
+    method create_feed {
+        my $account = $self->create_test_account();
+        
+        $feed = $self->resultset('Feed')->create(
+            {
+                account_id  => $account->id,
+                link        => 'http://example.com/feed',
+                title       => 'abc',
+                description => 'abc',
+            }
+        )->insert();
+    }
+
+    test schema_feed_item {
+        my ( $item_row, $feed );
+        
+        
+        my $ug   = Data::UUID->new();
+        my $uuid = $ug->create_str();
+
+        my $insert_values = {
+            account_id  => $feed->account_id,
+            feed_id     => $feed->id,
+            uuid        => $ug->from_string($uuid),
+            link        => 'http://schema/feed/item/link',
+            title       => 'Schema Feed Item Title',
+            description => 'Schema Feed Item Desc',
+          }
+        
+        lives_ok {
+            $item_row = $self->resultset('FeedItem')->create( $insert_values )->insert();
+        }
+        'insert FeedItem';
+        
+        my $updated_rs = $self->resultset('FeedItem')->find( $item_row->id );
+        
+        
     }
 }

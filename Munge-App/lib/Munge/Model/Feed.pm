@@ -20,6 +20,7 @@ class Munge::Model::Feed {
         is       => 'ro',
         isa      => 'Munge::Schema::Result::Feed',
         required => 1,
+        writer  => '_set_feed_resultset',
         handles  => [
             qw|
               account_id
@@ -57,6 +58,7 @@ class Munge::Model::Feed {
         is         => 'ro',
         isa        => 'HashRef',
         lazy_build => 1,
+        clearer     => '_clear_item_x_bool',
         handles    => { _item_exists => 'exists' }
     );
 
@@ -77,15 +79,20 @@ class Munge::Model::Feed {
     }
 
     method _build__item_x_bool {
-        my %lookup = map { $_->uuid => 1 } $self->feed_items;
-
+        my $ug = new Data::UUID;
+        
+        my @hex_uuid = map { $ug->to_string( $_->uuid ) } $self->feed_items;
+        my %lookup = map { $_ => 1 } @hex_uuid;
+        
         return \%lookup;
     }
 
     method synchronize {
         return unless $self->_feed_client->updated;
-
+        
         for my $item ( $self->_feed_parser->items ) {
+            warn $item->uuid;
+            warn Dumper( $self->_item_x_bool );
             if ( not $self->_item_exists( $item->uuid ) ) {
                 $self->_create_item($item);
             }
@@ -93,12 +100,35 @@ class Munge::Model::Feed {
 
         $self->title( $self->_feed_parser->title );
         $self->description( $self->_feed_parser->description || '' );
-
+        
+        $self->_update();
+    }
+    
+    method _update {
+        use Data::Dumper;
         $self->feed_resultset->update();
+        # warn Dumper( $self->feed_resultset );
+        $self->feed_items->clear_cache();
+        
+    
+        #my $updated_rs = $self->feed_resultset->get_from_storage;
+        ##
+        #$self->_set_feed_resultset( $updated_rs );
+        $self->_clear_item_x_bool();        
     }
 
-    method _create_item {
-        warn 'creating item... NOT!';
+    method _create_item( $item ) {        
+        $self->feed_items->create(
+                {
+                    account_id  => $self->account_id,
+                    feed_id     => $self->id,
+                    uuid        => $item->uuid_bin,
+                    link        => $item->link,
+                    title       => $item->title,
+                    description => $item->content,
+                }
+        );
+
     }
 
 }

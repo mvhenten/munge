@@ -7,13 +7,12 @@ class Munge::Model::Feed::ParserItem {
         is       => 'ro',
         isa      => 'Any',
         required => 1,
-        handles  => [
-            qw|
-              title
-              link
-              summary
-              |
-        ],
+        handles  => {
+            'title'    => 'title',
+            'link'     => 'link',
+            '_summary' => 'summary',
+            '_content' => 'content',
+        },
     );
 
     has uuid => (
@@ -27,6 +26,15 @@ class Munge::Model::Feed::ParserItem {
         isa        => 'Value',
         lazy_build => 1,
     );
+
+    has content => (
+        is         => 'ro',
+        lazy_build => 1,
+    );
+
+    method _build_content {
+        return $self->_content->body || $self->_summary->body || '';
+    }
 
     method _build_uuid {
         my $uuid = new Data::UUID;
