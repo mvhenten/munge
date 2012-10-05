@@ -12,7 +12,9 @@ use YAML::Any qw|LoadFile|;
 }
 
 sub DSN {
-    return config()->{plugins}->{DBIC}->{dsn};
+    return 'dbi:SQLite:db/test.db';
+
+    #    return config()->{plugins}->{DBIC}->{dsn};
 }
 
 1;
