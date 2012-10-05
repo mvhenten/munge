@@ -38,16 +38,18 @@ class t::Munge::Model::Feed::ParserItem {
 
         is( $ug->compare( $bin, $item->uuid_bin ), 0, q|Bin UUID as expected| );
     }
-    
+
     test parser_item_uuid_compare {
         my $feed    = XML::Feed->parse( \$self->atom_data );
         my ($entry) = $feed->entries;
         my $item    = Munge::Model::Feed::ParserItem->new( entry => $entry );
 
-        my $ug      = Data::UUID->new;
-        
-        is( $ug->from_string( $item->uuid ), $item->uuid_bin, 'string computes to binary' );
-        is( $ug->to_string( $item->uuid_bin ), $item->uuid, 'binary computes to string' );
+        my $ug = Data::UUID->new;
+
+        is( $ug->from_string( $item->uuid ),
+            $item->uuid_bin, 'string computes to binary' );
+        is( $ug->to_string( $item->uuid_bin ),
+            $item->uuid, 'binary computes to string' );
     }
 
     test parser_item_values {
@@ -60,7 +62,7 @@ class t::Munge::Model::Feed::ParserItem {
         my $feed    = XML::Feed->parse( \$self->atom_data );
         my ($entry) = $feed->entries;
         my $item    = Munge::Model::Feed::ParserItem->new( entry => $entry );
-        
+
         my %values = map { $_ => $item->$_ } keys %expected;
 
         is_deeply( \%values, \%expected, 'got expected values' );
