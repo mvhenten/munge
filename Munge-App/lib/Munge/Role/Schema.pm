@@ -1,6 +1,7 @@
 use MooseX::Declare;
 
 role Munge::Role::Schema {
+    use Munge::Config;
 
     has schema => (
         is         => 'ro',
@@ -11,6 +12,6 @@ role Munge::Role::Schema {
 
     method _build_schema {
         warn 'builder';
-        return Munge::Schema->connect();
+        return Munge::Schema->connect( Munge::Config::DSN() );
     }
 }
