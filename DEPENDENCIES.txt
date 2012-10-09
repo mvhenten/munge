@@ -5,7 +5,7 @@ Crypt::SaltedHash
 Dancer
 Dancer::Plugin::DBIC
 Dancer::Session::Memcache
-Dancer::Template::TemplateToolkit
+Dancer::Template::Tiny
 Dancer::Test
 Data::Dumper
 Data::UUID

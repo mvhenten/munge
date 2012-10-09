@@ -20,18 +20,23 @@ post '/create' => sub {
 };
 
 get '/login' => sub {
+    return redirect '/' if session( 'authenticated' );
+        
     return
       '<form method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
 };
 
-post '/login' => sub {
+post '/login' => sub {    
     my ( $username, $password ) = @{ params() }{qw|username password|};
 
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
 
     if ( $account && $account->validate( $account_rs, $password ) ) {
-        session( account => $account_rs, authenticated => true );
+#         session account => $account_rs;
+        session authenticated => true;
+        session account       => { $account_rs->get_inflated_columns() };
+        
         redirect '/';
         return;
     }
@@ -44,10 +49,6 @@ post '/login' => sub {
     }
 
     redirect 'account/login?failed=1';
-
-};
-
-get '/logout' => sub {
 
 };
 

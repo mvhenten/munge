@@ -24,5 +24,11 @@ class Munge::Model::Feed::Factory {
         my ( $rs ) = $self->resultset('Feed')->search({ id => $id });
         
         return Munge::Model::Feed->new( feed_resultset => $rs );
-    }    
+    }
+    
+    method list( Int $account_id ){
+        my @rows = $self->resultset('Feed')->search({ account_id => $account_id });
+        
+        return @rows;
+    }
 }

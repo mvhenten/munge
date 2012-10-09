@@ -2,21 +2,16 @@ package Munge::Controller::Feed;
 
 use Dancer ':syntax';
 
-prefix '/feed';
+prefix undef;
 
-get '/list' => sub {
 
-    return 'list feed';
+get '/' => sub {
+    # Munge::Model::Account->new( schema => $self->schema )->find
+    
+    
+    template 'feed/index';
+    
 };
 
-get '/create' => sub {
-
-    return
-      '<form method="post"><input name="url" /><input type="submit" /></form>';
-};
-
-post '/create' => sub {
-    return 1;
-};
 
 true;

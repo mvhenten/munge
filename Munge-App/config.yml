@@ -7,7 +7,7 @@ appname: "Munge::App"
 
 # The default layout to use for your application (located in
 # views/layouts/main.tt)
-layout: "main"
+layout: "layout"
 
 # when the charset is set to UTF-8 Dancer will handle for you
 # all the magic of encoding and decoding. You should not care
@@ -20,16 +20,21 @@ charset: "UTF-8"
 
 # template: "simple"
 
-template: "template_toolkit"
-engines:
-  template_toolkit:
-    encoding:  'utf8'
-    start_tag: '[%'
-    end_tag:   '%]'
+template: "tiny"
+
+#template: "template_toolkit"
+#engines:
+#  template_toolkit:
+#    encoding:  'utf8'
+#    start_tag: '[%'
+#    end_tag:   '%]'
 
 # session, memcached over socket
-session: "memcached"
-memcached_servers: "/var/sock/memcached"
+
+session: "YAML"
+
+#session: "memcached"
+#memcached_servers: "/var/sock/memcached"
 
 plugins:
     DBIC:
