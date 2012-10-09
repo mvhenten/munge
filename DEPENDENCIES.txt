@@ -1,8 +1,11 @@
 # dependencies
 Code::TidyAll
 Config::General
+Crypt::SaltedHash
 Dancer
 Dancer::Plugin::DBIC
+Dancer::Session::Memcache
+Dancer::Template::TemplateToolkit
 Dancer::Test
 Data::Dumper
 Data::UUID
@@ -22,4 +25,3 @@ Test::More
 Test::Sweet
 URI
 XML::Feed
-Crypt::SaltedHash
