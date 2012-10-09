@@ -12,9 +12,15 @@ use YAML::Any qw|LoadFile|;
 }
 
 sub DSN {
-    return 'dbi:SQLite:db/test.db';
+    return config()->{plugins}->{DBIC}->{dsn};
+}
 
-    #    return config()->{plugins}->{DBIC}->{dsn};
+sub DB_USER {
+    return config()->{plugins}->{DBIC}->{user};
+}
+
+sub DB_PASSWORD {
+    return config()->{plugins}->{DBIC}->{pass};
 }
 
 1;

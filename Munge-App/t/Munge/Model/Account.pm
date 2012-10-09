@@ -27,37 +27,19 @@ class t::Munge::Model::Account {
             'Munge::Schema::Result::Account',
             'create returned correct result'
         );
-
-        #my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
-        #
-        #$csh->add( $plaintext_password );
-        #my $salted = $csh->generate;
-        #
-        #my $rs = $self->resultset('Account')->create(
-        #    {
-        #        email       => $username,
-        #        created     => DateTime->now(),
-        #        password    => $salted,
-        #    }
-        #)->insert();
-        #
-        #return $rs;
     }
 
     test account_load {
         my ( $account, $found_account );
 
-        my $username =
-          sprintf( 'user_%s@example.com', encode_base36( gettimeofday() ) );
+        my $username = sprintf( 'user_%s@example.com',
+            encode_base36( join( '', gettimeofday() ) ) );
 
-        $account =
-          Munge::Model::Account->new( schema => $self->schema )
-          ->create( $username, 'password' );
+        $account = Munge::Model::Account->new( schema => $self->schema );
+        my $account_rs = $account->create( $username, 'password' );
 
         lives_ok {
-            $found_account =
-              Munge::Model::Account->new( schema => $self->schema )
-              ->load($username);
+            $found_account = $account->load($username);
         }
         'Found ok';
 
@@ -67,15 +49,16 @@ class t::Munge::Model::Account {
             'load returned correct result'
         );
 
-        is( $found_account->password, $account->password, 'data is the same' );
+        is( $found_account->password, $account_rs->password,
+            'data is the same' );
 
     }
 
     test account_validate {
         my ( $account, $valid );
 
-        my $username =
-          sprintf( 'user_%s@example.com', encode_base36( gettimeofday() ) );
+        my $username = sprintf( 'user_%s@example.com',
+            encode_base36( join( '', gettimeofday() ) ) );
         my $password = $username;
 
         $account =
