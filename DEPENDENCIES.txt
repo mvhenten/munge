@@ -25,3 +25,5 @@ Test::More
 Test::Sweet
 URI
 XML::Feed
+Alien::Tidyp
+HTML::Tidy
