@@ -12,6 +12,6 @@ terminate_pid () {
    done;
 }
 
-while inotifywait -e modify -r lib/Munge/;
+while inotifywait -e modify -r ./;
     do terminate_pid; sleep 1 && $PROGRAM &
 done;
