@@ -2,6 +2,7 @@ use MooseX::Declare;
 
 class Munge::Model::Feed::ParserItem {
     use Data::UUID qw|NameSpace_URL|;
+    use HTML::Tidy;
 
     has entry => (
         is       => 'ro',
@@ -33,7 +34,15 @@ class Munge::Model::Feed::ParserItem {
     );
 
     method _build_content {
-        return $self->_content->body || $self->_summary->body || '';
+        my $tidy = HTML::Tidy->new();
+
+        $tidy->ignore( type => TIDY_INFO );
+        $tidy->ignore( type => TIDY_WARNING );
+        $tidy->ignore( type => TIDY_ERROR );
+
+        my $content = $self->_content->body || $self->_summary->body || '';
+
+        return $tidy->clean($content);
     }
 
     method _build_uuid {

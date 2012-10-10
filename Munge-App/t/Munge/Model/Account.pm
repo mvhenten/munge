@@ -84,26 +84,27 @@ class t::Munge::Model::Account {
 
         ok( ( not $valid ), 'Validate returns false' );
     }
-    
+
     test acccount_find {
         my $username = sprintf( 'user_%s@example.com',
             encode_base36( join( '', gettimeofday() ) ) );
-        
+
         my $account =
           Munge::Model::Account->new( schema => $self->schema )
           ->create( $username, 'password' );
-    
-        my $found_account = Munge::Model::Account->new( schema => $self->schema )->find( { id => $account->id } );
-    
+
+        my $found_account =
+          Munge::Model::Account->new( schema => $self->schema )
+          ->find( { id => $account->id } );
+
         isa_ok(
             $found_account,
             'Munge::Schema::Result::Account',
             'load returned correct result'
         );
-    
-        is( $found_account->password, $account->password,
-            'data is the same' );
-    
+
+        is( $found_account->password, $account->password, 'data is the same' );
+
     }
 
 }

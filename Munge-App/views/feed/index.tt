@@ -1,2 +1,15 @@
-
-i am index for feed
+    <ul class="thumbnails">
+      <li class="span12">
+        [% FOREACH item IN items %]
+        <div class="thumbnail">
+          <div class="caption">
+            <h4><a href="[% item.link %]">[% item.title %]</a></h4>
+            [% item.description %]
+            <p>
+                
+            </p>
+          </div>
+        </div>
+        [% END %]
+      </li>
+    </ul>

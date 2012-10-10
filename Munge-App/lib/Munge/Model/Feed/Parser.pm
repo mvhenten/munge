@@ -20,6 +20,7 @@ Wrapper around XML::Feed
 
 class Munge::Model::Feed::Parser {
     use XML::Feed;
+    use Try::Tiny;
     use Munge::Model::Feed::ParserItem;
 
     has content => (
@@ -37,9 +38,9 @@ class Munge::Model::Feed::Parser {
         lazy_build => 1,
     );
 
-    has _xml_feed => (
+    has xml_feed => (
         is         => 'ro',
-        isa        => 'XML::Feed',
+        isa        => 'Maybe[XML::Feed]',
         lazy_build => 1,
         handles    => [
             qw|
@@ -56,14 +57,25 @@ class Munge::Model::Feed::Parser {
     );
 
     method _build_items {
+        return [] if not $self->xml_feed;
+
         my @items =
           map { Munge::Model::Feed::ParserItem->new( entry => $_ ) }
-          $self->_xml_feed->entries;
+          $self->xml_feed->entries;
 
         return \@items;
     }
 
-    method _build__xml_feed {
-        return XML::Feed->parse( \$self->content );
+    method _build_xml_feed {
+        my $feed;
+
+        try {
+            $feed = XML::Feed->parse( \$self->content );
+        }
+        catch {
+            warn "Unable to parse feed: $_";
+        };
+
+        return $feed;
     }
 }

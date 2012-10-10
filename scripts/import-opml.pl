@@ -37,4 +37,3 @@ sub main {
     printf( "Imported %d feeds for acount %s\n",
         $nodeset->size, $account->email );
 }
-

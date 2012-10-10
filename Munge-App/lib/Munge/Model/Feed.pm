@@ -89,10 +89,16 @@ class Munge::Model::Feed {
 
     method synchronize {
         return unless $self->_feed_client->updated;
+        return unless $self->_feed_client->success;
+        
+        if( not $self->_feed_parser->xml_feed ){
+            warn "Cannot parse feed: " . $self->feed_uri;
+            return;
+        }
         
         for my $item ( $self->_feed_parser->items ) {
-            warn $item->uuid;
-            warn Dumper( $self->_item_x_bool );
+            #warn $item->uuid;
+            #warn Dumper( $self->_item_x_bool );
             if ( not $self->_item_exists( $item->uuid ) ) {
                 $self->_create_item($item);
             }
