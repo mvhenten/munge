@@ -17,6 +17,9 @@
 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
+    <script src="[% request.uri_base %]/js/jquery.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap-collapse.js"></script>
   </head>
 
   <body>
@@ -76,20 +79,19 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../assets/js/jquery.js"></script>
-    <script src="../assets/js/bootstrap-transition.js"></script>
-    <script src="../assets/js/bootstrap-alert.js"></script>
-    <script src="../assets/js/bootstrap-modal.js"></script>
-    <script src="../assets/js/bootstrap-dropdown.js"></script>
-    <script src="../assets/js/bootstrap-scrollspy.js"></script>
-    <script src="../assets/js/bootstrap-tab.js"></script>
-    <script src="../assets/js/bootstrap-tooltip.js"></script>
-    <script src="../assets/js/bootstrap-popover.js"></script>
-    <script src="../assets/js/bootstrap-button.js"></script>
-    <script src="../assets/js/bootstrap-collapse.js"></script>
-    <script src="../assets/js/bootstrap-carousel.js"></script>
-    <script src="../assets/js/bootstrap-typeahead.js"></script>
-
+<!--    <script src=""[% request.uri_base %]/js/bootstrap-transition.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-alert.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-modal.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-dropdown.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-scrollspy.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-tab.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-tooltip.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-popover.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-button.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-collapse.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-carousel.js"></script>
+    <script src=""[% request.uri_base %]/js/bootstrap-typeahead.js"></script>
+-->
   </body>
 </html>
  

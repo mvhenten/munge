@@ -1,15 +1,60 @@
-    <ul class="thumbnails">
-      <li class="span12">
-        [% FOREACH item IN items %]
-        <div class="thumbnail">
-          <div class="caption">
+<h4>Today</h4>
+
+<div class="accordion" id="accordion-today">
+[% FOREACH item IN items_today %]
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-today" href="#collapse-today-[% loop.index %]">
+       [% item.title %]
+      </a>
+    </div>
+    <div id="collapse-today-[% loop.index %]" class="accordion-body collapse">
+      <div class="accordion-inner">
             <h4><a href="[% item.link %]">[% item.title %]</a></h4>
             [% item.description %]
-            <p>
-                
-            </p>
-          </div>
-        </div>
-        [% END %]
-      </li>
-    </ul>
+      </div>
+    </div>
+  </div>
+[% END %]
+</div>
+
+<h4>Yesterday</h4>
+
+<div class="accordion" id="accordion-yesterday">
+[% FOREACH item IN items_yesterday %]
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-yesterday" href="#collapse-yesterday-[% loop.index %]">
+       [% item.title %]
+      </a>
+    </div>
+    <div id="collapse-yesterday-[% loop.index %]" class="accordion-body collapse">
+      <div class="accordion-inner">
+            <h4><a href="[% item.link %]">[% item.title %]</a></h4>
+            [% item.description %]
+      </div>
+    </div>
+  </div>
+[% END %]
+</div>
+
+
+<h4>Older</h4>
+
+<div class="accordion" id="accordion-older">
+[% FOREACH item IN items_older %]
+  <div class="accordion-group">
+    <div class="accordion-heading">
+      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-older" href="#collapse-older-[% loop.index %]">
+       [% item.title %]
+      </a>
+    </div>
+    <div id="collapse-older-[% loop.index %]" class="accordion-body collapse">
+      <div class="accordion-inner">
+            <h4><a href="[% item.link %]">[% item.title %]</a></h4>
+            [% item.description %]
+      </div>
+    </div>
+  </div>
+[% END %]
+</div>

@@ -26,7 +26,12 @@ get '/' => sub {
     template 'feed/index',
       {
         feeds => \@feeds,
-        items => Munge::Model::ItemView->new()->list_account($account),
+        items_today =>
+          Munge::Model::ItemView->new( account => $account )->today(),
+        items_yesterday =>
+          Munge::Model::ItemView->new( account => $account )->yesterday(),
+        items_older =>
+          Munge::Model::ItemView->new( account => $account )->older(),
       };
 
 };

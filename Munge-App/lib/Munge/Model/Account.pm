@@ -57,6 +57,7 @@ class Munge::Model::Account {
     }
     
     method find( HashRef $columns ){
+        return if not $columns->{id};
         assert( defined( $columns->{id} ), 'columns have id');
         
         my ( $rs ) = $self->resultset('Account')->search({ id => $columns->{id} });
