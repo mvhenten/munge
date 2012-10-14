@@ -5,7 +5,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion-today" href="#collapse-today-[% loop.index %]">
-       [% item.title %]
+       [% item.title %] <i class="icon-star-empty"></i>
       </a>
     </div>
     <div id="collapse-today-[% loop.index %]" class="accordion-body collapse">
