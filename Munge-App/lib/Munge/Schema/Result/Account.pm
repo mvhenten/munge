@@ -1,5 +1,4 @@
 use utf8;
-
 package Munge::Schema::Result::Account;
 
 # Created by DBIx::Class::Schema::Loader
@@ -28,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
 
 =head1 TABLE: C<account>
 
@@ -80,33 +79,33 @@ __PACKAGE__->table("account");
 =cut
 
 __PACKAGE__->add_columns(
-    "id",
-    {
-        data_type         => "integer",
-        extra             => { unsigned => 1 },
-        is_auto_increment => 1,
-        is_nullable       => 0,
-    },
-    "email",
-    { data_type => "varchar", is_nullable => 1, size => 254 },
-    "password",
-    { data_type => "varchar", is_nullable => 0, size => 42 },
-    "verification",
-    { data_type => "varchar", is_nullable => 0, size => 42 },
-    "verified",
-    {
-        data_type                 => "timestamp",
-        datetime_undef_if_invalid => 1,
-        default_value             => "0000-00-00 00:00:00",
-        is_nullable               => 0,
-    },
-    "created",
-    {
-        data_type                 => "timestamp",
-        datetime_undef_if_invalid => 1,
-        default_value             => "0000-00-00 00:00:00",
-        is_nullable               => 0,
-    },
+  "id",
+  {
+    data_type => "integer",
+    extra => { unsigned => 1 },
+    is_auto_increment => 1,
+    is_nullable => 0,
+  },
+  "email",
+  { data_type => "varchar", is_nullable => 1, size => 254 },
+  "password",
+  { data_type => "varchar", is_nullable => 0, size => 42 },
+  "verification",
+  { data_type => "varchar", is_nullable => 0, size => 42 },
+  "verified",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00 00:00:00",
+    is_nullable => 0,
+  },
+  "created",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00 00:00:00",
+    is_nullable => 0,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -133,7 +132,7 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint( "index_email", ["email"] );
+__PACKAGE__->add_unique_constraint("index_email", ["email"]);
 
 =head1 RELATIONS
 
@@ -146,10 +145,10 @@ Related object: L<Munge::Schema::Result::FeedItem>
 =cut
 
 __PACKAGE__->has_many(
-    "feed_items",
-    "Munge::Schema::Result::FeedItem",
-    { "foreign.account_id" => "self.id" },
-    { cascade_copy         => 0, cascade_delete => 0 },
+  "feed_items",
+  "Munge::Schema::Result::FeedItem",
+  { "foreign.account_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 feeds
@@ -161,13 +160,16 @@ Related object: L<Munge::Schema::Result::Feed>
 =cut
 
 __PACKAGE__->has_many(
-    "feeds", "Munge::Schema::Result::Feed",
-    { "foreign.account_id" => "self.id" },
-    { cascade_copy         => 0, cascade_delete => 0 },
+  "feeds",
+  "Munge::Schema::Result::Feed",
+  { "foreign.account_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07023 @ 2012-10-01 00:47:38
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:cPa1P4S8VB9wxyqt4eYc6Q
+
+# Created by DBIx::Class::Schema::Loader v0.07023 @ 2012-10-28 23:54:52
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HpYx4WzODDpYEqDdOduaWA
+
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;
