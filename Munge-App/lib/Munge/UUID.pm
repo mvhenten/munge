@@ -42,7 +42,7 @@ class Munge::UUID {
 
     method _build_uuid {
         my $uuid = new Data::UUID;
-        return $uuid->create_from_name_str( NameSpace_URL, $self->link );
+        return $uuid->create_from_name_str( NameSpace_URL, $self->uri->as_string );
     }
 
     method _build_uuid_bin {
