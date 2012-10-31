@@ -2,42 +2,69 @@ use MooseX::Declare;
 
 =head1 NAME
 
-Munge::Model::Feed 
+Munge::Model::Feed
 
 =head1 DESCRIPTION
 
+Domain model. 
+
 =head1 SYNOPSIS
+
+    # use factory method for instantiation
+    my $feed = Munge::Model::Feed->create( $uri, $account );
+
+    # use uuid to load.
+    my $feed = Munge::Model::Feed->new(
+        account => $account,
+        uuid    => $uuid,
+    );
+
+    # note: loads from db
+    $feed->syncrhonize();
+    $feed->store();
 
 =cut
 
+use Munge::Types qw|Uri Account|;
+
 class Munge::Model::Feed {
+    use DateTime;
     use URI;
 
     use Munge::Model::Feed::Client;
     use Munge::Model::Feed::Parser;
+    use Munge::Model::FeedItem;
 
-    has feed_resultset => (
+    has uuid => (
         is       => 'ro',
-        isa      => 'Munge::Schema::Result::Feed',
+        isa      => 'Str',
         required => 1,
-        writer  => '_set_feed_resultset',
-        handles  => [
-            qw|
-              account_id
-              created
-              description
-              id
-              link
-              title
-              updated
-              feed_items
-              |
-        ],
     );
 
-    has feed_uri => (
+    has link => (
+        is         => 'ro',
+        isa        => 'Str',
+        lazy_build => 1,
+    );
+
+    has title => (
+        is          => 'ro',
+        isa         => 'Str',
+        writer      => '_set_title',
+        lazy_build  => 1,
+    );
+
+    has description => (
+        is          => 'ro',
+        isa         => 'Str',
+        writer      => '_set_description',
+        lazy_build  => 1,
+    );
+
+    has _feed_uri => (
         is         => 'ro',
         isa        => 'URI',
+        reader     => 'uri',
         lazy_build => 1,
     );
 
@@ -53,16 +80,51 @@ class Munge::Model::Feed {
         lazy_build => 1,
     );
 
-    has _item_x_bool => (
-        traits     => ['Hash'],
-        is         => 'ro',
-        isa        => 'HashRef',
-        lazy_build => 1,
-        clearer     => '_clear_item_x_bool',
-        handles    => { _item_exists => 'exists' }
+    has _feed_items => (
+        is => 'ro',
+        isa => 'ArrayRef[Munge::Model::FeedItem]',
+        traits => ['Array'],
+        default => sub { [] },
+        handles => {
+            _add_feed_item      => 'push',
+            _has_feed_items     => 'is_empty',
+            _clear_feed_items   => 'clear',
+            _store_feed_items   => [ map => \&{ $_->store(); } ],
+        },
     );
 
-    method _build_feed_uri {
+    has _storage_values => (
+        is => 'ro',
+        isa => 'HashRef',
+        traits => ['Hash'],
+        lazy_build => 1,
+        handles => {
+            _get_description => [ get => 'description' ],
+              _get_id        => [ get => 'id' ],
+              _get_link      => [ get => 'link' ],
+              _get_title     => [ get => 'title' ],
+              updated        => [ get => 'updated' ],
+        }
+    );
+
+    method _buid__storage_values {
+        # todo check if load returns hash ref or undef
+        return $self->load( uuid => $self->uuid ) || {};
+    }
+
+    method _build_description {
+        return $self->_get_description || '';
+    }
+
+    method _build_title {
+        return $self->_get_title || '';
+    }
+
+    method _build_link {
+        return $self->_get_link;
+    }
+
+    method _build__feed_uri {
         return URI->new( $self->link );
     }
 
@@ -78,57 +140,29 @@ class Munge::Model::Feed {
         );
     }
 
-    method _build__item_x_bool {
-        my $ug = new Data::UUID;
-        
-        my @hex_uuid = map { $ug->to_string( $_->uuid ) } $self->feed_items;
-        my %lookup = map { $_ => 1 } @hex_uuid;
-        
-        return \%lookup;
+    method create ( Uri $link, Account $account ) {
+        my $uuid = Munge::UUID->new( uri => $link )->uuid;
+        return $self->new( link => $link->as_string, uuid => $uuid );
     }
 
-    method synchronize {
+    method synchronize () {
         return unless $self->_feed_client->updated;
-        
+
+        $self->_set_title( $self->_feed_parser->title );
+        $self->_set_description( $self->_feed_parser->description || '' );
+        $self->_clear_feed_items();
+
         for my $item ( $self->_feed_parser->items ) {
-            warn $item->uuid;
-            warn Dumper( $self->_item_x_bool );
-            if ( not $self->_item_exists( $item->uuid ) ) {
-                $self->_create_item($item);
-            }
+            my $feed_item = Munge::Model::FeedItem->new(
+                account     => $self->account,
+                feed        => $self,
+                uuid        => $item->uuid_bin,
+                link        => $item->link,
+                title       => $item->title,
+                description => $item->content,
+            );
+
+            $self->_add_feed_item( $feed_item );
         }
-
-        $self->title( $self->_feed_parser->title );
-        $self->description( $self->_feed_parser->description || '' );
-        
-        $self->_update();
     }
-    
-    method _update {
-        use Data::Dumper;
-        $self->feed_resultset->update();
-        # warn Dumper( $self->feed_resultset );
-        $self->feed_items->clear_cache();
-        
-    
-        #my $updated_rs = $self->feed_resultset->get_from_storage;
-        ##
-        #$self->_set_feed_resultset( $updated_rs );
-        $self->_clear_item_x_bool();        
-    }
-
-    method _create_item( $item ) {        
-        $self->feed_items->create(
-                {
-                    account_id  => $self->account_id,
-                    feed_id     => $self->id,
-                    uuid        => $item->uuid_bin,
-                    link        => $item->link,
-                    title       => $item->title,
-                    description => $item->content,
-                }
-        );
-
-    }
-
 }
