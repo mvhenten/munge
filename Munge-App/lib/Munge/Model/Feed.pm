@@ -6,7 +6,7 @@ Munge::Model::Feed
 
 =head1 DESCRIPTION
 
-Domain model. 
+Domain model.
 
 =head1 SYNOPSIS
 
@@ -32,8 +32,12 @@ class Munge::Model::Feed {
     use URI;
 
     use Munge::Model::Feed::Client;
-    use Munge::Model::Feed::Parser;
     use Munge::Model::FeedItem;
+    use Munge::Model::Feed::Parser;
+    use Munge::UUID;
+
+    with 'Munge::Role::Schema';
+    with 'Munge::Role::DBICStorage' => { schema => 'Munge::Schema::Result::Feed' };
 
     has uuid => (
         is       => 'ro',
@@ -89,7 +93,7 @@ class Munge::Model::Feed {
             _add_feed_item      => 'push',
             _has_feed_items     => 'is_empty',
             _clear_feed_items   => 'clear',
-            _store_feed_items   => [ map => \&{ $_->store(); } ],
+#            _store_feed_items   => [ map => \&{ $_->store(); } ],
         },
     );
 
@@ -107,7 +111,7 @@ class Munge::Model::Feed {
         }
     );
 
-    method _buid__storage_values {
+    method _build__storage_values {
         # todo check if load returns hash ref or undef
         return $self->load( uuid => $self->uuid ) || {};
     }
@@ -121,7 +125,14 @@ class Munge::Model::Feed {
     }
 
     method _build_link {
-        return $self->_get_link;
+        my $link = $self->_get_link;
+
+        if( not $link ){
+            my $uuid = $self->uuid;
+            confess( qq|Tried building link but failed, is UUID valid? $uuid| );
+        }
+
+        return $link;
     }
 
     method _build__feed_uri {
@@ -135,14 +146,18 @@ class Munge::Model::Feed {
 
     method _build__feed_client {
         return Munge::Model::Feed::Client->new(
-            feed_uri            => $self->feed_uri,
+            feed_uri            => $self->uri,
             last_modified_since => $self->updated,
         );
     }
 
-    method create ( Uri $link, Account $account ) {
+    method create ( $class: Uri $link, Account $account ){
         my $uuid = Munge::UUID->new( uri => $link )->uuid;
-        return $self->new( link => $link->as_string, uuid => $uuid );
+        return $class->new(
+            link    => $link->as_string,
+            uuid    => $uuid,
+            account => $account,
+        );
     }
 
     method synchronize () {

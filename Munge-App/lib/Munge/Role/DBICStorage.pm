@@ -1,15 +1,14 @@
 use MooseX::Declare;
 
-role Munge::Role::DBICStorage with Munge::Role::Schema ( Str :$schema ) {
+role Munge::Role::DBICStorage ( Any :$schema ) {
 
     has _account => (
         is       => 'ro',
         isa      => 'Munge::Schema::Result::Account',
-        init_arg => 'account'
+        init_arg => 'account',
         required => 1,
         handles  => { _account_id => 'id' },
     );
-
 
     method store () {
         $self->resultset( $schema )->update_or_create( $self->_storable_attributes );
@@ -29,10 +28,6 @@ role Munge::Role::DBICStorage with Munge::Role::Schema ( Str :$schema ) {
             $storable_attributes{$key} = $self->$key();
         }
 
-        return \$storable_attributes;
+        return \%storable_attributes;
     }
-
-
-
-
 }

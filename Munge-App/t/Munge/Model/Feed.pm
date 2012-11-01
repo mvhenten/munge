@@ -28,21 +28,41 @@ class t::Munge::Model::Feed {
     #}
 
     test feed_create {
-#        my $rs = $self->create_feed_rs;
-
-        my $uri  = URI->new('file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml');
         my $account = $self->create_test_account;
-
         my $feed;
+
+        my $uri = URI->new(
+            'file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml'
+        );
+
 
         lives_ok {
             $feed = Munge::Model::Feed->create( $uri, $account );
         }
         'create lives';
 
-        isa_ok( $feed, 'Munge::Model::Feed', '$feed');
+        isa_ok( $feed, 'Munge::Model::Feed', '$feed' );
+    }
 
-#        $feed->synchronize();
+    test feed_store {
+        my $uri = URI->new(
+            'file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml'
+        );
+        my $account = $self->create_test_account;
+        my $uuid = Munge::UUID->new( uri => $uri )->uuid;
+
+        my $feed = Munge::Model::Feed->new(
+            link    => $uri->as_string,
+            uuid    => $uuid,
+            account => $account,
+            schema  => $self->schema,
+        );
+
+        # NB still failing need to update schema config.
+        $feed->store();
+
+        pass;
+
     }
 
     #test feed_synchronize {
