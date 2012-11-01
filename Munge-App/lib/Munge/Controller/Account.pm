@@ -26,6 +26,14 @@ get '/login' => sub {
       '<form method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
 };
 
+get '/logout' => sub {
+    return redirect '/' unless session('authenticated');
+
+    session->destroy;
+    redirect 'account/login';
+};
+
+
 post '/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
 
