@@ -27,7 +27,13 @@ role Munge::Role::DBICStorage ( Any :$schema ) {
     method load ( $key, $value ) {
         my ( $result ) = $self->resultset( $schema )->find( { $key => $value, account_id => $self->_account_id } );
 
-        return $result->get_columns();
+        return defined( $result ) ?  { $result->get_inflated_columns() } : {};
+    }
+
+    method _storage_delete ( $key, $value ) {
+        my ( $result ) = $self->resultset( $schema )->find( { $key => $value, account_id => $self->_account_id } );
+
+        return $result->delete() if defined( $result );
     }
 
     method _storable_attributes () {

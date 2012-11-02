@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 =head1 NAME
 
-Munge::Model::Feed
+Munge::UUID
 
 =head1 DESCRIPTION
 
@@ -10,6 +10,7 @@ Build uuids from links.
 
 =head1 SYNOPSIS
 
+    my $link = URI->new( $url );
     my $uuid = Munge::UUID->new( uri => $link );
 
     my $hex_uuid = $uuid->uuid;
@@ -25,7 +26,6 @@ class Munge::UUID {
     has uri => (
         is       => 'ro',
         isa      => 'URI',
-        required => 1,
     );
 
     has uuid => (
