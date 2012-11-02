@@ -33,7 +33,6 @@ get '/logout' => sub {
     redirect 'account/login';
 };
 
-
 post '/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
 

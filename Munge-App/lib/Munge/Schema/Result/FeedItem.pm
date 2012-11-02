@@ -27,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
 
 =head1 TABLE: C<feed_item>
 
@@ -106,46 +106,56 @@ __PACKAGE__->table("feed_item");
 =cut
 
 __PACKAGE__->add_columns(
-  "id",
-  {
-    data_type => "integer",
-    extra => { unsigned => 1 },
-    is_auto_increment => 1,
-    is_nullable => 0,
-  },
-  "feed_id",
-  {
-    data_type => "integer",
-    extra => { unsigned => 1 },
-    is_foreign_key => 1,
-    is_nullable => 0,
-  },
-  "account_id",
-  {
-    data_type => "integer",
-    extra => { unsigned => 1 },
-    is_foreign_key => 1,
-    is_nullable => 0,
-  },
-  "uuid",
-  { data_type => "binary", is_nullable => 0, size => 16 },
-  "link",
-  { data_type => "varchar", is_nullable => 0, size => 2048 },
-  "title",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 512 },
-  "description",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 4096 },
-  "created",
-  {
-    data_type => "timestamp",
-    datetime_undef_if_invalid => 1,
-    default_value => \"current_timestamp",
-    is_nullable => 0,
-  },
-  "read",
-  { data_type => "tinyint", default_value => 0, is_nullable => 0 },
-  "starred",
-  { data_type => "integer", default_value => 0, is_nullable => 0 },
+    "id",
+    {
+        data_type         => "integer",
+        extra             => { unsigned => 1 },
+        is_auto_increment => 1,
+        is_nullable       => 0,
+    },
+    "feed_id",
+    {
+        data_type      => "integer",
+        extra          => { unsigned => 1 },
+        is_foreign_key => 1,
+        is_nullable    => 0,
+    },
+    "account_id",
+    {
+        data_type      => "integer",
+        extra          => { unsigned => 1 },
+        is_foreign_key => 1,
+        is_nullable    => 0,
+    },
+    "uuid",
+    { data_type => "binary", is_nullable => 0, size => 16 },
+    "link",
+    { data_type => "varchar", is_nullable => 0, size => 2048 },
+    "title",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 512
+    },
+    "description",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 4096
+    },
+    "created",
+    {
+        data_type                 => "timestamp",
+        datetime_undef_if_invalid => 1,
+        default_value             => \"current_timestamp",
+        is_nullable               => 0,
+    },
+    "read",
+    { data_type => "tinyint", default_value => 0, is_nullable => 0 },
+    "starred",
+    { data_type => "integer", default_value => 0, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -174,7 +184,8 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint("account_feed_uuid", ["uuid", "account_id"]);
+__PACKAGE__->add_unique_constraint( "account_feed_uuid",
+    [ "uuid", "account_id" ] );
 
 =head1 RELATIONS
 
@@ -187,10 +198,10 @@ Related object: L<Munge::Schema::Result::Account>
 =cut
 
 __PACKAGE__->belongs_to(
-  "account",
-  "Munge::Schema::Result::Account",
-  { id => "account_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    "account",
+    "Munge::Schema::Result::Account",
+    { id            => "account_id" },
+    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
 =head2 feed
@@ -202,16 +213,13 @@ Related object: L<Munge::Schema::Result::Feed>
 =cut
 
 __PACKAGE__->belongs_to(
-  "feed",
-  "Munge::Schema::Result::Feed",
-  { id => "feed_id" },
-  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    "feed", "Munge::Schema::Result::Feed",
+    { id            => "feed_id" },
+    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
-
 
 # Created by DBIx::Class::Schema::Loader v0.07023 @ 2012-10-28 23:54:52
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LNekW3Rf4jck6b2T1r2pzA
-
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

@@ -35,7 +35,6 @@ class t::Munge::Model::Feed {
             'file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml'
         );
 
-
         lives_ok {
             $feed = Munge::Model::Feed->create( $uri, $account );
         }

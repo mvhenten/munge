@@ -1,5 +1,5 @@
 use MooseX::Declare;
-
+use MooseX::StrictConstructor;
 =head1 NAME
 
 Munge::Model::Feed
@@ -113,7 +113,9 @@ class Munge::Model::Feed {
 
     method _build__storage_values {
         # todo check if load returns hash ref or undef
-        return $self->load( uuid => $self->uuid ) || {};
+#        return $self->load( uuid => $self->uuid ) || {};
+
+        return {};
     }
 
     method _build_description {
