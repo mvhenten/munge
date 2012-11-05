@@ -25,7 +25,7 @@ Domain model.
 
 =cut
 
-use Munge::Types qw|Uri Account|;
+use Munge::Types qw|UUID Uri Account|;
 
 class Munge::Model::Feed {
     use DateTime;
@@ -34,6 +34,7 @@ class Munge::Model::Feed {
     use Munge::Model::Feed::Client;
     use Munge::Model::FeedItem;
     use Munge::Model::Feed::Parser;
+    use Munge::Types qw|UUID|;
     use Munge::UUID;
 
     with 'Munge::Role::Schema';
@@ -41,7 +42,7 @@ class Munge::Model::Feed {
 
     has uuid => (
         is       => 'ro',
-        isa      => 'Str',
+        isa      => UUID,
         required => 1,
     );
 
@@ -154,7 +155,7 @@ class Munge::Model::Feed {
     }
 
     method create ( $class: Uri $link, Account $account ){
-        my $uuid = Munge::UUID->new( uri => $link )->uuid;
+        my $uuid = Munge::UUID->new( uri => $link )->uuid_bin;
         return $class->new(
             link    => $link->as_string,
             uuid    => $uuid,

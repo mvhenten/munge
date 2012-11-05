@@ -1,8 +1,7 @@
 package Munge::Types;
 
-use MooseX::Types::Moose qw/Int HashRef Str/;
+use MooseX::Types::Moose qw/Int HashRef Str Any/;
 use MooseX::Types -declare => [qw|Account Feed Uri UUID|];
-
 
 class_type 'Account' => { class => 'Munge::Schema::Result::Account' };
 
@@ -10,25 +9,34 @@ class_type 'Feed' => { class => 'Munge::Schema::Result::Feed' };
 
 class_type 'Uri' => { class => 'URI' };
 
-subtype UUID,
-      as Str,
-      where { bytes::length($_) == 16 },
-      message { "UUID is 16 bytes" };
+subtype UUID, as Str,
+  where { use bytes; bytes::length($_) == 16 },
+  message { "UUID is 16 bytes" };
 
-
-coerce UUID,
-    from Str,
-        via { uuid_from_string($_) };
-
+coerce UUID, from Str, via { uuid_from_string($_) };
 
 use Data::UUID;
 
 sub uuid_from_string {
-    my ( $str ) = @_;
+    my ($str) = @_;
 
     my $ug = Data::UUID->new();
 
-    return $ug->from_string( $str );
+    return $ug->from_b64string($str) if length($str) == 24;
+    return $ug->from_hexstring($str) if $str =~ /0x[[:alnum:]]{32}/;
+    return $ug->from_string($str)    if _is_rfc4122_string($str);
+
+    return undef;
+}
+
+sub _is_rfc4122_string {
+    my ($str) = @_;
+
+    return 1
+      if $str =~
+      /[[:alnum:]]{8}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{12}/;
+
+    return 0;
 }
 
 1;

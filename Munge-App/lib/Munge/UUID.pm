@@ -24,8 +24,8 @@ class Munge::UUID {
     use URI;
 
     has uri => (
-        is       => 'ro',
-        isa      => 'URI',
+        is  => 'ro',
+        isa => 'URI',
     );
 
     has uuid => (
