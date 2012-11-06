@@ -8,8 +8,16 @@ class t::Munge::Model::Feed {
     use Test::Sweet;
     use URI;
 
+    use Cwd qw|realpath|;
+
     with 'Test::Munge::Role::Schema';
     with 'Test::Munge::Role::Account';
+
+    sub APPLICATION_PATH {
+        my ( $app_dir ) = split( /\/t\//, realpath( __FILE__ ) );
+        return $app_dir;
+    }
+
 
     method create_feed_rs( $uri?, $account? ) {
         $uri ||= URI->new('http://example.com/feed');
@@ -65,11 +73,17 @@ class t::Munge::Model::Feed {
 
     }
 
+    method create_test_feed_uri {
+        my $filename = realpath( __FILE__ );
+
+        my $uri = URI->new(
+            'file:/' . APPLICATION_PATH() . '/t/resource/atom.xml'
+        );
+    }
+
     method create_test_feed {
         my $account = $self->create_test_account;
-        my $uri = URI->new(
-            'file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml'
-        );
+        my $uri  = $self->create_test_feed_uri;
 
         my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
 
@@ -87,38 +101,31 @@ class t::Munge::Model::Feed {
         my $feed = $self->create_test_feed();
         $feed->store();
 
-        pass;
+        is( $feed->updated, undef, 'Updated is not yet defined' );
+        is( $feed->title, undef, 'Title is not yet set');
+        is( $feed->description, undef, 'Description is not yet set');
+        is_deeply( [$feed->feed_items], [], 'items is empty array' );
 
+        lives_ok {
+            $feed->synchronize();
+        }
+        'feed syncs';
 
-        #my $uri  = URI->new('file://home/matthijs/Development/Munge/Munge-App/t/resource/atom.xml');
-        #my $rs   = $self->create_feed_rs( $uri );
-        #my $feed = Munge::Model::Feed->new( feed_resultset => $rs );
-        #
-        #is( $feed->updated, undef, 'Updated is not yet defined' );
-        #is( $feed->title, undef, 'Title is not yet set');
-        #is( $feed->description, undef, 'Description is not yet set');
-        #is_deeply( [$feed->feed_items], [], 'items is empty array' );
-        #
-        #lives_ok {
-        #    $feed->synchronize();
-        #}
-        #'feed syncs';
-        #
-        #is( $feed->title, 'Example Feed', 'Updated title' );
-        #is( $feed->description, '', 'FIXME find feed with description');
-        #
-        #my @items = $feed->feed_items;
-        #
+        is( $feed->title, 'Example Feed', 'Updated title' );
+        is( $feed->description, '', 'FIXME find feed with description');
+
+        my @items = $feed->feed_items;
+
         #for my $item ( @items ){
         #    is( $item->title, 'Atom-Powered Robots Run Amok', 'got proper title');
         #    is( $item->description, 'Some text.', 'got proper description');
         #}
         #
-        #lives_ok {
-        #    $feed->synchronize();
-        #}
-        #'feed syncs yet another time';
-        #
-        #is_deeply( \@items, [$feed->feed_items], 'No new items were created' );
+        lives_ok {
+            $feed->synchronize();
+        }
+        'feed syncs yet another time';
+
+        is_deeply( \@items, [$feed->feed_items], 'No new items were created' );
     }
 }

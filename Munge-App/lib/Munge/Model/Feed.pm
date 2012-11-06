@@ -54,14 +54,14 @@ class Munge::Model::Feed {
 
     has title => (
         is          => 'ro',
-        isa         => 'Str',
+        isa         => 'Maybe[Str]',
         writer      => '_set_title',
         lazy_build  => 1,
     );
 
     has description => (
         is          => 'ro',
-        isa         => 'Str',
+        isa         => 'Maybe[Str]',
         writer      => '_set_description',
         lazy_build  => 1,
     );
@@ -91,6 +91,7 @@ class Munge::Model::Feed {
         traits => ['Array'],
         default => sub { [] },
         handles => {
+            feed_items          => 'elements',
             _add_feed_item      => 'push',
             _has_feed_items     => 'is_empty',
             _clear_feed_items   => 'clear',
@@ -114,17 +115,15 @@ class Munge::Model::Feed {
 
     method _build__storage_values {
         # todo check if load returns hash ref or undef
-#        return $self->load( uuid => $self->uuid ) || {};
-
-        return {};
+        return $self->load( uuid => $self->uuid ) || {};
     }
 
     method _build_description {
-        return $self->_get_description || '';
+        return $self->_get_description || undef;
     }
 
     method _build_title {
-        return $self->_get_title || '';
+        return $self->_get_title || undef;
     }
 
     method _build_link {
@@ -165,13 +164,13 @@ class Munge::Model::Feed {
 
     method synchronize () {
         return unless $self->_feed_client->updated;
-
         return unless $self->_feed_client->success;
 
         if( not $self->_feed_parser->xml_feed ){
-            warn "Cannot parse feed: " . $self->feed_uri;
+            warn "Cannot parse feed: " . $self->uri;
             return;
         }
+
 
         $self->_set_title( $self->_feed_parser->title );
         $self->_set_description( $self->_feed_parser->description || '' );
@@ -179,7 +178,7 @@ class Munge::Model::Feed {
 
         for my $item ( $self->_feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->new(
-                account     => $self->account,
+                account     => $self->_account,
                 feed        => $self,
                 uuid        => $item->uuid_bin,
                 link        => $item->link,
