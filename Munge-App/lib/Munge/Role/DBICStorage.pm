@@ -3,6 +3,10 @@ use MooseX::Declare;
 role Munge::Role::DBICStorage ( Any :$schema ) {
     use Data::Dumper;
 
+    requires 'resultset';
+
+#    with 'Munge::Role::Schema';
+
     has _account => (
         is       => 'ro',
         isa      => 'Munge::Schema::Result::Account',
@@ -40,9 +44,8 @@ role Munge::Role::DBICStorage ( Any :$schema ) {
         my %storable_attributes;
 
         for my $key ( $self->_schema_class->columns() ){
-            my $method = "has_$key";
-
             next if not $self->can( $key );
+
             my $value = $self->$key();
             next if not defined($value);
 

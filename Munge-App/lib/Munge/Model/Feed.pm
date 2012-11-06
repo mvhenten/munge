@@ -106,7 +106,7 @@ class Munge::Model::Feed {
         lazy_build => 1,
         handles => {
             _get_description => [ get => 'description' ],
-              _get_id        => [ get => 'id' ],
+              feed_id        => [ get => 'id' ],
               _get_link      => [ get => 'link' ],
               _get_title     => [ get => 'title' ],
               updated        => [ get => 'updated' ],
@@ -171,7 +171,6 @@ class Munge::Model::Feed {
             return;
         }
 
-
         $self->_set_title( $self->_feed_parser->title );
         $self->_set_description( $self->_feed_parser->description || '' );
         $self->_clear_feed_items();
@@ -185,6 +184,8 @@ class Munge::Model::Feed {
                 title       => $item->title,
                 description => $item->content,
             );
+
+            $feed_item->store();
 
             $self->_add_feed_item( $feed_item );
         }
