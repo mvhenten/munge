@@ -1,5 +1,7 @@
 package Munge::App;
 
+# ABSTRACT: turns baubles into trinkets
+
 use Dancer ':syntax';
 use Munge::Controller::Feed;
 use Munge::Controller::Account;
