@@ -36,9 +36,20 @@ class Munge::Model::Feed {
     use Munge::Model::Feed::Parser;
     use Munge::Types qw|UUID|;
     use Munge::UUID;
+    use Munge::Storage;
+    
+    sub SCHEMA {
+        return 'Munge::Schema::Result::Feed';
+    }
 
     with 'Munge::Role::Schema';
-    with 'Munge::Role::DBICStorage' => { schema => 'Munge::Schema::Result::Feed' };
+    with 'Munge::Role::Account';
+    
+    has link => (
+        is => 'ro',
+        isa => 'Str',
+        required => 1,
+    );
 
     has uuid => (
         is       => 'ro',
@@ -46,42 +57,39 @@ class Munge::Model::Feed {
         required => 1,
     );
 
+    has description => (
+        is     => 'ro',
+        isa    => 'Str',
+        writer => '_set_description',
+    );
+
+    has id => (
+        is     => 'ro',
+        isa    => 'Str',
+        writer => '_set_id',
+    );
+
     has link => (
-        is         => 'ro',
-        isa        => 'Str',
-        lazy_build => 1,
+        is     => 'ro',
+        isa    => 'Str',
+        writer => '_set_link',
     );
 
     has title => (
-        is          => 'ro',
-        isa         => 'Maybe[Str]',
-        writer      => '_set_title',
-        lazy_build  => 1,
+        is     => 'ro',
+        isa    => 'Str',
+        writer => '_set_title',
     );
 
-    has description => (
-        is          => 'ro',
-        isa         => 'Maybe[Str]',
-        writer      => '_set_description',
-        lazy_build  => 1,
+    has updated => (
+        is     => 'ro',
+        isa    => 'Maybe[Str]',
+        writer => '_set_updated',
     );
-
-    has _feed_uri => (
-        is         => 'ro',
-        isa        => 'URI',
-        reader     => 'uri',
-        lazy_build => 1,
-    );
-
-    has _feed_client => (
-        is         => 'ro',
-        isa        => 'Munge::Model::Feed::Client',
-        lazy_build => 1,
-    );
-
-    has _feed_parser => (
-        is         => 'ro',
-        isa        => 'Munge::Model::Feed::Parser',
+    
+    has _storage => (
+        is     => 'ro',
+        isa    => 'Munge::Storage',
         lazy_build => 1,
     );
 
@@ -98,59 +106,18 @@ class Munge::Model::Feed {
 #            _store_feed_items   => [ map => \&{ $_->store(); } ],
         },
     );
-
-    has _storage_values => (
-        is => 'ro',
-        isa => 'HashRef',
-        traits => ['Hash'],
-        lazy_build => 1,
-        handles => {
-            _get_description => [ get => 'description' ],
-              feed_id        => [ get => 'id' ],
-              _get_link      => [ get => 'link' ],
-              _get_title     => [ get => 'title' ],
-              updated        => [ get => 'updated' ],
-        }
-    );
-
-    method _build__storage_values {
-        # todo check if load returns hash ref or undef
-        return $self->load( uuid => $self->uuid ) || {};
+    
+    sub __STORAGE {
+        my ( $account ) = @_;
+        return Munge::Storage->new( schema_name => SCHEMA(), account => $account );        
     }
-
-    method _build_description {
-        return $self->_get_description || undef;
+    
+    method _build__storage {
+        __STORAGE( $self->acount );
     }
-
-    method _build_title {
-        return $self->_get_title || undef;
-    }
-
-    method _build_link {
-        my $link = $self->_get_link;
-
-        if( not $link ){
-            my $uuid = $self->uuid;
-            confess( qq|Tried building link but failed, is UUID valid? $uuid| );
-        }
-
-        return $link;
-    }
-
-    method _build__feed_uri {
-        return URI->new( $self->link );
-    }
-
-    method _build__feed_parser {
-        return Munge::Model::Feed::Parser->new(
-            content => $self->_feed_client->content );
-    }
-
-    method _build__feed_client {
-        return Munge::Model::Feed::Client->new(
-            feed_uri            => $self->uri,
-            last_modified_since => $self->updated,
-        );
+    
+    method store {
+        $self->_storage->store( $self );        
     }
 
     method create ( $class: Uri $link, Account $account ){
@@ -162,23 +129,38 @@ class Munge::Model::Feed {
         );
     }
 
-    method synchronize () {
-        return unless $self->_feed_client->updated;
-        return unless $self->_feed_client->success;
+    method load ( $class: UUID $uuid, Account $account, $storage? ){
+        $storage ||= __STORAGE( $account );
+        
+        use Data::Dumper;
+        warn Dumper $storage->load( uuid => $uuid );
 
-        if( not $self->_feed_parser->xml_feed ){
+#        return $class->new( %{ $storage->load( uuid => $uuid ) }, account => $account );
+    }
+
+    method synchronize () {
+        my $feed_client = $self->_get_feed_client();
+        
+        return unless $feed_client->updated;
+        return unless $feed_client->success;
+        
+        confess( 'Must store feed before calling synchronize' ) unless $self->feed_id;
+        
+        my $feed_parser = $self->_get_feed_parser( $feed_client->content );
+
+        if( not $feed_parser->xml_feed ){
             warn "Cannot parse feed: " . $self->uri;
             return;
         }
 
-        $self->_set_title( $self->_feed_parser->title );
-        $self->_set_description( $self->_feed_parser->description || '' );
+        $self->_set_title( $feed_parser->title );
+        $self->_set_description( $feed_parser->description || '' );
         $self->_clear_feed_items();
 
-        for my $item ( $self->_feed_parser->items ) {
+        for my $item ( $feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->new(
                 account     => $self->_account,
-                feed        => $self,
+                feed_id     => $self->feed_id,
                 uuid        => $item->uuid_bin,
                 link        => $item->link,
                 title       => $item->title,
@@ -190,4 +172,18 @@ class Munge::Model::Feed {
             $self->_add_feed_item( $feed_item );
         }
     }
+
+    method _get_feed_client {
+        my $uri = URI->new( $self->link );
+        return Munge::Model::Feed::Client->new(
+            feed_uri            => $uri,
+            last_modified_since => $self->updated,
+        );
+    }
+
+    method _get_feed_parser ( Str $content ) {
+        return Munge::Model::Feed::Parser->new(
+            content => $content );
+    }
+    
 }

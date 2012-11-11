@@ -12,6 +12,13 @@ role Test::Munge::Role::Schema {
     );
 
     method _build_schema {
-        return DBICx::TestDatabase->connect('Munge::Schema');
+        my $dbh =
+          DBICx::TestDatabase->connect( 'Munge::Schema',
+            { sqlite_unicode => 0 } );
+
+        $dbh->{sqlite_handle_binary_nulls} = 0;
+        $dbh->{sqlite_unicode}             = 0;
+
+        return $dbh;
     }
 }
