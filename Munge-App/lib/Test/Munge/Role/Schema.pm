@@ -12,13 +12,14 @@ role Test::Munge::Role::Schema {
     );
 
     method _build_schema {
-        my $dbh =
-          DBICx::TestDatabase->connect( 'Munge::Schema',
-            { sqlite_unicode => 0 } );
+        my $filename = ':memory:';    # use in-memory database
 
-        $dbh->{sqlite_handle_binary_nulls} = 0;
-        $dbh->{sqlite_unicode}             = 0;
+        my $schema =
+          Munge::Schema->connect( "DBI:SQLite:$filename", '', '',
+            { sqlite_unicode => 0 } )
+          or die "failed to connect to DBI:SQLite:$filename (Munge::Schema)";
 
-        return $dbh;
+        $schema->deploy;
+        return $schema;
     }
 }
