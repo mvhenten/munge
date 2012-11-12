@@ -10,22 +10,9 @@ class t::Munge::Model::Feed {
     use Sub::Override qw|sub_override|;
     use Munge::Storage;
 
-    use Cwd qw|realpath|;
-
     with 'Test::Munge::Role::Schema';
     with 'Test::Munge::Role::Account';
-
-    sub APPLICATION_PATH {
-        my ($app_dir) = split( /\/t\//, realpath(__FILE__) );
-        return $app_dir;
-    }
-
-    method create_test_feed_uri {
-        my $filename = realpath(__FILE__);
-
-        my $uri =
-          URI->new( 'file:/' . APPLICATION_PATH() . '/t/resource/atom.xml' );
-    }
+    with 'Test::Munge::Role::Feed';
 
     test feed_create {
         my $account = $self->create_test_account;
@@ -68,7 +55,7 @@ class t::Munge::Model::Feed {
     }
 
     test load_by_uuid {
-        my $feed = $self->_test_feed;
+        my $feed = $self->create_test_feed;
         $feed->store();
 
         ok( $self->resultset('Feed')->find( { uuid => $feed->uuid } ),
@@ -81,7 +68,7 @@ class t::Munge::Model::Feed {
     }
 
     test feed_synchronize {
-        my $feed = $self->_test_feed;
+        my $feed = $self->create_test_feed;
         $feed->store();
 
         is( $feed->updated,     undef, 'Updated is not yet defined' );
@@ -116,27 +103,6 @@ class t::Munge::Model::Feed {
         is_deeply( \@items, [ $feed->feed_items ],
             'No new items were created' );
 
-    }
-
-    method _test_feed {
-        my $account = $self->create_test_account;
-        my $uri     = URI->new( $self->create_test_feed_uri );
-        $uri->query_form( q => rand %99999 );
-
-        my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
-
-        my $storage = Munge::Storage->new(
-            account     => $account,
-            schema_name => Munge::Model::Feed->_schema_class(),
-            schema      => $self->schema,
-        );
-
-        return Munge::Model::Feed->new(
-            uuid     => $uuid,
-            account  => $account,
-            link     => $uri->as_string,
-            _storage => $storage,
-        );
     }
 
 }
