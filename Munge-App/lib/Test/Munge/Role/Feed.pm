@@ -2,27 +2,26 @@ use MooseX::Declare;
 
 role Test::Munge::Role::Feed {
 
-    requires qw|create_test_account|;
-
     use Cwd qw|realpath|;
     use URI;
     use Munge::Model::Feed;
     use Munge::Storage;
     use Munge::UUID;
-    
-    sub APPLICATION_PATH {
-        my ( $app_dir ) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
 
+    requires qw|create_test_account|;
+
+    sub APPLICATION_PATH {
+        my ($app_dir) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
         return $app_dir;
     }
-    
+
     method create_test_feed_uri {
         my $filename = realpath(__FILE__);
 
         my $uri =
           URI->new( 'file:/' . APPLICATION_PATH() . '/t/resource/atom.xml' );
     }
-    
+
     method create_test_feed {
         my $account = $self->create_test_account;
         my $uri     = URI->new( $self->create_test_feed_uri );
@@ -43,6 +42,5 @@ role Test::Munge::Role::Feed {
             _storage => $storage,
         );
     }
-
 
 }

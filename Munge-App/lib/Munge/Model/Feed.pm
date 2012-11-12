@@ -141,15 +141,16 @@ class Munge::Model::Feed {
 
         for my $item ( $feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->new(
+                _storage     => $self->_storage,
                 account     => $self->account,
+                description => $item->content,
                 feed_id     => $self->id,
-                uuid        => $item->uuid_bin,
                 link        => $item->link,
                 title       => $item->title,
-                description => $item->content,
+                uuid        => $item->uuid_bin,
             );
 
-#            $feed_item->store();
+            $feed_item->store();
 
             $self->_add_feed_item( $feed_item );
         }

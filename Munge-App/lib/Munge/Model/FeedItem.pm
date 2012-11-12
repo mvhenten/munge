@@ -11,7 +11,7 @@ class Munge::Model::FeedItem {
 
     has uuid => (
         is       => 'ro',
-        isa      => UUID,
+        isa      => 'Str',
         required => 1,
     );
 
