@@ -32,7 +32,7 @@ class Munge::Model::Account {
         return $self->resultset( 'Account' );
     }    
     
-    method create ( Str $username, Str $plaintext_password ) {
+    method create( Str $username, Str $plaintext_password ) {
         my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
         
         $csh->add( $plaintext_password );
