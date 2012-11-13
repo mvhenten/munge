@@ -29,13 +29,3 @@ get '/logout' => sub {
 };
 
 true;
-
-#package myapp;
-#use Dancer ':syntax';
-#use myapp::admin;
-#
-#prefix undef;
-#
-#get '/' => sub {...};
-#
-#1;

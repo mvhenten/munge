@@ -1,5 +1,6 @@
 use MooseX::Declare;
 use MooseX::StrictConstructor;
+
 =head1 NAME
 
 Munge::Model::Feed
@@ -102,7 +103,6 @@ class Munge::Model::Feed {
             _add_feed_item      => 'push',
             _has_feed_items     => 'is_empty',
             _clear_feed_items   => 'clear',
-#            _store_feed_items   => [ map => \&{ $_->store(); } ],
         },
     );
         
@@ -113,6 +113,7 @@ class Munge::Model::Feed {
 
     method create ( $class: Uri $link, Account $account ){
         my $uuid = Munge::UUID->new( uri => $link )->uuid_bin;
+        
         return $class->new(
             link    => $link->as_string,
             uuid    => $uuid,

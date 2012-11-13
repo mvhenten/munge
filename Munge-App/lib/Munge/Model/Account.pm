@@ -11,7 +11,6 @@ Munge::Model::Account
 =cut
 
 use Munge::Types qw|Uri Account|;
-# use MooseX::Types::Moose qw|HashRef|;
 
 class Munge::Model::Account {
     

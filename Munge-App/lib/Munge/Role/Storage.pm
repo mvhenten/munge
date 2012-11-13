@@ -5,6 +5,7 @@ use Munge::Types qw|UUID Uri Account|;
 role Munge::Role::Storage {
     use Munge::Storage;
     use Munge::Types qw|UUID|;
+    use Carp::Assert;
     
     requires qw|account schema|;
     
@@ -39,8 +40,10 @@ role Munge::Role::Storage {
         $storage ||= $class->_get_storage( $account );
                 
         my $rs = $storage->load( uuid => $uuid );
+        
+        assert( $account->id == $rs->{account_id}, 'Feed is owned by account' );
+        
         delete( $rs->{account_id} );
-    
         return $class->new( %{ $rs }, account => $account );
     }
     

@@ -13,15 +13,11 @@ sub account {
 }
 
 get '/' => sub {
+    my $account = account();
 
-    # Munge::Model::Account->new( schema => $self->schema )->find
-
-    my $account = Munge::Model::Account->new()->find( session('account') );
     my @feeds   = map {
         { $_->get_inflated_columns() }
     } $account->feeds;
-
-    #return Dumper( \@feeds );
 
     template 'feed/index',
       {

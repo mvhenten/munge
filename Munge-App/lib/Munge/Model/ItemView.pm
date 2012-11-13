@@ -23,11 +23,19 @@ class Munge::Model::ItemView {
         required => 1,
     );
     
+    method format_datetime ( $dt ) {
+        my $dtf = $self->schema->storage->datetime_parser;
+        
+        return $dtf->format_datetime( $dt );
+    }
+    
     method today {
+        my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
+    
         my $items = $self->resultset('FeedItem')->search(
             {
                 account_id => $self->account->id,
-                created    => { '>=', DateTime->today()->subtract('days' => 1) },
+                created    => { '>=', $yesterday },
             },
             {
                 order_by   => { -asc => 'created' },
@@ -39,11 +47,14 @@ class Munge::Model::ItemView {
     }
 
     method yesterday {
+        my $min_age = $self->format_datetime( DateTime->today()->subtract('days' => 2) );
+        my $max_age = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
+
         my $items = $self->resultset('FeedItem')->search(
             {
                 account_id => $self->account->id,
-                created    => { '>=', DateTime->today()->subtract('days' => 2) },
-                created    => { '<=', DateTime->today()->subtract('days' => 1) },
+                created    => { '>=', $min_age },
+                created    => { '<=', $max_age },
             },
             {
                 order_by   => { -asc => 'created' },
@@ -55,10 +66,12 @@ class Munge::Model::ItemView {
     }
 
     method older {
+        my $max_age = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
+
         my $items = $self->resultset('FeedItem')->search(
             {
                 account_id => $self->account->id,
-                created    => { '<=', DateTime->today()->subtract('days' => 2) },
+                created    => { '<=', $max_age },
             },
             {
                 order_by   => { -asc => 'created' },

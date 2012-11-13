@@ -1,4 +1,4 @@
-#!/bin/env perl
+#!/usr/bin/env perl
 
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use lib './lib';
 
 use Data::Dumper;
 use Munge::Model::Account;
-use Munge::Model::Feed::Factory;
+use Munge::Model::Feed;
 use Try::Tiny;
 
 main(@ARGV);
@@ -29,7 +29,7 @@ sub main {
         printf( "Synchronizing feed %s\n", $rs->link );
 
         try {
-            my $feed = Munge::Model::Feed::Factory->new()->load( $rs->id );
+            my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
             $feed->synchronize();
         }
         catch {
