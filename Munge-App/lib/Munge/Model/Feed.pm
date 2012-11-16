@@ -39,11 +39,11 @@ class Munge::Model::Feed {
     use Munge::Types qw|UUID|;
     use Munge::UUID;
     use Munge::Storage;
-    
+
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
     with 'Munge::Role::Storage';
-    
+
     has link => (
         is => 'ro',
         isa => 'Str',
@@ -85,7 +85,7 @@ class Munge::Model::Feed {
         isa    => 'Maybe[DateTime]',
         writer => '_set_updated',
     );
-    
+
     has created => (
         is     => 'ro',
         isa    => 'Maybe[DateTime]',
@@ -105,15 +105,15 @@ class Munge::Model::Feed {
             _clear_feed_items   => 'clear',
         },
     );
-        
-    
+
+
     method _build_created {
         return DateTime->now();
     }
 
     method create ( $class: Uri $link, Account $account ){
         my $uuid = Munge::UUID->new( uri => $link )->uuid_bin;
-        
+
         return $class->new(
             link    => $link->as_string,
             uuid    => $uuid,
@@ -123,12 +123,12 @@ class Munge::Model::Feed {
 
     method synchronize () {
         my $feed_client = $self->_get_feed_client();
-        
+
         return unless $feed_client->updated;
         return unless $feed_client->success;
-        
+
         confess( 'Must store feed before calling synchronize' ) unless $self->id;
-        
+
         my $feed_parser = $self->_get_feed_parser( $feed_client->content );
 
         if( not $feed_parser->xml_feed ){
@@ -142,7 +142,6 @@ class Munge::Model::Feed {
 
         for my $item ( $feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->new(
-                _storage     => $self->_storage,
                 account     => $self->account,
                 description => $item->content,
                 feed_id     => $self->id,
@@ -159,7 +158,7 @@ class Munge::Model::Feed {
 
     method _get_feed_client {
         my $uri = URI->new( $self->link );
-        
+
         return Munge::Model::Feed::Client->new(
             feed_uri            => $uri,
             last_modified_since => $self->updated,
@@ -170,5 +169,5 @@ class Munge::Model::Feed {
         return Munge::Model::Feed::Parser->new(
             content => $content );
     }
-    
+
 }
