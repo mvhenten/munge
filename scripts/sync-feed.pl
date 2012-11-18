@@ -31,6 +31,7 @@ sub main {
         try {
             my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
             $feed->synchronize();
+            $feed->store();
         }
         catch {
             warn $_;
