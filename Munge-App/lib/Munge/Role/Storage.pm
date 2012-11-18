@@ -49,7 +49,7 @@ role Munge::Role::Storage {
     
     method _schema_class ( $class: ){
         my ( $class_name ) = ( ref $class  || $class ) =~ m/.+::(\w+)/;
-
+        
         return NAMESPACE_PREFIX() . "::$class_name";
     }
     

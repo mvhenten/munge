@@ -13,6 +13,6 @@ role Munge::Role::Schema {
 
     method _build_schema {
         return Munge::Schema->connect( Munge::Config::DSN(),
-            Munge::Config::DB_USER(), Munge::Config::DB_PASSWORD() );
+            Munge::Config::DB_USER(), Munge::Config::DB_PASSWORD(), undef, { quote_names => 1 } );
     }
 }

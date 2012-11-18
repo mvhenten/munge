@@ -35,6 +35,5 @@ sub main {
         catch {
             warn $_;
         }
-
     }
 }
