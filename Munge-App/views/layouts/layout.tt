@@ -3,112 +3,38 @@
   <head>
     <meta charset="utf-8">
     <title>Munge - Feed Me!</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!-- Le styles -->
-    <link href="[% request.uri_base %]/css/bootstrap.css" rel="stylesheet">
-    <link href="[% request.uri_base %]/css/bootstrap-responsive.css" rel="stylesheet">
-    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
-    <!-- Le fav and touch icons -->
+    <link href="[% request.uri_base %]/css/style.css" rel="stylesheet">
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
     <script src="[% request.uri_base %]/js/jquery.js"></script>
-    <script src="[% request.uri_base %]/js/bootstrap.js"></script>
-    <script src="[% request.uri_base %]/js/bootstrap-collapse.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
   </head>
-
   <body>
-
-  <div class="navbar navbar-inverse">
-  <div class="navbar-inner">
-    <div class="container">
- 
-      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
- 
-      <!-- Be sure to leave the brand out there if you want it shown -->
-      <a class="brand" href="#">Munge</a>
-        <form class="navbar-search pull-right">
-          <input type="text" class="search-query" placeholder="Search">
-        </form> 
- 
-      <!-- Everything you want hidden at 940px or less, place within here -->
-      <div class="nav-collapse">
-        <!-- .nav, .navbar-search, .navbar-form, etc -->
-      </div>
+    <div id="header">
+        
     </div>
-  </div>
-</div>
-  
-  
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span4">
-        <ul class="nav nav-pills nav-stacked">
-          <li class="">
-            <a href="#">Home</a>
-          </li>
-          <li class="">
-            <a href="#">Today</a>
-          </li>
-          <li class="">
-            <a href="#">Yesteday</a>
-          </li>
-          <li class="">
-            <a href="#">Unread</a>
-          </li>
-          <li class="">
-            <a href="#">Starred</a>
-          </li>
+    
+    <div id="left">
+        <ul id="mains">
+            <li><a href="today">today</a></li>
+            <li><a href="today">yesterday</a></li>
+            <li><a href="today">older</a></li>
+            <li><a href="today">starred</a></li>
+            
         </ul>
-
-          <div class="sidebar-nav">
-            <ul class="nav nav-list">
-              <li class="nav-header">Feeds</li>
-                [% FOREACH feed IN feeds %]
-                <li><a href="/feed/[% feed.id %]">[% feed.title %]</a></li>                    
-                [% END %]
-            </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span7">
-            [% content %]
-        </div><!--/span-->
-      </div><!--/row-->
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2012</p>
-      </footer>
-
-    </div><!--/.fluid-container-->
-
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-<!--    <script src=""[% request.uri_base %]/js/bootstrap-transition.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-alert.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-modal.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-dropdown.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-scrollspy.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-tab.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-tooltip.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-popover.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-button.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-collapse.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-carousel.js"></script>
-    <script src=""[% request.uri_base %]/js/bootstrap-typeahead.js"></script>
--->
+        
+        <ul id="feeds">
+        [% FOREACH feed IN feeds %]
+            <li><a href="/feed/[% feed.uuid_string %]">[% feed.title %]</a></li>
+        [% END %]
+            
+        </ul>
+        
+        
+    </div>
+    
+    <div id="main">
+        [% content %]
+    </div>
   </body>
 </html>
  

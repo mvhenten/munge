@@ -1,9 +1,13 @@
 package Munge::Controller::Feed;
 
+use strict;
+use warnings;
+
 use Dancer ':syntax';
 use Data::Dumper;
 use Munge::Model::Account;
 use Munge::Model::ItemView;
+use Munge::Model::View::Feed;
 
 prefix undef;
 
@@ -14,14 +18,12 @@ sub account {
 
 get '/' => sub {
     my $account = account();
-
-    my @feeds   = map {
-        { $_->get_inflated_columns() }
-    } $account->feeds;
+    
+    my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
     template 'feed/index',
       {
-        feeds => \@feeds,
+        feeds => $feed_view->all_feeds,
         items_today =>
           Munge::Model::ItemView->new( account => $account )->today(),
         items_yesterday =>

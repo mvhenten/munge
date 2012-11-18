@@ -137,6 +137,7 @@ class Munge::Model::Feed {
         }
 
         $self->_set_title( $feed_parser->title );
+        $self->_set_updated( DateTime->now );
         $self->_set_description( $feed_parser->description || '' );
         $self->_clear_feed_items();
 
@@ -148,6 +149,7 @@ class Munge::Model::Feed {
                 link        => $item->link,
                 title       => $item->title,
                 uuid        => $item->uuid_bin,
+                created     => $item->modified,
             );
 
             $feed_item->store();
