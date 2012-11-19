@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 =head1 NAME
 
-Munge::Model::ItemView 
+Munge::Model::ItemView
 
 =head1 DESCRIPTION
 
@@ -15,35 +15,40 @@ use Munge::Types qw|Feed Account|;
 class Munge::Model::ItemView {
 
     with 'Munge::Role::Schema';
+
     use DateTime;
-    
+    use Munge::Types qw|UUID|;
+    use Data::Dumper;
+
     has account => (
         is => 'ro',
         isa => 'Munge::Schema::Result::Account',
         required => 1,
     );
-    
+
     method format_datetime ( $dt ) {
         my $dtf = $self->schema->storage->datetime_parser;
-        
+
         return $dtf->format_datetime( $dt );
     }
-    
+
     method today {
         my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
-    
+
         my $items = $self->resultset('FeedItem')->search(
             {
-                account_id => $self->account->id,
-                created    => { '>=', $yesterday },
+                'me.account_id' => $self->account->id,
+                'me.created'    => { '>=', $yesterday },
             },
             {
-                order_by   => { -asc => 'created' },
+                prefetch => 'feed',
+                join => 'feed',
+                order_by   => { -asc => 'me.created' },
                 rows       => 10,
             }
         );
-        
-        return [ $items->all() ];
+
+        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
     method yesterday {
@@ -52,17 +57,19 @@ class Munge::Model::ItemView {
 
         my $items = $self->resultset('FeedItem')->search(
             {
-                account_id => $self->account->id,
-                created    => { '>=', $min_age },
-                created    => { '<=', $max_age },
+                'me.account_id' => $self->account->id,
+                'me.created'    => { '>=', $min_age },
+                'me.created'    => { '<=', $max_age },
             },
             {
-                order_by   => { -asc => 'created' },
+                prefetch => 'feed',
+                join => 'feed',
+                order_by   => { -asc => 'me.created' },
                 rows       => 10,
             }
         );
-        
-        return [ $items->all() ];
+
+        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
     method older {
@@ -70,44 +77,60 @@ class Munge::Model::ItemView {
 
         my $items = $self->resultset('FeedItem')->search(
             {
-                account_id => $self->account->id,
-                created    => { '<=', $max_age },
+                'me.account_id' => $self->account->id,
+                'me.created'    => { '<=', $max_age },
             },
             {
-                order_by   => { -asc => 'created' },
+                prefetch => 'feed',
+                join => 'feed',
+                order_by   => { -asc => 'me.created' },
                 rows       => 25,
             }
         );
-        
-        return [ $items->all() ];
+
     }
 
-    
+
     method list_account( Account $account, Int $page=1 ){
         my $items = $self->resultset('FeedItem')->search(
             { account_id => $account->id },
             {
+                prefetch => 'feed',
+                join => 'feed',
                 order_by   => { -asc => 'created' },
                 page       => $page,
                 rows       => 25,
             }
         );
-        
+
         return [ $items->all() ];
     }
-    
-    method list_feed( Feed $feed, Int $page=1 ){
-        my $items = $self->resultset('FeedItem')->search(
-            { feed_id => $feed->id },
-            {
-                order_by   => { -asc => 'created' },
-                page       => $page,
-                rows       => 25,
-            }
-        );
-        
-        return $items->all();
+
+    method list( Str $uuid, Int $page=1 ){
+        my $items = $self->resultset('FeedItem')->search({
+            'feed.uuid' => to_UUID( $uuid ),
+            'feed.account_id' => $self->account->id
+        },
+        {
+            prefetch => 'feed',
+            join => 'feed',
+            order_by   => { -asc => 'me.created' },
+        });
+
+        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
-    
+
+    method _create_list_view ( $feed_item ) {
+        my $ug = Data::UUID->new();
+
+        return {
+            $feed_item->get_inflated_columns(),
+            date                => $feed_item->created->ymd,
+            uuid_string         => $ug->to_string( $feed_item->uuid ),
+            feed_title          => $feed_item->feed->title,
+            feed_uuid_string    => $ug->to_string( $feed_item->feed->uuid ),
+        }
+    }
+
 
 }

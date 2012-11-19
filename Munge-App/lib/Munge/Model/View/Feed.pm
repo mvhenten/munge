@@ -21,7 +21,7 @@ class Munge::Model::View::Feed {
 
     use Munge::Types qw|UUID|;
     use Munge::UUID;
-    
+
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
 
@@ -30,14 +30,14 @@ class Munge::Model::View::Feed {
 
         return \@feeds;
     }
-    
+
     method _process_feed ( HashRef $feed ) {
         my $ug = Data::UUID->new();
-        
-        $feed->{uuid_string} = $ug->to_b64string( $feed->{uuid} );
+
+        $feed->{uuid_string} = $ug->to_string( $feed->{uuid} );
 
         return $feed;
     }
-    
+
 
 }

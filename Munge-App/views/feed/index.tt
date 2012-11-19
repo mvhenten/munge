@@ -1,7 +1,7 @@
 <h1>Today</h1>
     <div id="accordion">
-    [% FOREACH item IN items_today %]
-        <h3 collapse-today-[% loop.index %]>[% item.title %]</h3>
+    [% FOREACH item IN items %]
+        <h3 collapse-today-[% loop.index %]>[% item.date %] | <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> | [% item.title %]</h3>
         <div class="feed item">
         [% item.description %]
         </div>

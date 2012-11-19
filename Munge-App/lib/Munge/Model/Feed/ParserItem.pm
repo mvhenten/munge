@@ -36,25 +36,25 @@ class Munge::Model::Feed::ParserItem {
         is         => 'ro',
         lazy_build => 1,
     );
-    
+
     has modified => (
-        is => 'ro',
+        is         => 'ro',
         lazy_build => 1,
     );
-    
+
     method _build_modified {
-        return $self->entry->modified || DateTime->now();        
+        return $self->entry->modified || DateTime->now();
     }
 
     method _build_content {
         my $content = $self->_content->body || $self->_summary->body || '';
-        
-        return sanitize_html( $content );
+
+        return sanitize_html($content);
     }
 
     method _build_uuid {
         my $uuid = Data::UUID->new();
-        
+
         return $uuid->create_from_name_str( NameSpace_URL, $self->link );
     }
 

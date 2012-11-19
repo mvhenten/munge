@@ -13,6 +13,7 @@ role Munge::Role::Schema {
 
     method _build_schema {
         return Munge::Schema->connect( Munge::Config::DSN(),
-            Munge::Config::DB_USER(), Munge::Config::DB_PASSWORD(), undef, { mysql_enable_utf8 => 1, quote_names => 1 } );
+            Munge::Config::DB_USER(), Munge::Config::DB_PASSWORD(),
+            undef, { mysql_enable_utf8 => 1, quote_names => 1 } );
     }
 }

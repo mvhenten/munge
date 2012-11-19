@@ -100,6 +100,7 @@ class Munge::Model::Feed {
         default => sub { [] },
         handles => {
             feed_items          => 'elements',
+            n_feed_items        => 'count',
             _add_feed_item      => 'push',
             _has_feed_items     => 'is_empty',
             _clear_feed_items   => 'clear',

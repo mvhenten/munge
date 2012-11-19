@@ -10,31 +10,30 @@
   </head>
   <body>
     <div id="header">
-        
+
     </div>
-    
+
     <div id="left">
         <ul id="mains">
-            <li><a href="today">today</a></li>
-            <li><a href="today">yesterday</a></li>
-            <li><a href="today">older</a></li>
-            <li><a href="today">starred</a></li>
-            
+            <li><a href="/">today</a></li>
+            <li><a href="/feed/yesterday">yesterday</a></li>
+            <li><a href="/feed/archive">older</a></li>
+            <li><a href="/feed/starred">starred</a></li>
+
         </ul>
-        
+
         <ul id="feeds">
         [% FOREACH feed IN feeds %]
             <li><a href="/feed/[% feed.uuid_string %]">[% feed.title %]</a></li>
         [% END %]
-            
+
         </ul>
-        
-        
+
+
     </div>
-    
+
     <div id="main">
         [% content %]
     </div>
   </body>
 </html>
- 
