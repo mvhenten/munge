@@ -132,11 +132,12 @@ class Munge::Model::Feed {
         my $feed_parser = $self->_get_feed_parser( $feed_client->content );
 
         if( not $feed_parser->xml_feed ){
-            warn 'Cannot parse feed: ' . $self->uri;
+            warn 'Cannot parse feed: ' . $self->link;
             return;
         }
 
         $self->_set_title( $feed_parser->title );
+        $self->_set_updated( DateTime->now );
         $self->_set_description( $feed_parser->description || '' );
         $self->_clear_feed_items();
 
@@ -148,6 +149,7 @@ class Munge::Model::Feed {
                 link        => $item->link,
                 title       => $item->title,
                 uuid        => $item->uuid_bin,
+                created     => $item->modified,
             );
 
             $feed_item->store();

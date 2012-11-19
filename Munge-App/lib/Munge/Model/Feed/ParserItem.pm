@@ -1,9 +1,12 @@
 use MooseX::Declare;
 
+use strict;
+use warnings;
+
 class Munge::Model::Feed::ParserItem {
     use Data::UUID qw|NameSpace_URL|;
-
-    #    use HTML::Tidy;
+    use DateTime;
+    use Munge::Util qw|sanitize_html|;
 
     has entry => (
         is       => 'ro',
@@ -33,29 +36,30 @@ class Munge::Model::Feed::ParserItem {
         is         => 'ro',
         lazy_build => 1,
     );
+    
+    has modified => (
+        is => 'ro',
+        lazy_build => 1,
+    );
+    
+    method _build_modified {
+        return $self->entry->modified || DateTime->now();        
+    }
 
     method _build_content {
         my $content = $self->_content->body || $self->_summary->body || '';
-        return $content;
-
-        #my $tidy = HTML::Tidy->new();
-        #
-        #$tidy->ignore( type => TIDY_INFO );
-        #$tidy->ignore( type => TIDY_WARNING );
-        #$tidy->ignore( type => TIDY_ERROR );
-        #
-
-        #
-        #return $tidy->clean($content);
+        
+        return sanitize_html( $content );
     }
 
     method _build_uuid {
-        my $uuid = new Data::UUID;
+        my $uuid = Data::UUID->new();
+        
         return $uuid->create_from_name_str( NameSpace_URL, $self->link );
     }
 
     method _build_uuid_bin {
-        my $uuid = new Data::UUID;
+        my $uuid = Data::UUID->new();
 
         return $uuid->from_string( $self->uuid );
     }
