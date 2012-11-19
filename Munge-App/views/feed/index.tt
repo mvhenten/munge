@@ -1,4 +1,5 @@
-<h1>Today</h1>
+<h1>[% feed.title %]</h1>
+<div><em>[% feed.description %]</em></div>
     <div id="accordion">
     [% FOREACH item IN items %]
         <h3 collapse-today-[% loop.index %]>[% item.date %] | <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> | [% item.title %]</h3>

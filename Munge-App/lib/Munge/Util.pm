@@ -11,10 +11,14 @@ package Munge::Util;
 use strict;
 use warnings;
 
+use Data::UUID;
+use Carp::Assert;
 use HTML::Restrict;
 use Exporter::Lite;
+use Munge::Types qw|UUID|;
+use Method::Signatures;
 
-our @EXPORT_OK = qw|strip_html sanitize_html restrict_html|;
+our @EXPORT_OK = qw|uuid_string strip_html sanitize_html restrict_html|;
 
 sub HTML5_TAGS {
     return qw|
@@ -30,6 +34,21 @@ sub HTML4_TAGS {
       sub sup table td tfoot th thead tr tt u ul
       |;
 }
+
+=item uuid_string ( $binary_uuid )
+
+Saves one line of code and maybe a use statement. possibly some cognitive load
+
+=cut
+
+func uuid_string ( $uuid ) {
+    assert( is_UUID( $uuid ) );
+
+    my $ug = Data::UUID->new();
+    
+    return $ug->to_string( $uuid );
+}
+
 
 =item sanitize_html ( $html )
 

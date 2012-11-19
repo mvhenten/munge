@@ -1,5 +1,8 @@
 use MooseX::Declare;
 
+use strict;
+use warnings;
+
 =head1 NAME
 
 Munge::UUID
@@ -41,13 +44,15 @@ class Munge::UUID {
     );
 
     method _build_uuid {
-        my $uuid = new Data::UUID;
+        my $uuid = Data::UUID->new();
         return $uuid->create_from_name_str( NameSpace_URL,
             $self->uri->as_string );
     }
 
     method _build_uuid_bin {
-        my $uuid = new Data::UUID;
+        my $uuid = Data::UUID->new();
         return $uuid->from_string( $self->uuid );
     }
 }
+
+1;

@@ -23,13 +23,11 @@
         </ul>
 
         <ul id="feeds">
-        [% FOREACH feed IN feeds %]
-            <li><a href="/feed/[% feed.uuid_string %]">[% feed.title %]</a></li>
+        [% FOREACH f IN feeds %]
+            <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
         [% END %]
 
         </ul>
-
-
     </div>
 
     <div id="main">

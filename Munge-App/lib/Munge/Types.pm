@@ -1,5 +1,8 @@
 package Munge::Types;
 
+use strict;
+use warnings;
+
 use MooseX::Types::Moose qw/Int HashRef Str Any/;
 use MooseX::Types -declare => [qw|Account Feed Uri UUID|];
 
@@ -23,10 +26,10 @@ sub uuid_from_string {
     my $ug = Data::UUID->new();
 
     return $ug->from_b64string($str) if length($str) == 24;
-    return $ug->from_hexstring($str) if $str =~ /0x[[:alnum:]]{32}/;
+    return $ug->from_hexstring($str) if $str =~ /0x[[:alnum:]]{32}/x;
     return $ug->from_string($str)    if _is_rfc4122_string($str);
 
-    return undef;
+    return;
 }
 
 sub _is_rfc4122_string {

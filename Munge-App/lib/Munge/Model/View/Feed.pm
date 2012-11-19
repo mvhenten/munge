@@ -18,26 +18,38 @@ class Munge::Model::View::Feed {
     use Data::UUID;
     use DateTime;
     use URI;
-
+    
+    use Munge::Util qw|uuid_string|;
     use Munge::Types qw|UUID|;
-    use Munge::UUID;
 
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
+    
+    method feed_view ( $uuid ) {
+        my $item = $self->resultset('Feed')->find({ uuid => to_UUID( $uuid ) });
+        
+        return $self->_get_list_view( $item );
+    }
 
     method all_feeds {
-        my @feeds   = map { $self->_process_feed({ $_->get_inflated_columns() }) }  $self->account->feeds;
-
-        return \@feeds;
+        my $items = $self->resultset('Feed')->search(
+            { 'me.account_id' => $self->account->id  },
+            {
+                join    => 'unread_items',
+                order_by => { -desc => 'me.title' },
+                distinct => 1,
+                '+select' => [ { count => 'unread_items.read', -as => 'unread_items' } ],
+            }
+        );
+        
+        return [ map { $self->_get_list_view( $_ ) } $items->all ];
     }
 
-    method _process_feed ( HashRef $feed ) {
-        my $ug = Data::UUID->new();
-
-        $feed->{uuid_string} = $ug->to_string( $feed->{uuid} );
-
-        return $feed;
+    method _get_list_view ( $feed ) {
+        return {
+            $feed->get_inflated_columns,
+            uuid_string => uuid_string( $feed->uuid ),
+            title       => $feed->title || $feed->link,
+        }
     }
-
-
 }

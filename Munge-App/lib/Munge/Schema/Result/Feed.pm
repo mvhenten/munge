@@ -207,4 +207,19 @@ __PACKAGE__->has_many(
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rd6S4KAxhjHnXxsV8PMNOA
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+__PACKAGE__->has_many(
+    "unread_items",
+    "Munge::Schema::Result::FeedItem",
+    sub {
+        my ($args) = @_;
+
+        my ( $foreign, $self ) = @{$args}{qw|foreign_alias self_alias|};
+
+        return {
+            "$foreign.feed_id" => { -ident => "$self.id" },
+            "$foreign.read"    => 0,
+        };
+    }
+);
+
 1;

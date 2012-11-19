@@ -35,8 +35,16 @@ get '/feed/:feed' => sub {
     my $account   = account();
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
+    my $feed_info =
+      { title => ucfirst($feed_id), description => 'Unread posts' };
+
+    if ( to_UUID($feed_id) ) {
+        $feed_info = $feed_view->feed_view($feed_id);
+    }
+
     template 'feed/index',
       {
+        feed  => $feed_info,
         feeds => $feed_view->all_feeds,
         items => feed_item_view($feed_id),
       };
