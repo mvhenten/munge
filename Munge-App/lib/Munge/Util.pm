@@ -6,7 +6,7 @@ package Munge::Util;
 
     Every project needs an util library right?
 
-=cut 
+=cut
 
 use strict;
 use warnings;
@@ -18,7 +18,7 @@ use Exporter::Lite;
 use Munge::Types qw|UUID|;
 use Method::Signatures;
 
-our @EXPORT_OK = qw|uuid_string strip_html sanitize_html restrict_html|;
+our @EXPORT_OK = qw|strip_html_comments uuid_string strip_html sanitize_html restrict_html|;
 
 sub HTML5_TAGS {
     return qw|
@@ -45,8 +45,22 @@ func uuid_string ( $uuid ) {
     assert( is_UUID( $uuid ) );
 
     my $ug = Data::UUID->new();
-    
+
     return $ug->to_string( $uuid );
+}
+
+=item uuid_string ( $binary_uuid )
+
+Strip every html comment
+
+=cut
+
+sub strip_html_comments {
+   my ( $html ) = @_;
+
+    $html =~ s/<!--(.+?)-->//gsm;
+
+    return $html;
 }
 
 

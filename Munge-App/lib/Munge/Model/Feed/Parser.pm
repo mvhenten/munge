@@ -13,7 +13,7 @@ Wrapper around XML::Feed
     my $parsed_feed = Munge::Model::Feed::Parser->new(
         content => $response->content,
     );
-    
+
     my @items = $parsed_feed->item_list;
 
 =cut
@@ -22,6 +22,7 @@ class Munge::Model::Feed::Parser {
     use XML::Feed;
     use Try::Tiny;
     use Munge::Model::Feed::ParserItem;
+    use Munge::Util qw|strip_html_comments|;
 
     has content => (
         is       => 'ro',
@@ -63,14 +64,19 @@ class Munge::Model::Feed::Parser {
           map { Munge::Model::Feed::ParserItem->new( entry => $_ ) }
           $self->xml_feed->entries;
 
+        warn 'GOT ITEMS: ', scalar @items;
+
         return \@items;
     }
 
     method _build_xml_feed {
         my $feed;
 
+        my $content = strip_html_comments( $self->content );
+        $content =~ s/[[:cntrl:]]+//g;
+
         try {
-            $feed = XML::Feed->parse( \$self->content );
+            $feed = XML::Feed->parse( \$content );
         }
         catch {
             warn "Unable to parse feed: $_";
