@@ -19,6 +19,7 @@ class Munge::Model::ItemView {
     use DateTime;
     use Munge::Types qw|UUID|;
     use Data::Dumper;
+    use Munge::Util qw|strip_html string_ellipsize|;
 
     has account => (
         is => 'ro',
@@ -125,11 +126,12 @@ class Munge::Model::ItemView {
 
         return {
             $feed_item->get_inflated_columns(),
+            summary             => string_ellipsize( strip_html($feed_item->description)),
             date                => $feed_item->created->ymd,
             uuid_string         => $ug->to_string( $feed_item->uuid ),
             feed_title          => $feed_item->feed->title,
             feed_uuid_string    => $ug->to_string( $feed_item->feed->uuid ),
-        }
+          }
     }
 
 

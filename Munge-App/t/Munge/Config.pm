@@ -10,7 +10,8 @@ class t::Munge::Config {
 
         lives_ok {
             $config = Munge::Config::config();
-        } 'We can call config';
+        }
+        'We can call config';
 
         is( ref $config, 'HASH', 'its a hashref' );
     }

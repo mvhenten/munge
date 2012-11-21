@@ -11,6 +11,18 @@ a, a:visited, a:hover, a:active {
     text-decoration: none;
 }
 
+#header {
+    line-height: 2em;
+    text-align: right;
+    padding-right: 3em;
+}
+
+#header a {
+    color: #eee;
+    font-weight: bold;
+
+}
+
 #main {
     width: 60%;
     float: left;

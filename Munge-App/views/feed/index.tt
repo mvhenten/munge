@@ -1,16 +1,30 @@
-<h1>[% feed.title %]</h1>
+<div style="position:relative;">
+  <h1>[% feed.title %]</h1>
+  <div style="position: absolute; right:0; top:0;">
+    <a href="">refresh</a>
+    <a href="">remove</a>
+    <a href="">mark read</a>
+    <a href="">categorize</a>
+  </div>
+</div>
+<div><em>(n) unread articles</em></div>
 <div><em>[% feed.description %]</em></div>
     <div id="accordion">
     [% FOREACH item IN items %]
-        <h3 collapse-today-[% loop.index %]>[% item.date %] | <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> | [% item.title %]</h3>
+        <h3 collapse-today-[% loop.index %]>[% item.title %]</h3>
         <div class="feed item">
-        [% item.description %]
+        <div>
+          <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> by Feed Author | [% item.date %]
+            <a href="#unread-[% item.uuid_string %]">mark unread</a> | <a href="#later-[% item.uuid_string %]">read later</a> | <a href="[% item.link %]">website</a>
+          <hr />
+        </div>
+        [% item.summary %]
         </div>
     [% END %]
 </div>
 
 <script>
-       $(function() {
-        $( "#accordion" ).accordion({heightStyle: "content" });
-    });
+    //   $(function() {
+    //    $( "#accordion" ).accordion({heightStyle: "content" });
+    //});
 </script>

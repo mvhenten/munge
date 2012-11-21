@@ -18,7 +18,14 @@ use Exporter::Lite;
 use Munge::Types qw|UUID|;
 use Method::Signatures;
 
-our @EXPORT_OK = qw|strip_html_comments uuid_string strip_html sanitize_html restrict_html|;
+our @EXPORT_OK = qw|
+    strip_html_comments
+    uuid_string
+    strip_html
+    sanitize_html
+    restrict_html
+    string_ellipsize
+|;
 
 sub HTML5_TAGS {
     return qw|
@@ -47,6 +54,29 @@ func uuid_string ( $uuid ) {
     my $ug = Data::UUID->new();
 
     return $ug->to_string( $uuid );
+}
+
+=item string_ellipsize ( $str, $max_length, $ellipse )
+
+Generate a teaser from $string
+
+=cut
+
+func string_ellipsize ( Str $string, Int $max_length = 160, Str $ellipse = '...' ){
+    my $chop = substr( $string, 0, $max_length );
+
+    my $after_chop = substr( $string, 0, $max_length + 1 );
+
+    if( not $after_chop || $after_chop =~ /\s/ ){
+        # character after chop was a whitespace char
+        return $chop . $ellipse;
+    }
+
+    #find last word boundary
+    my $last_space = index( reverse( $chop ), ' ' );
+
+
+    return substr( $chop, 0, $max_length - ( 1 + $last_space ) ) . $ellipse;
 }
 
 =item uuid_string ( $binary_uuid )
