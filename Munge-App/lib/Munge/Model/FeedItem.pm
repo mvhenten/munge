@@ -40,9 +40,14 @@ class Munge::Model::FeedItem {
     );
 
     has read => (
+        traits  => ['Bool'],
         is      => 'ro',
         isa     => 'Bool',
-        default => 0
+        default => 0,
+        handles => {
+            set_read    => 'set',
+            set_unread  => 'unset',
+        }
     );
 
     has starred => (

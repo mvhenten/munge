@@ -7,6 +7,7 @@ use Dancer ':syntax';
 use Data::Dumper;
 
 use Munge::Model::Account;
+use Munge::Model::FeedItem;
 use Munge::Model::ItemView;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
@@ -40,10 +41,13 @@ get '/item/:feed' => sub {
       { title => ucfirst($item_id), description => 'Unread posts' };
 
     return not_found() if not to_UUID($item_id);
-
     my $item = $item_view->get_item($item_id);
-
+    
     return not_found() if not $item;
+    
+    my $model = Munge::Model::FeedItem->load( to_UUID( $item_id ), $account );
+    $model->set_read();
+    
 
     template 'feed/item',
       {
@@ -77,6 +81,7 @@ get '/feed/:feed' => sub {
 
 sub not_found {
     status 'not_found';
+    return;
 }
 
 sub feed_item_view {
@@ -91,6 +96,7 @@ sub feed_item_view {
     return $view->yesterday() if $feed_id eq 'yesterday';
     return $view->older()     if $feed_id eq 'archive';
     return $view->list($feed_id) if to_UUID($feed_id);
+    return;
 }
 
 true;
