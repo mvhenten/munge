@@ -1,5 +1,5 @@
 <div style="position:relative;">
-  <h1>[% feed.title %]</h1>
+  <h1>[% feed.feed_title %]</h1>
   <div style="position: absolute; right:0; top:0;">
     <a href="">refresh</a>
     <a href="">remove</a>
@@ -8,7 +8,24 @@
   </div>
 </div>
 <div><em>(n) unread articles</em></div>
-<div><em>[% feed.description %]</em></div>
+<div><em>[% feed.feed_description %]</em></div>
+<div id="article">
+  <div class="header">
+    <div class="right">
+      <a href="/feed/[% feed.feed_uuid_string %]">close</a>
+    </div>
+    <h3>[% feed.title %]</h3>
+    <div class="feed-info">
+      <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> by Feed Author | [% item.date %]
+      <a href="#unread-[% item.uuid_string %]">mark unread</a> | <a href="#later-[% item.uuid_string %]">read later</a> | <a href="[% feed.link %]">website</a>
+    </div>
+  </div>
+  <div class="feed-content">
+    [% feed.description %]
+  </div>
+</div>
+
+
     <div id="accordion">
     [% FOREACH item IN items %]
         <h3 collapse-today-[% loop.index %]><a href="/item/[% item.uuid_string %]">[% item.title %]</a></h3>

@@ -62,7 +62,7 @@ Generate a teaser from $string
 
 =cut
 
-func string_ellipsize ( Str $string, Int $max_length = 160, Str $ellipse = '...' ){
+func string_ellipsize ( Str $string, Int $max_length = 240, Str $ellipse = '...' ){
     my $chop = substr( $string, 0, $max_length );
 
     my $after_chop = substr( $string, 0, $max_length + 1 );

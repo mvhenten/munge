@@ -18,16 +18,16 @@ class Munge::Model::View::Feed {
     use Data::UUID;
     use DateTime;
     use URI;
-    
+
     use Munge::Util qw|uuid_string|;
     use Munge::Types qw|UUID|;
 
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
-    
+
     method feed_view ( $uuid ) {
         my $item = $self->resultset('Feed')->find({ uuid => to_UUID( $uuid ) });
-        
+
         return $self->_get_list_view( $item );
     }
 
@@ -41,7 +41,7 @@ class Munge::Model::View::Feed {
                 '+select' => [ { count => 'unread_items.read', -as => 'unread_items' } ],
             }
         );
-        
+
         return [ map { $self->_get_list_view( $_ ) } $items->all ];
     }
 

@@ -121,16 +121,33 @@ class Munge::Model::ItemView {
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
+    method get_item( Str $uuid ){
+        my $search = $self->resultset('FeedItem')->search({
+            'me.uuid' => to_UUID( $uuid ),
+            'feed.account_id' => $self->account->id
+        },
+        {
+            prefetch => 'feed',
+            join => 'feed',
+            order_by   => { -asc => 'me.created' },
+        });
+
+        my ( $item ) = $search->all();
+        return $item ? $self->_create_list_view( $item ) : undef;
+    }
+
     method _create_list_view ( $feed_item ) {
         my $ug = Data::UUID->new();
 
         return {
             $feed_item->get_inflated_columns(),
-            summary             => string_ellipsize( strip_html($feed_item->description)),
             date                => $feed_item->created->ymd,
-            uuid_string         => $ug->to_string( $feed_item->uuid ),
+            feed_description    => $feed_item->feed->description,
             feed_title          => $feed_item->feed->title,
+            feed_uuid           => $feed_item->feed->uuid,
             feed_uuid_string    => $ug->to_string( $feed_item->feed->uuid ),
+            summary             => string_ellipsize( strip_html($feed_item->description)),
+            uuid_string         => $ug->to_string( $feed_item->uuid ),
           }
     }
 
