@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 =head1 NAME
 
-Munge::Model::ItemView
+Munge::Model::View::FeedItem
 
 =head1 DESCRIPTION
 
@@ -12,7 +12,7 @@ Munge::Model::ItemView
 
 use Munge::Types qw|Feed Account|;
 
-class Munge::Model::ItemView {
+class Munge::Model::View::FeedItem {
 
     with 'Munge::Role::Schema';
 

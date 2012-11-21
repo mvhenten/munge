@@ -8,7 +8,7 @@ use Data::Dumper;
 
 use Munge::Model::Account;
 use Munge::Model::FeedItem;
-use Munge::Model::ItemView;
+use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
 
@@ -34,7 +34,7 @@ get '/' => sub {
 get '/item/:feed' => sub {
     my $item_id   = param('feed');
     my $account   = account();
-    my $item_view = Munge::Model::ItemView->new( account => $account );
+    my $item_view = Munge::Model::View::FeedItem->new( account => $account );
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
     my $feed_info =
@@ -47,6 +47,7 @@ get '/item/:feed' => sub {
     
     my $model = Munge::Model::FeedItem->load( to_UUID( $item_id ), $account );
     $model->set_read();
+    $model->store();
     
 
     template 'feed/item',
@@ -90,7 +91,7 @@ sub feed_item_view {
     $feed_id ||= 'today';
 
     my $account = account();
-    my $view = Munge::Model::ItemView->new( account => $account );
+    my $view = Munge::Model::View::FeedItem->new( account => $account );
 
     return $view->today()     if $feed_id eq 'today';
     return $view->yesterday() if $feed_id eq 'yesterday';
