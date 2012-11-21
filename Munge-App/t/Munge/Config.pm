@@ -6,7 +6,13 @@ class t::Munge::Config {
     use Test::Sweet;
 
     test basic {
-        warn Dumper( Munge::Config::config() );
+        my $config;
+
+        lives_ok {
+            $config = Munge::Config::config();
+        } 'We can call config';
+
+        is( ref $config, 'HASH', 'its a hashref' );
     }
 
 }
