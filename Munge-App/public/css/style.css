@@ -3,40 +3,64 @@
 
 html, body {
     font: 12px sans-serif;
-
-    background-color: #333;
+    padding: 0 1em;
+    color: #666;
+    background: #ddd url('gray_jean.png');
 }
 
 a, a:visited, a:hover, a:active {
     text-decoration: none;
+    color: #666;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h3 {
+    color: #444;
+    margin:0;
 }
 
 #header {
     line-height: 2em;
     text-align: right;
-    padding-right: 3em;
 }
 
 #header a {
-    color: #eee;
     font-weight: bold;
+}
 
+.header {
+    position: relative;
+}
+
+.header .right {
+    position: absolute;
+    right: 0;
+    top:0;
 }
 
 #main {
-    width: 60%;
-    float: left;
-    background-color: #ddd;
-    padding:1em;
+    margin-left: 210px;
+    border: 1px solid #ccc;
+    padding: 0 1em;
+    background-color: #eee;
 }
 
-#main .item {
-    padding: 1em;
-    background-color: #eee;
-    margin-bottom:1em;
+#main .feed-item {
+}
+
+#main .feed-info {
+    font-size: 0.8em;
+}
+
+#main .feed-content {
+    padding: 1em 0;
 }
 
 #mains {
+    margin:0;
     font-size: 1.2em;
 }
 
@@ -45,20 +69,29 @@ a, a:visited, a:hover, a:active {
 }
 
 #left {
-    color: #ccc;
-    width: 20%;
+    color: #666;
     overflow: hidden;
     float: left;
+    width: 180px;
 }
 
 #left ul {
     list-style: none;
     line-height: 1.8em;
+    padding: 1em 0 1em 0;
+    border-bottom: 1px solid #999;
 }
 
 
 #left a {
     color: inherit;
+}
+
+#article {
+    border: 1px solid #ccc;
+    padding: 1em;
+    margin: 1em 0;
+    background-color: #fcfcfc;
 }
 
 .item img {
