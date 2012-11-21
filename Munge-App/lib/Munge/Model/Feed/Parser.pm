@@ -64,8 +64,6 @@ class Munge::Model::Feed::Parser {
           map { Munge::Model::Feed::ParserItem->new( entry => $_ ) }
           $self->xml_feed->entries;
 
-        warn 'GOT ITEMS: ', scalar @items;
-
         return \@items;
     }
 
@@ -73,7 +71,7 @@ class Munge::Model::Feed::Parser {
         my $feed;
 
         my $content = strip_html_comments( $self->content );
-        $content =~ s/[[:cntrl:]]+//g;
+#        $content =~ s/[[:cntrl:]]+//g;
 
         try {
             $feed = XML::Feed->parse( \$content );

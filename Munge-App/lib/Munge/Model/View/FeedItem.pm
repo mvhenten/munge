@@ -19,7 +19,7 @@ class Munge::Model::View::FeedItem {
     use DateTime;
     use Munge::Types qw|UUID|;
     use Data::Dumper;
-    use Munge::Util qw|strip_html string_ellipsize|;
+    use Munge::Util qw|strip_html string_ellipsize sanitize_html|;
 
     has account => (
         is => 'ro',

@@ -6,7 +6,6 @@ use warnings;
 class Munge::Model::Feed::ParserItem {
     use Data::UUID qw|NameSpace_URL|;
     use DateTime;
-    use Munge::Util qw|sanitize_html|;
 
     has entry => (
         is       => 'ro',
@@ -48,8 +47,8 @@ class Munge::Model::Feed::ParserItem {
 
     method _build_content {
         my $content = $self->_content->body || $self->_summary->body || '';
-
-        return sanitize_html($content);
+        
+        return $content;
     }
 
     method _build_uuid {

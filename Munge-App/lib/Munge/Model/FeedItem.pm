@@ -51,9 +51,15 @@ class Munge::Model::FeedItem {
     );
 
     has starred => (
+        traits  => ['Bool'],
         is      => 'ro',
         isa     => 'Bool',
-        default => 0
+        default => 0,
+        handles => {
+            set_star    => 'set',
+            unset_star      => 'unset',
+            toggle_star     => 'toggle',
+        }
     );
 
     has created => (

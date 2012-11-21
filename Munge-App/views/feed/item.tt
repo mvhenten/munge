@@ -16,8 +16,8 @@
     </div>
     <h3>[% feed.title %]</h3>
     <div class="feed-info">
-      <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> by Feed Author | [% item.date %]
-      <a href="#unread-[% item.uuid_string %]">mark unread</a> | <a href="#later-[% item.uuid_string %]">read later</a> | <a href="[% feed.link %]">website</a>
+      <a href="/feed/[% feed.feed_uuid_string %]">[% item.feed_title %]</a> by Feed Author | [% feed.date %]
+      <a href="/item/unread/[% feed.uuid_string %]">mark unread</a> | <a href="/item/star/[% feed.uuid_string %]">read later</a> | <a href="[% feed.link %]">website</a>
     </div>
   </div>
   <div class="feed-content">

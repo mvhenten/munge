@@ -4,6 +4,7 @@ package Munge::App;
 
 use Dancer ':syntax';
 use Munge::Controller::Feed;
+use Munge::Controller::Item;
 use Munge::Controller::Account;
 
 our $VERSION = '0.1';
