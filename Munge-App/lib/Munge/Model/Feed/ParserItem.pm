@@ -5,6 +5,7 @@ use warnings;
 
 class Munge::Model::Feed::ParserItem {
     use Data::UUID qw|NameSpace_URL|;
+    use Munge::Util qw|strip_html string_ellipsize sanitize_html|;
     use DateTime;
 
     has entry => (
@@ -12,8 +13,9 @@ class Munge::Model::Feed::ParserItem {
         isa      => 'Any',
         required => 1,
         handles  => {
-            'title'    => 'title',
-            'link'     => 'link',
+            title      => 'title',
+            link       => 'link',
+            author     => 'author',
             '_summary' => 'summary',
             '_content' => 'content',
         },
@@ -36,21 +38,57 @@ class Munge::Model::Feed::ParserItem {
         lazy_build => 1,
     );
 
+    has summary => (
+        is         => 'ro',
+        lazy_build => 1,
+    );
+
     has modified => (
         is         => 'ro',
         lazy_build => 1,
     );
 
+    has issued => (
+        is         => 'ro',
+        lazy_build => 1,
+    );
+
+    has tags => (
+        is         => 'ro',
+        lazy_build => 1,
+    );
+
     method _build_modified {
-        return $self->entry->modified || DateTime->now();
+        return
+             $self->entry->modified
+          || $self->entry->issued
+          || DateTime->now();
+    }
+
+    method _build_issued {
+        return
+             $self->entry->issued
+          || $self->entry->modified
+          || DateTime->now();
     }
 
     method _build_content {
         my $content = $self->_content->body || $self->_summary->body || '';
-        
-        return $content;
+
+        return sanitize_html($content);
     }
 
+    method _build_summary {
+        return string_ellipsize(
+            strip_html( $self->content || $self->_summary->body ) || '' );
+    }
+
+    method _build_tags {
+        my @tags = $self->entry->tags;
+        
+        return join( q|,|, @tags );
+    }
+    
     method _build_uuid {
         my $uuid = Data::UUID->new();
 

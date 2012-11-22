@@ -44,7 +44,7 @@ class Munge::Model::View::FeedItem {
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.created' },
+                order_by   => { -asc => 'me.issued' },
                 rows       => 10,
             }
         );
@@ -65,7 +65,7 @@ class Munge::Model::View::FeedItem {
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.created' },
+                order_by   => { -asc => 'me.issued' },
                 rows       => 10,
             }
         );
@@ -84,7 +84,7 @@ class Munge::Model::View::FeedItem {
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.created' },
+                order_by   => { -asc => 'me.issued' },
                 rows       => 25,
             }
         );
@@ -98,7 +98,7 @@ class Munge::Model::View::FeedItem {
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'created' },
+                order_by   => { -asc => 'issued' },
                 page       => $page,
                 rows       => 25,
             }
@@ -115,7 +115,7 @@ class Munge::Model::View::FeedItem {
         {
             prefetch => 'feed',
             join => 'feed',
-            order_by   => { -asc => 'me.created' },
+            order_by   => { -asc => 'me.issued' },
         });
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
@@ -129,7 +129,7 @@ class Munge::Model::View::FeedItem {
         {
             prefetch => 'feed',
             join => 'feed',
-            order_by   => { -asc => 'me.created' },
+            order_by   => { -asc => 'me.issued' },
         });
 
         my ( $item ) = $search->all();
@@ -141,12 +141,11 @@ class Munge::Model::View::FeedItem {
 
         return {
             $feed_item->get_inflated_columns(),
-            date                => $feed_item->created->ymd,
+            date                => $feed_item->issued->ymd,
             feed_description    => $feed_item->feed->description,
             feed_title          => $feed_item->feed->title,
             feed_uuid           => $feed_item->feed->uuid,
             feed_uuid_string    => $ug->to_string( $feed_item->feed->uuid ),
-            summary             => string_ellipsize( strip_html($feed_item->description)),
             uuid_string         => $ug->to_string( $feed_item->uuid ),
           }
     }

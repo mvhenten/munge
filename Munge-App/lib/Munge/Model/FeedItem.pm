@@ -21,6 +21,12 @@ class Munge::Model::FeedItem {
         required => 1,
     );
 
+    has author => (
+        is       => 'ro',
+        isa      => 'Str',
+        required => 1,
+    );
+
     has link => (
         is       => 'ro',
         isa      => 'Str',
@@ -33,10 +39,32 @@ class Munge::Model::FeedItem {
         required => 1,
     );
 
-    has description => (
+    has content => (
         is       => 'ro',
         isa      => 'Str',
         required => 1,
+    );
+
+    has issued => (
+        is       => 'ro',
+        isa      => 'DateTime',
+        required => 1,
+    );
+
+    has modified => (
+        is       => 'ro',
+        isa      => 'DateTime',
+        required => 1,
+    );
+
+    has summary => (
+        is  => 'ro',
+        isa => 'Maybe[Str]',
+    );
+
+    has tags => (
+        is  => 'ro',
+        isa => 'Maybe[Str]',
     );
 
     has read => (
@@ -45,8 +73,8 @@ class Munge::Model::FeedItem {
         isa     => 'Bool',
         default => 0,
         handles => {
-            set_read    => 'set',
-            set_unread  => 'unset',
+            set_read   => 'set',
+            set_unread => 'unset',
         }
     );
 
@@ -57,8 +85,8 @@ class Munge::Model::FeedItem {
         default => 0,
         handles => {
             set_star    => 'set',
-            unset_star      => 'unset',
-            toggle_star     => 'toggle',
+            unset_star  => 'unset',
+            toggle_star => 'toggle',
         }
     );
 

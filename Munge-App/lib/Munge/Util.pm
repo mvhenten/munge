@@ -67,7 +67,7 @@ func string_ellipsize ( Str $string, Int $max_length = 240, Str $ellipse = '...'
 
     my $after_chop = substr( $string, 0, $max_length + 1 );
 
-    if( not $after_chop || $after_chop =~ /\s/ ){
+    if( not $after_chop and $after_chop =~ /\s/ ){
         # character after chop was a whitespace char
         return $chop . $ellipse;
     }
