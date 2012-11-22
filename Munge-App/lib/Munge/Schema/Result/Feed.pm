@@ -185,7 +185,7 @@ __PACKAGE__->belongs_to(
     "account",
     "Munge::Schema::Result::Account",
     { id            => "account_id" },
-    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 feed_items
@@ -203,8 +203,8 @@ __PACKAGE__->has_many(
     { cascade_copy      => 0, cascade_delete => 0 },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07023 @ 2012-10-28 23:54:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:rd6S4KAxhjHnXxsV8PMNOA
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-11-22 09:57:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9YlnS7qqPvGios/SMSeeKg
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->has_many(
