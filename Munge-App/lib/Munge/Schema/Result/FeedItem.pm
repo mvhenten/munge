@@ -70,6 +70,13 @@ __PACKAGE__->table("feed_item");
   is_nullable: 0
   size: 2048
 
+=head2 author
+
+  data_type: 'varchar'
+  default_value: (empty string)
+  is_nullable: 0
+  size: 2048
+
 =head2 title
 
   data_type: 'varchar'
@@ -77,19 +84,34 @@ __PACKAGE__->table("feed_item");
   is_nullable: 0
   size: 512
 
-=head2 description
+=head2 tags
 
   data_type: 'varchar'
   default_value: (empty string)
   is_nullable: 0
-  size: 4096
+  size: 1024
 
-=head2 created
+=head2 summary
 
-  data_type: 'timestamp'
+  data_type: 'text'
+  is_nullable: 1
+
+=head2 content
+
+  data_type: 'mediumtext'
+  is_nullable: 1
+
+=head2 issued
+
+  data_type: 'datetime'
   datetime_undef_if_invalid: 1
-  default_value: current_timestamp
-  is_nullable: 0
+  is_nullable: 1
+
+=head2 modified
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
 
 =head2 read
 
@@ -101,6 +123,13 @@ __PACKAGE__->table("feed_item");
 
   data_type: 'integer'
   default_value: 0
+  is_nullable: 0
+
+=head2 created
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  default_value: current_timestamp
   is_nullable: 0
 
 =cut
@@ -131,6 +160,13 @@ __PACKAGE__->add_columns(
     { data_type => "binary", is_nullable => 0, size => 16 },
     "link",
     { data_type => "varchar", is_nullable => 0, size => 2048 },
+    "author",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 2048
+    },
     "title",
     {
         data_type     => "varchar",
@@ -138,13 +174,33 @@ __PACKAGE__->add_columns(
         is_nullable   => 0,
         size          => 512
     },
-    "description",
+    "tags",
     {
         data_type     => "varchar",
         default_value => "",
         is_nullable   => 0,
-        size          => 4096
+        size          => 1024
     },
+    "summary",
+    { data_type => "text", is_nullable => 1 },
+    "content",
+    { data_type => "mediumtext", is_nullable => 1 },
+    "issued",
+    {
+        data_type                 => "datetime",
+        datetime_undef_if_invalid => 1,
+        is_nullable               => 1,
+    },
+    "modified",
+    {
+        data_type                 => "datetime",
+        datetime_undef_if_invalid => 1,
+        is_nullable               => 1,
+    },
+    "read",
+    { data_type => "tinyint", default_value => 0, is_nullable => 0 },
+    "starred",
+    { data_type => "integer", default_value => 0, is_nullable => 0 },
     "created",
     {
         data_type                 => "timestamp",
@@ -152,10 +208,6 @@ __PACKAGE__->add_columns(
         default_value             => \"current_timestamp",
         is_nullable               => 0,
     },
-    "read",
-    { data_type => "tinyint", default_value => 0, is_nullable => 0 },
-    "starred",
-    { data_type => "integer", default_value => 0, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -201,7 +253,7 @@ __PACKAGE__->belongs_to(
     "account",
     "Munge::Schema::Result::Account",
     { id            => "account_id" },
-    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 feed
@@ -215,11 +267,11 @@ Related object: L<Munge::Schema::Result::Feed>
 __PACKAGE__->belongs_to(
     "feed", "Munge::Schema::Result::Feed",
     { id            => "feed_id" },
-    { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
-# Created by DBIx::Class::Schema::Loader v0.07023 @ 2012-10-28 23:54:52
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:LNekW3Rf4jck6b2T1r2pzA
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-11-22 09:57:08
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:jNcV+Lg458edm5S6iGf/AQ
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

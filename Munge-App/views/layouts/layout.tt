@@ -9,30 +9,32 @@
     <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
   </head>
   <body>
-    <div class="toolbar right" id="header" style="color: #fff;">
-      hello, <a href="">name</a>. <a href="">my account</a> | <a href="">settings</a>
-    </div>
+    <div id="page">
+      <div class="toolbar right" id="header" style="color: #fff;">
+        hello, <a href="">name</a>. <a href="">my account</a> | <a href="">settings</a>
+      </div>
 
-    <div id="left">
-        <ul id="mains">
-            <li><a href="/">Recent</a></li>
-            <li><a href="/feed/archive">Unread</a></li>
-            <li><a href="/feed/starred">Saved</a></li>
+      <div id="left">
+          <ul id="mains">
+              <li><a href="/">Recent</a></li>
+              <li><a href="/feed/archive">Unread</a></li>
+              <li><a href="/feed/starred">Saved</a></li>
 
-        </ul>
-        <ul id="mains">
-            <li><a href="/feed/add">add new feed +</a></li>
-        </ul>
-        <ul id="feeds">
-        [% FOREACH f IN feeds %]
-            <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
-        [% END %]
+          </ul>
+          <ul id="mains">
+              <li><a href="/feed/add">add new feed +</a></li>
+          </ul>
+          <ul id="feeds">
+          [% FOREACH f IN feeds %]
+              <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
+          [% END %]
 
-        </ul>
-    </div>
+          </ul>
+      </div>
 
-    <div id="main">
-        [% content %]
+      <div id="main">
+          [% content %]
+      </div>
     </div>
   </body>
 </html>
