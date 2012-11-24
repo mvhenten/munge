@@ -44,8 +44,8 @@ class Munge::Model::View::FeedItem {
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.issued' },
-                rows       => 10,
+                order_by   => { -desc => 'me.issued' },
+                rows       => 40,
             }
         );
 
