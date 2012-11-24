@@ -7,10 +7,13 @@ use Dancer ':syntax';
 use Data::Dumper;
 
 use Munge::Model::Account;
+use Munge::Model::Feed;
 use Munge::Model::FeedItem;
 use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
+use Proc::Fork;
+use Try::Tiny;
 
 prefix undef;
 
@@ -29,6 +32,40 @@ get '/' => sub {
         items => feed_item_view(),
       };
 
+};
+
+get '/feed/refresh' => sub {
+    my $account = account();
+    
+    redirect('/') if session('refresh_lock');
+
+    session('refresh_lock', 1 );
+    debug "Starting child process";    
+
+    run_fork {
+        child {
+            my @feeds = reverse $account->feeds;
+            foreach my $rs (@feeds) {        
+                debug( "Synchronizing feed " . $rs->link );
+
+                try {
+                    debug( "Start working on feed" );
+                    my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
+                    $feed->synchronize(1);
+                    $feed->store();
+                    debug( "Retrieved feeds: " . scalar $rs->feed_items );
+                }
+                catch {
+                    debug $_;
+                }
+            }
+            
+            session('refresh_lock', 0 );
+            
+        }
+    };
+    
+    redirect('/');
 };
 
 get '/feed/:feed' => sub {
