@@ -1,7 +1,7 @@
 <div style="position:relative;">
   <h1>[% feed.title %]</h1>
   <div style="position: absolute; right:0; top:0;">
-    <a href="">refresh</a>
+    <a href="/feed/refresh">refresh</a>
     <a href="">remove</a>
     <a href="">mark read</a>
     <a href="">categorize</a>
