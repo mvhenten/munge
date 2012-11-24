@@ -9,11 +9,12 @@ use Data::Dumper;
 use Munge::Model::Account;
 use Munge::Model::Feed;
 use Try::Tiny;
+use DateTime;
 
 main(@ARGV);
 
 sub usage {
-    print "Usage: sync-feed.pl <account_id>\n";
+    die "Usage: sync-feed.pl <account_id>\n";
 }
 
 sub main {
@@ -23,7 +24,7 @@ sub main {
 
     my $account = Munge::Model::Account->new()->find( { id => $account_id } );
 
-    my @feeds = $account->feeds;
+    my @feeds = reverse $account->feeds;
 
     foreach my $rs (@feeds) {
         printf( "Synchronizing feed %s\n", $rs->link );
@@ -32,6 +33,8 @@ sub main {
             my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
             $feed->synchronize();
             $feed->store();
+            
+            warn "Syncrhonized ", scalar $feed->feed_items, " items";
         }
         catch {
             warn $_;
