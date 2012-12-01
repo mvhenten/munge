@@ -11,10 +11,10 @@
 <div><em>[% feed.description %]</em></div>
     <div id="accordion">
     [% FOREACH item IN items %]
-        <h3 collapse-today-[% loop.index %]><a href="/item/[% item.uuid_string %]">[% item.title %]</a></h3>
+        <h3 collapse-today-[% loop.index %]><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h3>
         <div class="feed-item">
         <div class="feed-info">
-          <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> by Feed Author | [% item.date %]
+          <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a> by [% item.author %] | [% item.date %]
           <a href="#unread-[% item.uuid_string %]">mark unread</a> | <a href="#later-[% item.uuid_string %]">read later</a> | <a href="[% item.link %]">website</a>
         </div>
         <div class="feed-content">
