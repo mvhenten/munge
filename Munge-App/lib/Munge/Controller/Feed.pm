@@ -34,34 +34,41 @@ get '/' => sub {
 
 };
 
+get '/feed/refresh/:feed' => sub {
+    my $feed_id = param('feed');
+
+    # todo 404
+    redirect('/') if not to_UUID($feed_id);
+
+    my $account = account();
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
+
+    run_fork {
+        child {
+            synchronize_feed($feed);
+        }
+    };
+
+    redirect(qq|/feed/$feed_id|);
+};
+
 get '/feed/refresh' => sub {
     my $account = account();
 
     redirect('/') if session('refresh_lock');
 
+    # todo logging
     session( 'refresh_lock', 1 );
-    debug "Starting child process";
 
     run_fork {
         child {
             my @feeds = reverse $account->feeds;
-            foreach my $rs (@feeds) {
-                debug( "Synchronizing feed " . $rs->link );
-
-                try {
-                    debug("Start working on feed");
-                    my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
-                    $feed->synchronize(1);
-                    $feed->store();
-                    debug( "Retrieved feeds: " . scalar $rs->feed_items );
-                }
-                catch {
-                    debug $_;
-                }
+            foreach my $feed_rs (@feeds) {
+                my $feed = Munge::Model::Feed->load( $feed_rs->uuid, $account );
+                synchronize_feed($feed);
             }
 
             session( 'refresh_lock', 0 );
-
         }
     };
 
@@ -80,7 +87,7 @@ get '/feed/:feed' => sub {
         $feed_info = $feed_view->feed_view($feed_id);
     }
 
-    template 'feed/index',
+    return template 'feed/index',
       {
         feed  => $feed_info,
         feeds => $feed_view->all_feeds,
@@ -88,6 +95,26 @@ get '/feed/:feed' => sub {
       };
 
 };
+
+sub synchronize_feed {
+    my ($feed) = @_;
+
+    debug( "Synchronizing feed " . $feed->link );
+
+    try {
+        debug("Start working on feed");
+        $feed->synchronize(1);
+        $feed->store();
+        debug( "Retrieved feeds: " . scalar $feed->feed_items );
+        return;
+    }
+    catch {
+        debug $_;
+        return;
+    }
+
+    return;
+}
 
 sub feed_item_view {
     my ($feed_id) = @_;
