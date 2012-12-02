@@ -87,25 +87,26 @@ get '/feed/:feed' => sub {
         $feed_info = $feed_view->feed_view($feed_id);
     }
 
-    return template 'feed/index',
+    template 'feed/index',
       {
         feed  => $feed_info,
         feeds => $feed_view->all_feeds,
         items => feed_item_view($feed_id),
       };
 
+    return;
 };
 
 sub synchronize_feed {
     my ($feed) = @_;
 
-    debug( "Synchronizing feed " . $feed->link );
+    debug( 'Synchronizing feed ' . $feed->link );
 
     try {
-        debug("Start working on feed");
+        debug('Start working on feed');
         $feed->synchronize(1);
         $feed->store();
-        debug( "Retrieved feeds: " . scalar $feed->feed_items );
+        debug( 'Retrieved feeds: ' . scalar $feed->feed_items );
         return;
     }
     catch {
