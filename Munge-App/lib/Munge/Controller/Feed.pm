@@ -15,7 +15,7 @@ use Munge::Types qw|UUID|;
 use Proc::Fork;
 use Try::Tiny;
 
-prefix undef;
+prefix '/feed';
 
 sub account {
     my $account = Munge::Model::Account->new()->find( session('account') );
@@ -26,7 +26,7 @@ get '/' => sub {
     my $account = account();
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
-    template 'feed/index',
+    return template 'feed/index',
       {
         feeds => $feed_view->all_feeds,
         items => feed_item_view(),
@@ -34,7 +34,28 @@ get '/' => sub {
 
 };
 
-get '/feed/refresh/:feed' => sub {
+get '/:feed' => sub {
+    my $feed_id   = param('feed');
+    my $account   = account();
+    my $feed_view = Munge::Model::View::Feed->new( account => $account );
+
+    my $feed_info =
+      { title => ucfirst($feed_id), description => 'Unread posts' };
+
+    if ( to_UUID($feed_id) ) {
+        $feed_info = $feed_view->feed_view($feed_id);
+    }
+
+    return template 'feed/index',
+      {
+        feed  => $feed_info,
+        feeds => $feed_view->all_feeds,
+        items => feed_item_view($feed_id) || undef,
+      };
+
+};
+
+get '/refresh/:feed' => sub {
     my $feed_id = param('feed');
 
     # todo 404
@@ -49,10 +70,10 @@ get '/feed/refresh/:feed' => sub {
         }
     };
 
-    redirect(qq|/feed/$feed_id|);
+    return redirect(qq|/feed/$feed_id|);
 };
 
-get '/feed/refresh' => sub {
+get '/refresh' => sub {
     my $account = account();
 
     redirect('/') if session('refresh_lock');
@@ -72,29 +93,7 @@ get '/feed/refresh' => sub {
         }
     };
 
-    redirect('/');
-};
-
-get '/feed/:feed' => sub {
-    my $feed_id   = param('feed');
-    my $account   = account();
-    my $feed_view = Munge::Model::View::Feed->new( account => $account );
-
-    my $feed_info =
-      { title => ucfirst($feed_id), description => 'Unread posts' };
-
-    if ( to_UUID($feed_id) ) {
-        $feed_info = $feed_view->feed_view($feed_id);
-    }
-
-    template 'feed/index',
-      {
-        feed  => $feed_info,
-        feeds => $feed_view->all_feeds,
-        items => feed_item_view($feed_id),
-      };
-
-    return;
+    return redirect('/');
 };
 
 sub synchronize_feed {
@@ -125,9 +124,11 @@ sub feed_item_view {
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
+    debug $feed_id;
+
     return $view->today()     if $feed_id eq 'today';
-    return $view->yesterday() if $feed_id eq 'yesterday';
-    return $view->older()     if $feed_id eq 'archive';
+    return $view->yesterday() if $feed_id eq 'archive';
+    return $view->starred()   if $feed_id eq 'starred';
     return $view->list($feed_id) if to_UUID($feed_id);
     return;
 }

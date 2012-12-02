@@ -39,7 +39,8 @@ class Munge::Model::View::FeedItem {
         my $items = $self->resultset('FeedItem')->search(
             {
                 'me.account_id' => $self->account->id,
-                'me.created'    => { '>=', $yesterday },
+                'me.created'    => { '>', $yesterday },
+                'me.read'       => 0,
             },
             {
                 prefetch => 'feed',
@@ -61,11 +62,12 @@ class Munge::Model::View::FeedItem {
                 'me.account_id' => $self->account->id,
                 'me.created'    => { '>=', $min_age },
                 'me.created'    => { '<=', $max_age },
+                'me.read'       => 0,
             },
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.issued' },
+                order_by   => { -desc => 'me.issued' },
                 rows       => 10,
             }
         );
@@ -73,22 +75,21 @@ class Munge::Model::View::FeedItem {
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
-    method older {
-        my $max_age = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
-
+    method starred {
         my $items = $self->resultset('FeedItem')->search(
             {
                 'me.account_id' => $self->account->id,
-                'me.created'    => { '<=', $max_age },
+                'me.starred' => 1,                
             },
             {
                 prefetch => 'feed',
                 join => 'feed',
-                order_by   => { -asc => 'me.issued' },
-                rows       => 25,
+                order_by   => { -desc => 'me.issued' },
+                rows       => 50,
             }
         );
 
+        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
 

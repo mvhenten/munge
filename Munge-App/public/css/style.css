@@ -62,9 +62,14 @@ h3 {
     font-size: 0.8em;
 }
 
-#main .feed-content {
+#main .feed-summary {
     padding: 1em 0;
 }
+
+.read .feed-summary, .read h3 {
+    color: #999;
+}
+
 
 #mains {
     margin:0;

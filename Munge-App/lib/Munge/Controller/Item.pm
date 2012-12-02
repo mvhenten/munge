@@ -34,7 +34,7 @@ get '/unread/:uuid' => sub {
     $model->set_unread();
     $model->store();
 
-    redirect "/item/$uuid";
+    redirect "/item/$uuid#article";
 
 };
 
@@ -45,7 +45,7 @@ get '/star/:uuid' => sub {
     $model->toggle_star();
     $model->store();
 
-    redirect "/item/$uuid";
+    redirect "/item/$uuid#article";
 
     return;
 };

@@ -29,4 +29,8 @@ get '/logout' => sub {
     redirect 'account/login';
 };
 
+get '/' => sub {
+    redirect '/feed/';
+};
+
 true;
