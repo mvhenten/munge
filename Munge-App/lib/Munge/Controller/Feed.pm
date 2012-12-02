@@ -36,20 +36,20 @@ get '/' => sub {
 
 get '/feed/refresh' => sub {
     my $account = account();
-    
+
     redirect('/') if session('refresh_lock');
 
-    session('refresh_lock', 1 );
-    debug "Starting child process";    
+    session( 'refresh_lock', 1 );
+    debug "Starting child process";
 
     run_fork {
         child {
             my @feeds = reverse $account->feeds;
-            foreach my $rs (@feeds) {        
+            foreach my $rs (@feeds) {
                 debug( "Synchronizing feed " . $rs->link );
 
                 try {
-                    debug( "Start working on feed" );
+                    debug("Start working on feed");
                     my $feed = Munge::Model::Feed->load( $rs->uuid, $account );
                     $feed->synchronize(1);
                     $feed->store();
@@ -59,12 +59,12 @@ get '/feed/refresh' => sub {
                     debug $_;
                 }
             }
-            
-            session('refresh_lock', 0 );
-            
+
+            session( 'refresh_lock', 0 );
+
         }
     };
-    
+
     redirect('/');
 };
 

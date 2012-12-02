@@ -85,10 +85,10 @@ class Munge::Model::Feed::ParserItem {
 
     method _build_tags {
         my @tags = $self->entry->tags;
-        
+
         return join( q|,|, @tags );
     }
-    
+
     method _build_uuid {
         my $uuid = Data::UUID->new();
 

@@ -115,7 +115,7 @@ class Munge::Model::View::FeedItem {
         {
             prefetch => 'feed',
             join => 'feed',
-            order_by   => { -asc => 'me.issued' },
+            order_by   => { -desc => 'me.issued' },
         });
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
