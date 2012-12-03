@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <opml version="1.0">
     <head>
-        <title>Matthijs subscriptions in Google Reader</title>
+        <title>Matthijs-abonnementen in Google Reader</title>
     </head>
     <body>
+        <outline text="(titel onbekend)" title="(titel onbekend)"
+            type="rss"
+            xmlUrl="http://www.blogger.com/feeds/08100890214025847730/blogs" htmlUrl="http://www.google.com/reader/view/feed%2Fhttp%3A%2F%2Fwww.blogger.com%2Ffeeds%2F08100890214025847730%2Fblogs"/>
         <outline text="90 Percent of Everything - by Harry Brignull"
             title="90 Percent of Everything - by Harry Brignull"
             type="rss"
@@ -25,6 +28,8 @@
             xmlUrl="http://feeds.feedburner.com/antonkovalyov" htmlUrl="http://anton.kovalyov.net/"/>
         <outline text="Behance » Team Blog" title="Behance » Team Blog"
             type="rss" xmlUrl="http://feeds.feedburner.com/be-comm/VaAT" htmlUrl="http://blog.behance.net"/>
+        <outline text="Bits of Freedom" title="Bits of Freedom"
+            type="rss" xmlUrl="https://www.bof.nl/rss/" htmlUrl="https://www.bof.nl"/>
         <outline text="blog.phpdeveloper.org"
             title="blog.phpdeveloper.org" type="rss"
             xmlUrl="http://blog.phpdeveloper.org/?feed=rss2" htmlUrl="http://blog.phpdeveloper.org"/>
@@ -50,6 +55,9 @@
             title="Comment is free: The Joris Luyendijk banking blog | guardian.co.uk"
             type="rss"
             xmlUrl="http://www.guardian.co.uk/commentisfree/joris-luyendijk-banking-blog/rss" htmlUrl="http://www.guardian.co.uk/commentisfree/joris-luyendijk-banking-blog"/>
+        <outline text="Damien Krotkine" title="Damien Krotkine"
+            type="rss"
+            xmlUrl="http://feeds.feedburner.com/damien-krotkine" htmlUrl="http://dams.github.com/"/>
         <outline text="Davey Shafik" title="Davey Shafik" type="rss"
             xmlUrl="http://daveyshafik.com/feed" htmlUrl="http://daveyshafik.com"/>
         <outline text="De Pinksterbloem - 4e montessori school"
@@ -63,6 +71,9 @@
             xmlUrl="http://feeds.feedburner.com/nimbupani" htmlUrl="http://nimbupani.github.com/"/>
         <outline text="don't code today" title="don't code today"
             type="rss" xmlUrl="http://ariya.ofilabs.com/feed" htmlUrl="http://ariya.ofilabs.com"/>
+        <outline text="Drizzle News and Updates"
+            title="Drizzle News and Updates" type="rss"
+            xmlUrl="http://blog.drizzle.org/feed/atom/" htmlUrl="http://blog.drizzle.org/"/>
         <outline text="drublic" title="drublic" type="rss"
             xmlUrl="http://feeds.feedburner.com/drublic" htmlUrl="http://drublic.de/blog"/>
         <outline text="Duarte Blog" title="Duarte Blog" type="rss"
@@ -82,6 +93,8 @@
             xmlUrl="http://me.veekun.com/atom.xml" htmlUrl="http://me.veekun.com/"/>
         <outline text="Gradebook" title="Gradebook" type="rss"
             xmlUrl="http://blog.learnboost.com/feed/" htmlUrl="https://www.learnboost.com/blog"/>
+        <outline text="Hackworthy" title="Hackworthy" type="rss"
+            xmlUrl="http://hackworthy.blogspot.com/feeds/posts/default" htmlUrl="http://hackworthy.blogspot.com/"/>
         <outline text="hard//hoofd" title="hard//hoofd" type="rss"
             xmlUrl="http://feeds.feedburner.com/hardhoofd" htmlUrl="http://hardhoofd.com"/>
         <outline text="High Performance Web Sites"
@@ -128,8 +141,14 @@
         <outline text="Modern Perl Books, a Modern Perl Blog"
             title="Modern Perl Books, a Modern Perl Blog" type="rss"
             xmlUrl="http://www.modernperlbooks.com/mt/atom.xml" htmlUrl="http://www.modernperlbooks.com/mt/"/>
+        <outline text="More Boom in the Room"
+            title="More Boom in the Room" type="rss"
+            xmlUrl="http://blog.phoenixtrap.com/feeds/posts/default" htmlUrl="http://blog.phoenixtrap.com/"/>
         <outline text="mur.mu.rs" title="mur.mu.rs" type="rss"
             xmlUrl="http://mur.mu.rs/?feed=rss2" htmlUrl="http://mur.mu.rs"/>
+        <outline text="MySQL Performance Blog"
+            title="MySQL Performance Blog" type="rss"
+            xmlUrl="http://www.mysqlperformanceblog.com/feed/" htmlUrl="http://www.mysqlperformanceblog.com"/>
         <outline text="Nicolas Gallagher - Blog &amp; Ephemera"
             title="Nicolas Gallagher - Blog &amp; Ephemera" type="rss"
             xmlUrl="http://nicolasgallagher.com/feed/" htmlUrl="http://nicolasgallagher.com"/>
@@ -144,6 +163,11 @@
             xmlUrl="http://feeds.feedburner.com/paul-irish" htmlUrl="http://paulirish.com"/>
         <outline text="Perfection kills" title="Perfection kills"
             type="rss" xmlUrl="http://perfectionkills.com/feed/rss/" htmlUrl="http://perfectionkills.com"/>
+        <outline text="Performance Calendar"
+            title="Performance Calendar" type="rss"
+            xmlUrl="http://calendar.perfplanet.com/feed/" htmlUrl="http://calendar.perfplanet.com"/>
+        <outline text="Perl Hacks" title="Perl Hacks" type="rss"
+            xmlUrl="http://perlhacks.com/feed/" htmlUrl="http://perlhacks.com"/>
         <outline text="Peter Beverloo" title="Peter Beverloo" type="rss"
             xmlUrl="http://peter.sh/feed/" htmlUrl="http://peter.sh"/>
         <outline text="Rey Bango" title="Rey Bango" type="rss"
