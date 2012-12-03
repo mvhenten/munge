@@ -48,6 +48,8 @@ class Munge::Model::Feed::Client {
 
         my $ua = LWP::UserAgent->new;
 
+        warn $self->last_modified_since, 'last modified since';
+
         if ( $self->last_modified_since ) {
             $ua->default_header(
                 'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(

@@ -34,27 +34,6 @@ get '/' => sub {
 
 };
 
-get '/:feed' => sub {
-    my $feed_id   = param('feed');
-    my $account   = account();
-    my $feed_view = Munge::Model::View::Feed->new( account => $account );
-
-    my $feed_info =
-      { title => ucfirst($feed_id), description => 'Unread posts' };
-
-    if ( to_UUID($feed_id) ) {
-        $feed_info = $feed_view->feed_view($feed_id);
-    }
-
-    return template 'feed/index',
-      {
-        feed  => $feed_info,
-        feeds => $feed_view->all_feeds,
-        items => feed_item_view($feed_id) || undef,
-      };
-
-};
-
 get '/refresh/:feed' => sub {
     my $feed_id = param('feed');
 
@@ -78,6 +57,8 @@ get '/refresh' => sub {
 
     redirect('/') if session('refresh_lock');
 
+    debug('reloading feeds');
+
     # todo logging
     session( 'refresh_lock', 1 );
 
@@ -96,6 +77,27 @@ get '/refresh' => sub {
     return redirect('/');
 };
 
+get '/:feed' => sub {
+    my $feed_id   = param('feed');
+    my $account   = account();
+    my $feed_view = Munge::Model::View::Feed->new( account => $account );
+
+    my $feed_info =
+      { title => ucfirst($feed_id), description => 'Unread posts' };
+
+    if ( to_UUID($feed_id) ) {
+        $feed_info = $feed_view->feed_view($feed_id);
+    }
+
+    return template 'feed/index',
+      {
+        feed  => $feed_info,
+        feeds => $feed_view->all_feeds,
+        items => feed_item_view($feed_id) || undef,
+      };
+
+};
+
 sub synchronize_feed {
     my ($feed) = @_;
 
@@ -106,12 +108,10 @@ sub synchronize_feed {
         $feed->synchronize(1);
         $feed->store();
         debug( 'Retrieved feeds: ' . scalar $feed->feed_items );
-        return;
     }
     catch {
         debug $_;
-        return;
-    }
+    };
 
     return;
 }

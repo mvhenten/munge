@@ -26,7 +26,7 @@ class Munge::Model::View::Feed {
     with 'Munge::Role::Account';
 
     method feed_view ( $uuid ) {
-        my $item = $self->resultset('Feed')->find({ uuid => to_UUID( $uuid ) });
+        my $item = $self->resultset('Feed')->find({ uuid => to_UUID( $uuid ), account_id => $self->account->id });
 
         return $self->_get_list_view( $item );
     }
