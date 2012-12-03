@@ -2,4 +2,5 @@
 .tidyall.d
 *.komodoproject
 *.bak
+.build
 Munge-App/sessions/
