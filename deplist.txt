@@ -10,6 +10,7 @@ DateTime::Format::HTTP
 DBICx::TestDatabase
 DBIx::Class::Core
 DBIx::Class::Schema
+DBIx::Class::TimeStamp
 Exporter::Lite
 ExtUtils::MakeMaker
 File::Slurp
