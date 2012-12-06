@@ -3,6 +3,7 @@ package Munge::Controller::Account;
 use Crypt::SaltedHash;
 use Dancer ':syntax';
 use Munge::Model::Account;
+use Data::Dumper;
 
 prefix '/account';
 
@@ -13,9 +14,13 @@ get '/create' => sub {
 
 post '/create' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
+    
+    debug "Got username, password: $username, $password";
 
     my $account = Munge::Model::Account->new()->create( $username, $password );
 
+    debug "Now account created, now redirecting";
+    
     redirect 'account/login';
 };
 
