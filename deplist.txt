@@ -26,6 +26,7 @@ MooseX::Types::Moose
 Proc::Fork
 strict
 Sub::Override
+Template
 Test::More
 Test::Sweet
 Time::HiRes
