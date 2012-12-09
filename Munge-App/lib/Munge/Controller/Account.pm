@@ -15,11 +15,11 @@ get '/create' => sub {
 post '/create' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
     
-    warn "Got username, password: $username, $password";
+    debug "Got username, password: $username, $password";
 
     my $account = Munge::Model::Account->new()->create( $username, $password );
 
-    warn "Now account created, now redirecting";
+    debug "Now account created, now redirecting";
     
     redirect 'account/login';
 };
@@ -40,6 +40,7 @@ get '/logout' => sub {
 
 post '/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
+    debug "LOGIN: Got username, password: $username, $password";
 
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
