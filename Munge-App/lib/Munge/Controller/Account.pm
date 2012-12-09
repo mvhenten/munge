@@ -9,17 +9,17 @@ prefix '/account';
 
 get '/create' => sub {
     return
-      '<form method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
+      '<form action="/create/" method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
 };
 
 post '/create' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
     
-    debug "Got username, password: $username, $password";
+    warn "Got username, password: $username, $password";
 
     my $account = Munge::Model::Account->new()->create( $username, $password );
 
-    debug "Now account created, now redirecting";
+    warn "Now account created, now redirecting";
     
     redirect 'account/login';
 };

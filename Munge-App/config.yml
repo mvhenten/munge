@@ -40,8 +40,8 @@ plugins:
     DBIC:
         schema_class: Munge::Schema
         dsn:  dbi:mysql:munge
-        user: admin
-        pass: YhpZSpidrQND
+        user: munge
+        pass: munge
         options:
           RaiseError: 1
           PrintError: 1
