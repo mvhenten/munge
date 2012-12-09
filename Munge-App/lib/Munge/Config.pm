@@ -6,7 +6,7 @@ use YAML::Any qw|LoadFile|;
     my $config;
 
     sub config {
-        return $config ||= LoadFile( APPLICATION_PATH() '/config.yml');
+        return $config ||= LoadFile( APPLICATION_PATH() .  '/config.yml');
     }
 
 }
