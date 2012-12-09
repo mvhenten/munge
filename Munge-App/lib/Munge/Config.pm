@@ -6,9 +6,15 @@ use YAML::Any qw|LoadFile|;
     my $config;
 
     sub config {
-        return $config ||= LoadFile('config.yml');
+        return $config ||= LoadFile( APPLICATION_PATH() '/config.yml');
     }
 
+}
+
+
+sub APPLICATION_PATH {
+    my ($app_dir) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
+    return $app_dir;
 }
 
 sub DSN {
