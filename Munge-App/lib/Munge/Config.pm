@@ -1,6 +1,10 @@
 package Munge::Config;
 
+use strict;
+use warnings;
+
 use YAML::Any qw|LoadFile|;
+use Cwd qw|realpath|;
 
 {
     my $config;
