@@ -15,22 +15,29 @@ use Cwd qw|realpath|;
 
 }
 
-
 sub APPLICATION_PATH {
     my ($app_dir) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
     return $app_dir;
 }
 
+sub HOST {
+    return $ENV{OPENSHIFT_MYSQL_DB_HOST} || 'localhost';
+}
+
+sub PORT {
+    return $ENV{OPENSHIFT_MYSQL_DB_PORT} || '3306';
+}
+
 sub DSN {
-    return config()->{plugins}->{DBIC}->{dsn};
+    return join(':', config()->{plugins}->{DBIC}->{dsn}, HOST(), PORT() );
 }
 
 sub DB_USER {
-    return config()->{plugins}->{DBIC}->{user};
+    return $ENV{OPENSHIFT_MYSQL_DB_USERNAME} || config()->{plugins}->{DBIC}->{user};
 }
 
 sub DB_PASSWORD {
-    return config()->{plugins}->{DBIC}->{pass};
+    return $ENV{OPENSHIFT_MYSQL_DB_PASSWORD} || config()->{plugins}->{DBIC}->{pass};
 }
 
 1;
