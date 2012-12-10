@@ -15,7 +15,6 @@ Exporter::Lite
 ExtUtils::MakeMaker
 File::Slurp
 HTML::Restrict
-HTML::Tidy
 HTTP::Status
 LWP::UserAgent
 Math::Base36
