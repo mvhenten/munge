@@ -10,7 +10,7 @@ use Cwd qw|realpath|;
     my $config;
 
     sub config {
-        return $config ||= LoadFile( APPLICATION_PATH() .  '/config.yml');
+        return $config ||= LoadFile( APPLICATION_PATH() . '/config.yml' );
     }
 
 }
@@ -29,15 +29,17 @@ sub PORT {
 }
 
 sub DSN {
-    return join(':', config()->{plugins}->{DBIC}->{dsn}, HOST(), PORT() );
+    return join( ':', config()->{plugins}->{DBIC}->{dsn}, HOST(), PORT() );
 }
 
 sub DB_USER {
-    return $ENV{OPENSHIFT_MYSQL_DB_USERNAME} || config()->{plugins}->{DBIC}->{user};
+    return $ENV{OPENSHIFT_MYSQL_DB_USERNAME}
+      || config()->{plugins}->{DBIC}->{user};
 }
 
 sub DB_PASSWORD {
-    return $ENV{OPENSHIFT_MYSQL_DB_PASSWORD} || config()->{plugins}->{DBIC}->{pass};
+    return $ENV{OPENSHIFT_MYSQL_DB_PASSWORD}
+      || config()->{plugins}->{DBIC}->{pass};
 }
 
 1;

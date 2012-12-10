@@ -182,3 +182,5 @@ class Munge::Model::Feed {
     }
 
 }
+
+1;
