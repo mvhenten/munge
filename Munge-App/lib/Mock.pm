@@ -1,3 +1,12 @@
+=HEAD
+
+BIG HACK prereq scanner on openshift attempts to download these because they're
+moosex::declare classes. this costs time, bandwidth and cpu and should be avoided.
+
+This is a workaround, since prereq finds these package statements.
+
+=cut
+
 ## no critic
 package Munge::Model::Account;
 
@@ -28,6 +37,18 @@ package Munge::Storage;
 # fooling prereq scanner
 
 package Munge::UUID;
+
+# fooling prereq scanner
+
+package Munge::Model::Feed::Parser;
+
+# fooling prereq scanner
+
+package Munge::Model::Feed::ParserItem;
+
+# fooling prereq scanner
+
+package Munge::Model::OPML;
 
 # fooling prereq scanner
 
