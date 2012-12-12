@@ -44,17 +44,19 @@ role Munge::Role::Storage {
         $storage ||= $class->_get_storage( $account );
                 
         my $rs = $storage->load( uuid => $uuid );
-        
-        assert( $account->id == $rs->{account_id}, 'Object is owned by account' );
-        
         delete( $rs->{account_id} );
+        
         return $class->new( %{ $rs }, account => $account );
     }
     
-    method resultset {
-        return $self->_storage->resultset( uuid => $self->uuid );
-    }
+    method search ( $class: HashRef $where, Account $account, $storage? ){
+        $storage ||= $class->_get_storage( $account );
+                
+        my $rs = $storage->search( $where );
         
+        return $rs;
+    }
+            
     method _schema_class ( $class: ){
         my ( $class_name ) = ( ref $class  || $class ) =~ m/.+::(\w+)/;
         

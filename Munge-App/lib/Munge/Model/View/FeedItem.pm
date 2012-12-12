@@ -1,4 +1,5 @@
 use MooseX::Declare;
+use MooseX::StrictConstructor;
 
 =head1 NAME
 

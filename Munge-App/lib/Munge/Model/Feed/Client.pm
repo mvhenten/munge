@@ -40,30 +40,31 @@ class Munge::Model::Feed::Client {
         }
     );
 
+    sub USER_AGENT_STRING {
+
+        # pretend we're google, prevents us being labelled as spammer by
+        # stupid spamfilters that believe this. yeah.
+        return 'FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)';
+    }
+
     method _build_updated {
         return $self->_response->code != HTTP_NOT_MODIFIED;
     }
 
     method _build__response {
-
         my $ua = LWP::UserAgent->new;
-        
-        # pretend we're google, prevents us being labelled as spammer. yeah.
-        $ua->agent('FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)');
-        
-        #if ( $self->last_modified_since ) {
-        #    $ua->default_header(
-        #        'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
-        #            $self->last_modified_since
-        #        )
-        #    );
-        #}
-        
-        warn 'SYNCHRONIZING MY FEED';
-        
+
+        $ua->agent( USER_AGENT_STRING() );
+
+        if ( $self->last_modified_since ) {
+            $ua->default_header(
+                'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
+                    $self->last_modified_since
+                )
+            );
+        }
+
         my $response = $ua->get( $self->feed_uri );
-        
-        warn $response->content;
         return $response;
     }
 
