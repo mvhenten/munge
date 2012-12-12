@@ -1,10 +1,9 @@
 <div style="position:relative;">
   <h1>[% feed.feed_title %]</h1>
-  <div style="position: absolute; right:0; top:0;">
-    <a href="">refresh</a>
-    <a href="">remove</a>
-    <a href="">mark read</a>
-    <a href="">categorize</a>
+  <div style="margin: 1em 0;">
+    <a href="/feed/remove/[% feed.uuid_string %]">remove</a>
+    <a href="/feed/refresh/[% feed.uuid_string %]">refresh feed</a>
+    <a href="/feed/read/[% feed.uuid_string %]">mark read</a>
   </div>
 </div>
 <div><em>(n) unread articles</em></div>

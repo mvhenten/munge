@@ -52,6 +52,36 @@ get '/refresh/:feed' => sub {
     return redirect(qq|/feed/$feed_id|);
 };
 
+get '/read/:feed' => sub {
+    my $feed_id = param('feed');
+
+    # todo 404
+    redirect('/') if not to_UUID($feed_id);
+
+    my $account = account();
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
+
+    $feed->mark_items_read();
+
+    return redirect(qq|/feed/$feed_id|);
+};
+
+
+get '/remove/:feed' => sub {
+    my $feed_id = param('feed');
+
+    # todo 404
+    redirect('/') if not to_UUID($feed_id);
+
+    my $account = account();
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
+
+    $feed->delete();
+
+    return redirect('/feed/');
+};
+
+
 get '/refresh' => sub {
     my $account = account();
 

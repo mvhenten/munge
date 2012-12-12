@@ -47,18 +47,24 @@ class Munge::Model::Feed::Client {
     method _build__response {
 
         my $ua = LWP::UserAgent->new;
-
-        warn $self->last_modified_since, 'last modified since';
-
-        if ( $self->last_modified_since ) {
-            $ua->default_header(
-                'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
-                    $self->last_modified_since
-                )
-            );
-        }
-
-        return $ua->get( $self->feed_uri );
+        
+        # pretend we're google, prevents us being labelled as spammer. yeah.
+        $ua->agent('FeedFetcher-Google; (+http://www.google.com/feedfetcher.html)');
+        
+        #if ( $self->last_modified_since ) {
+        #    $ua->default_header(
+        #        'If-Modified-Since' => DateTime::Format::HTTP->format_datetime(
+        #            $self->last_modified_since
+        #        )
+        #    );
+        #}
+        
+        warn 'SYNCHRONIZING MY FEED';
+        
+        my $response = $ua->get( $self->feed_uri );
+        
+        warn $response->content;
+        return $response;
     }
 
     method _build_content {

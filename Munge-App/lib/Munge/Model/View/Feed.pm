@@ -36,7 +36,7 @@ class Munge::Model::View::Feed {
             { 'me.account_id' => $self->account->id  },
             {
                 join    => 'unread_items',
-                order_by => { -desc => 'me.title' },
+                order_by => { -desc => 'me.title', -desc => 'unread_items' },
                 distinct => 1,
                 '+select' => [ { count => 'unread_items.read', -as => 'unread_items' } ],
             }

@@ -14,6 +14,7 @@ Takes a class, stores it's public parts
 
 =cut
 
+
 class Munge::Storage {
     use Data::Dumper;
     
@@ -38,7 +39,7 @@ class Munge::Storage {
     
     method _build__schema_class {
         my $name = $self->schema_name;
-        return new $name;
+        return $name->new();
     }
 
     method store ( $object ) {
@@ -54,13 +55,30 @@ class Munge::Storage {
 
         return defined( $result ) ?  { $result->get_inflated_columns() } : {};
     }
-
-    method delete ( $key, $value ) {
-        my ( $result ) = $self->resultset( $self->schema_name )->find( { $key => $value, account_id => $self->_account_id } );
-
-        return $result->delete() if defined( $result );
+    
+    method resultset ( $key, $value ) {
+         my ( $result ) = $self->resultset( $self->schema_name )->find( { $key => $value, account_id => $self->account->id } );
+         
+         return $result;
     }
 
+    method delete ( $key, $value ) {
+        my ( $result ) = $self->resultset( $self->schema_name )->find( { $key => $value, account_id => $self->account->id } );
+               
+        for my $relation ($result->relationships ) {
+            my $info = $result->relationship_info( $relation );
+            
+            
+            if( $info->{attrs}->{cascade_delete} ){
+                $result->$relation()->delete();
+            }
+        }
+        
+        $result->delete() if defined( $result );
+
+        return;
+    }
+    
     method _storable_attributes ( Object $object ) {
         my %storable_attributes;
 

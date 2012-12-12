@@ -121,7 +121,13 @@ class Munge::Model::Feed {
             account => $account,
         );
     }
-
+    
+    method mark_items_read {
+        for my $item ( $self->feed_items ) {
+            
+        }
+    }
+    
     method synchronize ( Bool $force = 0 ) {
         if( $force ){
             $self->_set_updated( undef );

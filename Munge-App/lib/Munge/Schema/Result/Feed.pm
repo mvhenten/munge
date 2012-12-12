@@ -200,7 +200,7 @@ __PACKAGE__->has_many(
     "feed_items",
     "Munge::Schema::Result::FeedItem",
     { "foreign.feed_id" => "self.id" },
-    { cascade_copy      => 0, cascade_delete => 0 },
+    { cascade_copy      => 0, cascade_delete => 1 },
 );
 
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2012-11-22 09:57:08

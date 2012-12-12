@@ -11,6 +11,7 @@
   <body>
     <div id="page">
       <div class="toolbar right" id="header" style="color: #fff;">
+        <a href="/feed/refresh">refresh feeds</a>
         hello, <a href="">name</a>. <a href="">my account</a> | <a href="">settings</a>
       </div>
 
@@ -19,7 +20,6 @@
               <li><a href="/">Recent</a></li>
               <li><a href="/feed/archive">Unread</a></li>
               <li><a href="/feed/starred">Saved</a></li>
-
           </ul>
           <ul id="mains">
               <li><a href="/feed/add">add new feed +</a></li>

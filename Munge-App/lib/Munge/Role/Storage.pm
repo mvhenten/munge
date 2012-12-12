@@ -23,7 +23,7 @@ role Munge::Role::Storage {
         $self->_get_storage( $self->account );
     }
     
-     method store {
+    method store {
         my %values = $self->_storage->store( $self );
         
         $self->_schema_class();
@@ -35,18 +35,26 @@ role Munge::Role::Storage {
             $self->$method( $values{$key} );
         }
     }
+     
+    method delete {
+        $self->_storage->delete( uuid => $self->uuid );
+    }
     
     method load ( $class: UUID $uuid, Account $account, $storage? ){        
         $storage ||= $class->_get_storage( $account );
                 
         my $rs = $storage->load( uuid => $uuid );
         
-        assert( $account->id == $rs->{account_id}, 'Feed is owned by account' );
+        assert( $account->id == $rs->{account_id}, 'Object is owned by account' );
         
         delete( $rs->{account_id} );
         return $class->new( %{ $rs }, account => $account );
     }
     
+    method resultset {
+        return $self->_storage->resultset( uuid => $self->uuid );
+    }
+        
     method _schema_class ( $class: ){
         my ( $class_name ) = ( ref $class  || $class ) =~ m/.+::(\w+)/;
         
