@@ -6,21 +6,18 @@ use warnings;
 use Dancer ':syntax';
 use Data::Dumper;
 
+use Munge::Helper qw|account|;
 use Munge::Model::Account;
 use Munge::Model::Feed;
 use Munge::Model::FeedItem;
-use Munge::Model::View::FeedItem;
+use Munge::Model::Feed::ItemCollection;
 use Munge::Model::View::Feed;
+use Munge::Model::View::FeedItem;
 use Munge::Types qw|UUID|;
 use Proc::Fork;
 use Try::Tiny;
 
 prefix '/feed';
-
-sub account {
-    my $account = Munge::Model::Account->new()->find( session('account') );
-    return $account;
-}
 
 get '/' => sub {
     my $account = account();
@@ -61,11 +58,15 @@ get '/read/:feed' => sub {
     my $account = account();
     my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
 
-    $feed->mark_items_read();
+    my $collection = Munge::Model::Feed::ItemCollection->new(
+        feed    => $feed,
+        account => $account
+    );
+
+    $collection->read(1);
 
     return redirect(qq|/feed/$feed_id|);
 };
-
 
 get '/remove/:feed' => sub {
     my $feed_id = param('feed');
@@ -80,7 +81,6 @@ get '/remove/:feed' => sub {
 
     return redirect('/feed/');
 };
-
 
 get '/refresh' => sub {
     my $account = account();
