@@ -43,20 +43,14 @@ role Munge::Role::Storage {
     method load ( $class: UUID $uuid, Account $account, $storage? ){        
         $storage ||= $class->_get_storage( $account );
                 
-        my $rs = $storage->load( uuid => $uuid );
+        my $rs = $storage->load( uuid => $uuid );        
+        return if not $rs;
+
         delete( $rs->{account_id} );
         
         return $class->new( %{ $rs }, account => $account );
     }
-    
-    method search ( $class: HashRef $where, Account $account, $storage? ){
-        $storage ||= $class->_get_storage( $account );
                 
-        my $rs = $storage->search( $where );
-        
-        return $rs;
-    }
-            
     method _schema_class ( $class: ){
         my ( $class_name ) = ( ref $class  || $class ) =~ m/.+::(\w+)/;
         

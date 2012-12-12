@@ -3,14 +3,21 @@ package Munge::Types;
 use strict;
 use warnings;
 
-use MooseX::Types::Moose qw/Int HashRef Str Any/;
-use MooseX::Types -declare => [qw|Account Feed Uri UUID|];
+#use Munge::Model::Feed;
+#use Munge::Model::Feed::ParserItem;
+#use Munge::Schema::Result::Feed;
+
+use MooseX::Types::Moose qw/Int HashRef Str Any Object/;
+use MooseX::Types -declare => [qw|Account Feed Uri UUID ParserItem|];
 
 class_type 'Account' => { class => 'Munge::Schema::Result::Account' };
 
 class_type 'Feed' => { class => 'Munge::Schema::Result::Feed' };
 
 class_type 'Uri' => { class => 'URI' };
+
+subtype ParserItem,
+  as Object;    #=> { class => 'Munge::Model::Feed::ParserItem' };
 
 subtype UUID, as Str,
   where { use bytes; bytes::length($_) == 16 },

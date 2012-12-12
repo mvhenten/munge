@@ -137,7 +137,6 @@ sub synchronize_feed {
         debug('Start working on feed');
         $feed->synchronize(1);
         $feed->store();
-        debug( 'Retrieved feeds: ' . scalar $feed->feed_items );
     }
     catch {
         debug $_;
