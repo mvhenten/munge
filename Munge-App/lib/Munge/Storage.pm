@@ -44,6 +44,7 @@ class Munge::Storage {
 
     method store ( $object ) {
         my $values = $self->_storable_attributes( $object );
+        
         $values->{account_id} = $self->account->id;
         
         my $rs = $self->resultset( $self->schema_name )->update_or_create( $values );
@@ -52,8 +53,8 @@ class Munge::Storage {
     
     method load ( $key, $value ) {
         my ( $result ) = $self->_find( $key, $value );
-
-        return defined( $result ) ?  { $result->get_inflated_columns() } : {};
+                        
+        return defined( $result ) ?  { $result->get_inflated_columns() } : undef;
     }
     
     method delete ( $key, $value ) {
@@ -76,10 +77,10 @@ class Munge::Storage {
     method _find ( $key, $value ) {
         return $self->resultset( $self->schema_name )->find( { $key => $value, account_id => $self->account->id } );
     }
-    
+ 
     method _storable_attributes ( Object $object ) {
         my %storable_attributes;
-
+        
         for my $key ( $self->_schema_class->columns() ){
             next if not $object->can( $key );
 

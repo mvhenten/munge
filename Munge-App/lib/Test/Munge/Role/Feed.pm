@@ -89,5 +89,13 @@ role Test::Munge::Role::Feed {
         $feed_item->store();
         $feed->_add_feed_item( $feed );
     }
+    
+    method _test_storage ( Account $account, $schema_name ) {
+        my $storage = Munge::Storage->new(
+            account     => $account,
+            schema_name => $schema_name,
+            schema      => $self->schema,``
+        );        
+    }
 
 }

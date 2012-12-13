@@ -135,7 +135,7 @@ sub synchronize_feed {
 
     try {
         debug('Start working on feed');
-        $feed->synchronize(1);
+        $feed->synchronize();
         $feed->store();
     }
     catch {

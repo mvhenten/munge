@@ -114,12 +114,13 @@ class Munge::Model::FeedItem {
     has modified => (
         is         => 'ro',
         isa        => 'DateTime',
+        writer => '_set_modified',
         lazy_build => 1
     );
 
     has author => (
         is     => 'ro',
-        isa    => 'Str',
+        isa    => 'Maybe[Str]',
         writer => '_set_author',
     );
 
@@ -131,14 +132,15 @@ class Munge::Model::FeedItem {
 
     has content => (
         is     => 'ro',
-        isa    => 'Str',
+        isa    => 'Maybe[Str]',
         writer => '_set_content',
     );
 
     has issued => (
         is     => 'ro',
-        isa    => 'DateTime',
+        isa    => 'Maybe[DateTime]',
         writer => '_set_issued',
+        lazy_build => 1
     );
 
     has tags => (
@@ -159,6 +161,10 @@ class Munge::Model::FeedItem {
 
     sub _build_modified {
         return DateTime->now();
+    }
+
+    sub _build_issued {
+        return DateTime->today();
     }
 
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {

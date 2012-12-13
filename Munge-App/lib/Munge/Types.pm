@@ -12,7 +12,7 @@ use MooseX::Types -declare => [qw|Account Feed Uri UUID ParserItem|];
 
 class_type 'Account' => { class => 'Munge::Schema::Result::Account' };
 
-class_type 'Feed' => { class => 'Munge::Schema::Result::Feed' };
+class_type 'Feed' => { class => 'Munge::Model::Feed' };
 
 class_type 'Uri' => { class => 'URI' };
 

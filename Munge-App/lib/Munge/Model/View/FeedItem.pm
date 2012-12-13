@@ -140,10 +140,12 @@ class Munge::Model::View::FeedItem {
 
     method _create_list_view ( $feed_item ) {
         my $ug = Data::UUID->new();
+        
+        my $issued = $feed_item->issued || DateTime->today;
 
         return {
             $feed_item->get_inflated_columns(),
-            date                => $feed_item->issued->ymd,
+            date                => $issued->ymd,
             feed_description    => $feed_item->feed->description,
             feed_title          => $feed_item->feed->title,
             feed_uuid           => $feed_item->feed->uuid,
