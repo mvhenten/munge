@@ -6,13 +6,14 @@ use warnings;
 use Dancer ':syntax';
 use Data::Dumper;
 
+use Munge::Helper qw|account feed_view synchronize_feed|;
 use Munge::Model::Account;
 use Munge::Model::FeedItem;
-use Munge::Model::View::FeedItem;
-use Munge::Model::View::Feed;
 use Munge::Model::OPML;
+use Munge::Model::View::Feed;
+use Munge::Model::View::FeedItem;
 use Munge::Types qw|UUID|;
-use Munge::Helper qw|account feed_view|;
+use Munge::Util qw|is_url proc_fork|;
 
 prefix '/manage';
 
@@ -35,6 +36,32 @@ post '/import' => sub {
         imported => opml_feed_view($opml),
       };
 
+};
+
+post '/subscribe' => sub {
+    my $url = param('feed_url');
+
+    if ( my $uri = is_url($url) ) {
+        my $uuid = Munge::UUID->new( uri => $uri );
+
+        my $feed = Munge::Model::Feed->new(
+            link    => $uri->as_string,
+            uuid    => $uuid->uuid_bin,
+            account => account(),
+        );
+
+        $feed->store();
+
+        proc_fork(
+            sub {
+                synchronize_feed($feed);
+            }
+        );
+
+        return redirect( q|/feed/| . $uuid->uuid );
+    }
+
+    template 'manage/subscribe', { url => $url, };
 };
 
 sub opml_feed_view {

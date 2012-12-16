@@ -6,7 +6,7 @@ use warnings;
 use Dancer ':syntax';
 use Data::Dumper;
 
-use Munge::Helper qw|account|;
+use Munge::Helper qw|account synchronize_feed feed_view|;
 use Munge::Model::Account;
 use Munge::Model::Feed;
 use Munge::Model::FeedItem;
@@ -14,14 +14,12 @@ use Munge::Model::Feed::ItemCollection;
 use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;
 use Munge::Types qw|UUID|;
-use Proc::Fork;
-use Try::Tiny;
+use Munge::Util qw|proc_fork|;
 
 prefix '/feed';
 
 get '/' => sub {
-    my $account = account();
-    my $feed_view = Munge::Model::View::Feed->new( account => $account );
+    my $feed_view = feed_view();
 
     return template 'feed/index',
       {
@@ -37,14 +35,14 @@ get '/refresh/:feed' => sub {
     # todo 404
     redirect('/') if not to_UUID($feed_id);
 
-    my $account = account();
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), account() );
 
-    run_fork {
-        child {
+    proc_fork(
+        sub {
             synchronize_feed($feed);
+            return;
         }
-    };
+    );
 
     return redirect(qq|/feed/$feed_id|);
 };
@@ -92,8 +90,8 @@ get '/refresh' => sub {
     # todo logging
     session( 'refresh_lock', 1 );
 
-    run_fork {
-        child {
+    proc_fork(
+        sub {
             my @feeds = reverse $account->feeds;
             foreach my $feed_rs (@feeds) {
                 my $feed = Munge::Model::Feed->load( $feed_rs->uuid, $account );
@@ -101,8 +99,9 @@ get '/refresh' => sub {
             }
 
             session( 'refresh_lock', 0 );
+
         }
-    };
+    );
 
     return redirect('/');
 };
@@ -127,23 +126,6 @@ get '/:feed' => sub {
       };
 
 };
-
-sub synchronize_feed {
-    my ($feed) = @_;
-
-    debug( 'Synchronizing feed ' . $feed->link );
-
-    try {
-        debug('Start working on feed');
-        $feed->synchronize();
-        $feed->store();
-    }
-    catch {
-        debug $_;
-    };
-
-    return;
-}
 
 sub feed_item_view {
     my ($feed_id) = @_;

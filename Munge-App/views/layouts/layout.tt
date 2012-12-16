@@ -21,9 +21,16 @@
               <li><a href="/feed/archive">Unread</a></li>
               <li><a href="/feed/starred">Saved</a></li>
           </ul>
-          <ul id="mains">
-              <li><a href="/feed/add">add new feed +</a></li>
-          </ul>
+          <div>
+            <form action="/manage/subscribe" method="post">
+                <label for="subscribe-feed-url">Subscribe</label>
+                <input type="text" name="feed_url" id="subscribe-feed-url" />
+                <input type="submit" value="subscribe" />
+                <br/>
+                <a href="/manage/import">import feeds from file</a>
+            </form>
+            
+          </div>
           <ul id="feeds">
           [% FOREACH f IN feeds %]
               <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>

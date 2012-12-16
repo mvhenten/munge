@@ -17,15 +17,18 @@ use HTML::Restrict;
 use Exporter::Lite;
 use Munge::Types qw|UUID|;
 use Method::Signatures;
+use Proc::Fork;
 
 our @EXPORT_OK = qw|
-    strip_html_comments
-    uuid_string
-    strip_html
-    sanitize_html
-    restrict_html
-    string_ellipsize
-|;
+  is_url
+  proc_fork
+  restrict_html
+  sanitize_html
+  string_ellipsize
+  strip_html
+  strip_html_comments
+  uuid_string
+  |;
 
 sub HTML5_TAGS {
     return qw|
@@ -48,13 +51,13 @@ Saves one line of code and maybe a use statement. possibly some cognitive load
 
 =cut
 
-func uuid_string ( $uuid ) {
-    assert( is_UUID( $uuid ) );
+func uuid_string($uuid) {
+    assert( is_UUID($uuid) );
 
-    my $ug = Data::UUID->new();
+      my $ug = Data::UUID->new();
 
-    return $ug->to_string( $uuid );
-}
+      return $ug->to_string($uuid);
+  }
 
 =item string_ellipsize ( $str, $max_length, $ellipse )
 
@@ -62,22 +65,23 @@ Generate a teaser from $string
 
 =cut
 
-func string_ellipsize ( Str $string, Int $max_length = 240, Str $ellipse = '...' ){
+  func string_ellipsize( Str $string, Int $max_length = 240,
+    Str $ellipse = '...' ) {
     my $chop = substr( $string, 0, $max_length );
 
-    my $after_chop = substr( $string, 0, $max_length + 1 );
+      my $after_chop = substr( $string, 0, $max_length + 1 );
 
-    if( not $after_chop and $after_chop =~ /\s/ ){
+      if ( not $after_chop and $after_chop =~ /\s/ ) {
+
         # character after chop was a whitespace char
         return $chop . $ellipse;
     }
 
     #find last word boundary
-    my $last_space = index( reverse( $chop ), ' ' );
+    my $last_space = index( reverse($chop), ' ' );
 
-
-    return substr( $chop, 0, $max_length - ( 1 + $last_space ) ) . $ellipse;
-}
+      return substr( $chop, 0, $max_length - ( 1 + $last_space ) ) . $ellipse;
+    }
 
 =item uuid_string ( $binary_uuid )
 
@@ -85,14 +89,13 @@ Strip every html comment
 
 =cut
 
-sub strip_html_comments {
-   my ( $html ) = @_;
+  sub strip_html_comments {
+    my ($html) = @_;
 
     $html =~ s/<!--(.+?)-->//gsm;
 
     return $html;
 }
-
 
 =item sanitize_html ( $html )
 
@@ -139,6 +142,43 @@ sub restrict_html {
     my $hr = HTML::Restrict->new();
     $hr->set_rules( \%allowed_tags );
     return $hr->process($html);
+}
+
+=item is_url ( $url )
+
+Minimal validation to check whether a string looks like an url,
+returns the url as an uri on success, undef otherwise.
+
+=cut
+
+sub is_url {
+    my ($url) = @_;
+
+    my $uri = URI->new( $url, 'http' );
+
+    return $uri if $uri->scheme;
+    return undef;
+}
+
+=item proc_fork ( $sub )
+
+wraps Proc::Fork for even shorter code.
+
+=cut
+
+sub proc_fork {
+    my ($code) = @_;
+
+    assert( ref $code eq 'CODE', 'First argument is a sub' );
+
+    run_fork {
+        child {
+            $code->();
+        }
+
+    };
+
+    return;
 }
 
 1;

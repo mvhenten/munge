@@ -3,6 +3,7 @@ use MooseX::Declare;
 role Munge::Role::Schema {
     use Munge::Config;
     use Munge::Schema;
+    use Munge::DBIC;
 
     has schema => (
         is         => 'ro',
@@ -12,8 +13,6 @@ role Munge::Role::Schema {
     );
 
     method _build_schema {
-        return Munge::Schema->connect( Munge::Config::DSN(),
-            Munge::Config::DB_USER(), Munge::Config::DB_PASSWORD(),
-            undef, { mysql_enable_utf8 => 1, quote_names => 1 } );
+        return Munge::DBIC::get_connection();
     }
 }

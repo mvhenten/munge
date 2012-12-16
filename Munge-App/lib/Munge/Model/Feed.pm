@@ -112,7 +112,7 @@ class Munge::Model::Feed {
         {
             $self->_set_updated(undef);
         }
-
+        
         my $feed_client = $self->_get_feed_client();
 
           return unless $feed_client->updated;
