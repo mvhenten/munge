@@ -106,6 +106,6 @@ h3 {
     background-color: #fcfcfc;
 }
 
-.item img {
-    max-width: 80%;
+.item img, #article img {
+    max-width: 95%;
 }
