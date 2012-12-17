@@ -37,28 +37,25 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span2">
-
-        <ul class="nav nav-tabs nav-stacked">
-            <li><a href="/">Most recent</a></li>
-            <li><a href="/feed/archive">Crunch</a></li>
-            <li><a href="/feed/starred">Saved</a></li>
-        </ul>
-          
-        <form  class="form-search" action="/manage/subscribe" method="post">
-            <div class="input-append">
-                <input type="text" class="span6 search-query" name="feed_url" id="subscribe-feed-url" />
-                <button type="submit" class="btn">subscribe</button>
-            </div>
-            <a href="/manage/import">import feeds from file</a>
-        </form>
-            
-          <ul id="feeds">
-          [% FOREACH f IN feeds %]
-              <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
-          [% END %]
-          </ul>
-
-
+            <ul class="nav nav-tabs nav-stacked">
+                <li><a href="/">Most recent</a></li>
+                <li><a href="/feed/archive">Crunch</a></li>
+                <li><a href="/feed/starred">Saved</a></li>
+            </ul>
+              
+            <form  class="form-search" action="/manage/subscribe" method="post">
+                <div class="input-append">
+                    <input type="text" class="span6 search-query" name="feed_url" id="subscribe-feed-url" />
+                    <button type="submit" class="btn">subscribe</button>
+                </div>
+                <a href="/manage/import">import feeds from file</a>
+            </form>
+                
+            <ul class="nav nav-stacked">    
+                [% FOREACH f IN feeds %]
+                <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
+                [% END %]
+            </ul>
         </div>
         <div class="span10">
           [% content %]
