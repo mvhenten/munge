@@ -2,45 +2,67 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Munge - Feed Me!</title>
-    <link href="[% request.uri_base %]/css/style.css" rel="stylesheet">
+    <link href="/css/bootstrap.css" rel="stylesheet">  </head>
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">  </head>
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
     <script src="[% request.uri_base %]/js/jquery.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap.js"></script>
     <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
-  </head>
   <body>
-    <div id="page">
-      <div class="toolbar right" id="header" style="color: #fff;">
-        <a href="/feed/refresh">refresh feeds</a>
-        hello, <a href="">name</a>. <a href="">my account</a> | <a href="">settings</a>
+    <div class="navbar navbar-inverse">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">Munge</a>
+          <div class="nav-collapse collapse">
+            <p class="navbar-text pull-right">
+              Logged in as <a href="#" class="navbar-link">[% account.username %]</a>
+            </p>
+            <ul class="nav">
+              <li><a href="/feed/refresh">refresh feeds</a></li>
+              <li><a href="/manage/import">import feeds</a></li>
+              <li><a href="/account/logout">logout</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
       </div>
+    </div>
 
-      <div id="left">
-          <ul id="mains">
-              <li><a href="/">Recent</a></li>
-              <li><a href="/feed/archive">Unread</a></li>
-              <li><a href="/feed/starred">Saved</a></li>
-          </ul>
-          <div>
-            <form action="/manage/subscribe" method="post">
-                <label for="subscribe-feed-url">Subscribe</label>
-                <input type="text" name="feed_url" id="subscribe-feed-url" />
-                <input type="submit" value="subscribe" />
-                <br/>
-                <a href="/manage/import">import feeds from file</a>
-            </form>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span2">
+
+        <ul class="nav nav-tabs nav-stacked">
+            <li><a href="/">Most recent</a></li>
+            <li><a href="/feed/archive">Crunch</a></li>
+            <li><a href="/feed/starred">Saved</a></li>
+        </ul>
+          
+        <form  class="form-search" action="/manage/subscribe" method="post">
+            <div class="input-append">
+                <input type="text" class="span6 search-query" name="feed_url" id="subscribe-feed-url" />
+                <button type="submit" class="btn">subscribe</button>
+            </div>
+            <a href="/manage/import">import feeds from file</a>
+        </form>
             
-          </div>
           <ul id="feeds">
           [% FOREACH f IN feeds %]
               <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
           [% END %]
-
           </ul>
-      </div>
 
-      <div id="main">
+
+        </div>
+        <div class="span10">
           [% content %]
+        </div>
       </div>
     </div>
   </body>
