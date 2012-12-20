@@ -1,5 +1,5 @@
 html, body {
-    font-size: 12px;
+    font-size: 14px;
     background-color: #ddc;
     color: #333;
 }
@@ -13,7 +13,6 @@ h1 {
 }
 
 #sidebar {
-    font-size: 0.8em;
 }
 
 .article {
@@ -27,13 +26,13 @@ h1 {
 }
 
 .summary {
-    font-size: .8em;
+    font-size: .9em;
     margin-right: 1em;
     margin-bottom: 1em;
     float: left;
     background-color: #fff;
     border: 1px solid #efefef;
-    height: 240px;
+    height: 260px;
     max-width: 240px;
 }
 
