@@ -1,14 +1,7 @@
-<div style="position:relative;">
-  <h1>[% feed.title %]</h1>
-  <div style="margin: 1em 0;">
-    <a href="/feed/remove/[% feed.uuid_string %]">remove</a>
-    <a href="/feed/refresh/[% feed.uuid_string %]">refresh feed</a>
-    <a href="/feed/read/[% feed.uuid_string %]">mark read</a>
-  </div>
+[% INCLUDE 'feed/block/head.tt' title = feed.title, uuid_string = feed.uuid_string, description = feed.description %]
+<div class="float-wrap" id="accordion">
+[% FOREACH item IN items %]
+    [% INCLUDE 'feed/block/item.tt' item = item, feed = feed, skip_current = 1 %]
+[% END %]
 </div>
-<div><em>[% feed.description %]</em></div>
-    <div id="accordion">
-    [% FOREACH item IN items %]
-        [% INCLUDE 'feed/block/item.tt' item = item %]
-    [% END %]
-</div>
+[% INCLUDE 'feed/block/read.tt' items = items %]

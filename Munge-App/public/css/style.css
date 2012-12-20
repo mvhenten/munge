@@ -1,111 +1,80 @@
-@import 'main.css';
-@import 'normalize.css';
-
 html, body {
-    font: 12px sans-serif;
-    padding: 0 1em;
-    color: #666;
-    background: #ddd url('gray_jean.png');
+    font-size: 12px;
+    background-color: #ddc;
+    color: #333;
 }
 
-#page {
-    width: 75%;
-    margin: 0 auto;
-    min-width: 720px;
-    max-width: 960px;
+h1 {
+    font-size: 2em;
 }
 
-a, a:visited, a:hover, a:active {
-    text-decoration: none;
-    color: #666;
+.float-wrap {
+    overflow: hidden;
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-h3 {
-    color: #444;
-    margin:0;
-}
-
-#header {
-    line-height: 2em;
-    text-align: right;
-}
-
-#header a {
-    font-weight: bold;
-}
-
-.header {
-    position: relative;
-}
-
-.header .right {
-    position: absolute;
-    right: 0;
-    top:0;
-}
-
-#main {
-    margin-left: 210px;
-    border: 1px solid #ccc;
-    padding: 0 1em;
-    background-color: #eee;
-}
-
-#main .feed-item {
-}
-
-#main .feed-info {
+#sidebar {
     font-size: 0.8em;
 }
 
-#main .feed-summary {
-    padding: 1em 0;
-}
-
-.read .feed-summary, .read h3 {
-    color: #999;
-}
-
-
-#mains {
-    margin:0;
-    font-size: 1.2em;
-}
-
-#feeds {
-    font-size: 0.9em;
-}
-
-#left {
-    color: #666;
-    overflow: hidden;
+.article {
+    max-width: 640px;
+    border: 1px solid #eee  ;
     float: left;
-    width: 180px;
+    clear: left;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    background-color: #fff;
 }
 
-#left ul {
-    list-style: none;
-    line-height: 1.8em;
-    padding: 1em 0 1em 0;
-    border-bottom: 1px solid #999;
+.summary {
+    font-size: .8em;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    float: left;
+    background-color: #fff;
+    border: 1px solid #efefef;
+    height: 240px;
+    max-width: 240px;
 }
 
-
-#left a {
-    color: inherit;
+.summary-list {
+    max-width: 640px;
+    font-size: .9em;
+    border: 1px solid #eee  ;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    background-color: #fff;
 }
 
-#article {
-    border: 1px solid #ccc;
-    padding: 1em;
-    margin: 1em 0;
-    background-color: #fcfcfc;
+.summary-list .padding,
+.article .padding {
+    padding: 20px 30px;
 }
 
-.item img, #article img {
-    max-width: 95%;
+.article .feed-title {
+    font-weight: normal;
+}
+
+.summary .padding {
+    padding: 10px 20px;
+}
+
+.article .navbar {
+    margin-bottom: 10px;
+}
+
+.summary small {
+    display:none;
+}
+
+input[type="text"].input-small {
+    font-size: inherit !important;
+    height: 12px;
+}
+
+.article h1,
+.article h2,
+.article h3,
+.article h4 {
+    font-size: 13px;
 }

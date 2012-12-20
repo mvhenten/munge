@@ -4,8 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Munge - Feed Me!</title>
-    <link href="/css/bootstrap.css" rel="stylesheet">  </head>
-    <link href="/css/bootstrap-responsive.css" rel="stylesheet">  </head>
+    <link href="/css/bootstrap.css" rel="stylesheet">
+    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
     <script src="[% request.uri_base %]/js/jquery.js"></script>
     <script src="[% request.uri_base %]/js/bootstrap.js"></script>
@@ -33,31 +34,30 @@
         </div>
       </div>
     </div>
-
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span2">
+        <div class="span3">
             <ul class="nav nav-tabs nav-stacked">
-                <li><a href="/">Most recent</a></li>
-                <li><a href="/feed/archive">Crunch</a></li>
-                <li><a href="/feed/starred">Saved</a></li>
+                <li><a href="/"><i class="icon-th-large"></i> Recent</a></li>
+                <li><a href="/feed/archive"><i class="icon-list"></i> Crunch</a></li>
+                <li><a href="/feed/starred"><i class="icon-time"></i> Saved</a></li>
             </ul>
-              
             <form  class="form-search" action="/manage/subscribe" method="post">
-                <div class="input-append">
-                    <input type="text" class="span6 search-query" name="feed_url" id="subscribe-feed-url" />
-                    <button type="submit" class="btn">subscribe</button>
-                </div>
-                <a href="/manage/import">import feeds from file</a>
+              <div class="input-prepend input-append">
+                  <input type="text" class="input-small" name="feed_url" id="subscribe-feed-url" />
+                  <button type="submit" class="btn btn-mini"><i class="icon-ok-sign"></i>import</button>
+              </div>
+              <div>
+                <a href="/manage/import"><i class="icon-cog"></i> import feeds from file</a>
+              </div>
             </form>
-                
-            <ul class="nav nav-stacked">    
+            <ul id="sidebar" class="nav nav-stacked">
                 [% FOREACH f IN feeds %]
                 <li><a href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
                 [% END %]
             </ul>
         </div>
-        <div class="span10">
+        <div class="span9">
           [% content %]
         </div>
       </div>

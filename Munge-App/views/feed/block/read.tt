@@ -1,0 +1,11 @@
+<h4>Older items</h4>
+<div class="summary-list">
+  <div class="padding">
+    <ul class="nav nav-stacked">
+    [% FOREACH item IN items %]
+    [% NEXT IF NOT item.read %]
+      <li><strong><a href="/item/[% item.uuid_string %]">[% item.title %]</a></strong> [% item.summary %]</li>
+    [% END %]
+    </ul>
+  </div>
+</div>
