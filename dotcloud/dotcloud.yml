@@ -1,0 +1,5 @@
+www:
+    type: perl
+    approot: App
+db:
+    type: mysql
