@@ -1,6 +1,10 @@
 www:
     type: perl
     approot: App
+    requirements:
+        - DBIx::Class::Admin
+        - JSON::Any
+        - MooseX::Types::JSON
     postinstall: ./mysql.pl
 db:
     type: mysql
