@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use YAML::Any qw|LoadFile|;
-use Cwd qw|realpath|;
+use File::Basename qw|fileparse|;
 
 {
     my $config;
@@ -16,7 +16,10 @@ use Cwd qw|realpath|;
 }
 
 sub APPLICATION_PATH {
-    my ($app_dir) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
+    my($filename, $directories, $suffix) = fileparse(__FILE__);
+
+    my ( $app_dir ) = $directories =~ m/(.+\/)lib\/Munge\//;
+
     return $app_dir;
 }
 
