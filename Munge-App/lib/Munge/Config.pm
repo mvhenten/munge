@@ -21,11 +21,17 @@ sub APPLICATION_PATH {
 }
 
 sub HOST {
-    return $ENV{OPENSHIFT_MYSQL_DB_HOST} || 'localhost';
+    return
+         $ENV{DOTCLOUD_DB_MYSQL_HOST}
+      || $ENV{OPENSHIFT_MYSQL_DB_HOST}
+      || 'localhost';
 }
 
 sub PORT {
-    return $ENV{OPENSHIFT_MYSQL_DB_PORT} || '3306';
+    return
+         $ENV{DOTCLOUD_DB_MYSQL_PORT}
+      || $ENV{OPENSHIFT_MYSQL_DB_PORT}
+      || '3306';
 }
 
 sub DSN {
@@ -33,12 +39,16 @@ sub DSN {
 }
 
 sub DB_USER {
-    return $ENV{OPENSHIFT_MYSQL_DB_USERNAME}
+    return
+         $ENV{DOTCLOUD_DB_MYSQL_LOGIN}
+      || $ENV{OPENSHIFT_MYSQL_DB_USERNAME}
       || config()->{plugins}->{DBIC}->{user};
 }
 
 sub DB_PASSWORD {
-    return $ENV{OPENSHIFT_MYSQL_DB_PASSWORD}
+    return
+         $ENV{DOTCLOUD_DB_MYSQL_PASSWORD}
+      || $ENV{OPENSHIFT_MYSQL_DB_PASSWORD}
       || config()->{plugins}->{DBIC}->{pass};
 }
 
