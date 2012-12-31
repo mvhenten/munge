@@ -5,6 +5,7 @@ use warnings;
 
 use YAML::Any qw|LoadFile|;
 use File::Basename qw|fileparse|;
+use Cwd qw|realpath|;
 
 {
     my $config;
@@ -18,9 +19,10 @@ use File::Basename qw|fileparse|;
 sub APPLICATION_PATH {
     my($filename, $directories, $suffix) = fileparse(__FILE__);
 
-    my ( $app_dir ) = $directories =~ m/(.+\/)lib\/Munge\//;
+    my $path = realpath($directories);
+    $path =~ s/\/lib\/Munge$//;
 
-    return $app_dir;
+    return $path;
 }
 
 sub HOST {

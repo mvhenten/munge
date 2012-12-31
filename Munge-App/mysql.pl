@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+use lib './lib';
 
 use DBIx::Class::Admin;
 use DBI;
@@ -11,7 +12,7 @@ my $database;
 my $dbh;
 
 sub DATABASE_NAME {
-    return 'far';
+    return 'munge';
 }
 
 sub DSN {
@@ -61,4 +62,3 @@ if( create_database() ){
 }
 
 print "\n";
-
