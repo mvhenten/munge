@@ -1,5 +1,6 @@
 www:
     type: perl
     approot: App
+    postinstall: ./mysql.pl
 db:
     type: mysql
