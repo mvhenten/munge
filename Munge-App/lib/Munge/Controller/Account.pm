@@ -9,7 +9,7 @@ prefix '/account';
 
 get '/create' => sub {
     return
-      '<form action="/account/create/" method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
+      '<form action="/account/create" method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
 };
 
 post '/create' => sub {
