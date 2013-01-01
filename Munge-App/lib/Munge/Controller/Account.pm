@@ -44,8 +44,9 @@ post '/login' => sub {
 
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
+    
 
-    if ( $account && $account->validate( $account_rs, $password ) ) {
+    if ( $account_rs && $account->validate( $account_rs, $password ) ) {
 
         #         session account => $account_rs;
         session authenticated => true;
