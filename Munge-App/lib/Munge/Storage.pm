@@ -75,7 +75,8 @@ class Munge::Storage {
     }
         
     method _find ( $key, $value ) {
-        return $self->resultset( $self->schema_name )->find( { $key => $value, account_id => $self->account->id } );
+        my ( $rs ) = $self->resultset( $self->schema_name )->search( { $key => $value, account_id => $self->account->id } );
+        return $rs;
     }
  
     method _storable_attributes ( Object $object ) {
