@@ -44,7 +44,6 @@ post '/login' => sub {
 
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
-    
 
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
 
