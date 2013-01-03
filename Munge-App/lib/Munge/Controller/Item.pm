@@ -65,10 +65,10 @@ get '/:feed' => sub {
     return status('not_found') if not $item;
 
     my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
-    
-    if( not $model->read ){
+
+    if ( not $model->read ) {
         $model->set_read();
-        $model->store();        
+        $model->store();
     }
 
     template 'feed/item',

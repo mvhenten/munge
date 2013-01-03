@@ -17,7 +17,7 @@ use Cwd qw|realpath|;
 }
 
 sub APPLICATION_PATH {
-    my($filename, $directories, $suffix) = fileparse(__FILE__);
+    my ( $filename, $directories, $suffix ) = fileparse(__FILE__);
 
     my $path = realpath($directories);
     $path =~ s/\/lib\/Munge$//;

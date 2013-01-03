@@ -6,7 +6,7 @@
     [% IF current %]
     <div class="float-wrap">
       <small>
-        <em>[% item.date %]</em>
+        <em>[% item.human_date %]</em>
         <em><a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a></em>
         <em> - <a target="_blank" href="[% item.link %]">website</a></em>
       </small>
@@ -31,6 +31,7 @@
         </div>
         [% ELSE %]
         <div class="feed-summary">
+        <img src="[% item.poster_image %]" />
         [% item.summary %]
         </div>
         [% END %]

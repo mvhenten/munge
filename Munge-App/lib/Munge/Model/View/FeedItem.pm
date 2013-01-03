@@ -20,7 +20,7 @@ class Munge::Model::View::FeedItem {
     use DateTime;
     use Munge::Types qw|UUID|;
     use Data::Dumper;
-    use Munge::Util qw|strip_html string_ellipsize sanitize_html|;
+    use Munge::Util qw|human_date_string find_interesting_image_source|;
 
     has account => (
         is => 'ro',
@@ -145,7 +145,9 @@ class Munge::Model::View::FeedItem {
 
         return {
             $feed_item->get_inflated_columns(),
+            human_date          => human_date_string( $issued ),
             date                => $issued->ymd,
+            poster_image        => find_interesting_image_source( $feed_item->content ) || undef,
             feed_description    => $feed_item->feed->description,
             feed_title          => $feed_item->feed->title,
             feed_uuid           => $feed_item->feed->uuid,
