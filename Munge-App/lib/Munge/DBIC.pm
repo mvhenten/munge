@@ -26,13 +26,15 @@ use warnings;
                 Munge::Config::DB_USER(),
                 Munge::Config::DB_PASSWORD(),
                 {
-                    RaiseError => 1,
-                    AutoCommit => 1,
+                    RaiseError        => 1,
+                    AutoCommit        => 1,
+                    mysql_enable_utf8 => 1,
+                    quote_names       => 1
                 }
             );
 
             $schema = Munge::Schema->connect( sub { return $conn->dbh },
-                undef, { mysql_enable_utf8 => 1, quote_names => 1 } );
+                { mysql_enable_utf8 => 1, quote_names => 1 } );
         }
 
         return $schema;
