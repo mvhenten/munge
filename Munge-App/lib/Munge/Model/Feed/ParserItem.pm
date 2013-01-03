@@ -80,7 +80,7 @@ class Munge::Model::Feed::ParserItem {
 
     method _build_summary {
         return string_ellipsize(
-            strip_html( $self->content || $self->_summary->body ) || '' );
+            strip_html( $self->_summary->body || $self->content ) || '' );
     }
 
     method _build_tags {

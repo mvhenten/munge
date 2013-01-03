@@ -4,9 +4,63 @@ use strict;
 use warnings;
 
 class t::Munge::Util {
-    use Munge::Util qw|strip_html|;
-
+    use Munge::Util qw|strip_html human_date_string|;
+    use DateTime;
     use Test::Sweet;
+
+    test human_date_string {
+        my @cases = (
+            {
+                label    => '1 year ago',
+                expected => '1 year',
+                dt       => DateTime->now->subtract( years => 1, days => 1 ),
+            },
+            {
+                label    => '1 month ago',
+                expected => '1 month',
+                dt       => DateTime->now->subtract( months => 1, days => 1 ),
+            },
+            {
+                label    => '2 months ago',
+                expected => '2 months',
+                dt       => DateTime->now->subtract( months => 2, days => 1 ),
+            },
+            {
+                label    => '3 weeks ago',
+                expected => '3 weeks',
+                dt       => DateTime->now->subtract( weeks => 3, days => 1 ),
+            },
+            {
+                label    => '1 week ago',
+                expected => '1 week',
+                dt       => DateTime->now->subtract( weeks => 1, days => 1 ),
+            },
+            {
+                label    => '6 days ago',
+                expected => '6 days',
+                dt       => DateTime->now->subtract( days => 6 ),
+            },
+            {
+                label    => '11 hours ago',
+                expected => '11 hours',
+                dt       => DateTime->now->subtract( hours => 11 ),
+            },
+            {
+                label    => '10 minutes ago',
+                expected => '10 minutes',
+                dt       => DateTime->now->subtract( minutes => 10 ),
+            },
+        );
+
+        foreach my $case (@cases) {
+            my ( $expected, $label, $dt ) = @{$case}{qw|expected label dt|};
+
+            my $actual = human_date_string($dt);
+
+            is( $actual, $expected, $label );
+
+        }
+    }
 
     test test_strip_html {
         my @cases = (

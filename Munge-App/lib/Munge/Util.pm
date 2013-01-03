@@ -11,15 +11,20 @@ package Munge::Util;
 use strict;
 use warnings;
 
-use Data::UUID;
 use Carp::Assert;
-use HTML::Restrict;
+use Data::UUID;
+use DateTime;
+use DateTime::Format::Human::Duration;
 use Exporter::Lite;
-use Munge::Types qw|UUID|;
+use HTML::Restrict;
+use HTML::TreeBuilder::XPath;
 use Method::Signatures;
+use Munge::Types qw|UUID|;
 use Proc::Fork;
 
 our @EXPORT_OK = qw|
+  find_interesting_image_source
+  human_date_string
   is_url
   proc_fork
   restrict_html
@@ -59,29 +64,48 @@ func uuid_string($uuid) {
       return $ug->to_string($uuid);
   }
 
+=item human_date_string ()
+
+Format given datetime into "human" dates, using the smallest possible unit.
+
+=cut
+
+func human_date_string( DateTime $dt ) {
+    my $duration  = DateTime->now - $dt;
+    my $formatter = DateTime::Format::Human::Duration->new();
+
+    foreach my $unit (qw|years months weeks days hours minutes seconds|) {        
+        if ( $duration->in_units($unit) ) {
+            return $formatter->format_duration( $duration, 'units' => [$unit] );
+        }
+    }
+
+    return;
+}
+
 =item string_ellipsize ( $str, $max_length, $ellipse )
 
 Generate a teaser from $string
 
 =cut
 
-  func string_ellipsize( Str $string, Int $max_length = 240,
+func string_ellipsize( Str $string, Int $max_length = 240,
     Str $ellipse = '...' ) {
     my $chop = substr( $string, 0, $max_length );
-
+    
       my $after_chop = substr( $string, 0, $max_length + 1 );
-
+    
       if ( not $after_chop and $after_chop =~ /\s/ ) {
-
+    
         # character after chop was a whitespace char
         return $chop . $ellipse;
     }
-
+    
     #find last word boundary
     my $last_space = index( reverse($chop), ' ' );
 
-      return substr( $chop, 0, $max_length - ( 1 + $last_space ) ) . $ellipse;
-    }
+    return substr( $chop, 0, $max_length - ( 1 + $last_space ) ) . $ellipse;
+}
 
 =item uuid_string ( $binary_uuid )
 
@@ -89,11 +113,11 @@ Strip every html comment
 
 =cut
 
-  sub strip_html_comments {
+sub strip_html_comments {
     my ($html) = @_;
-
+    
     $html =~ s/<!--(.+?)-->//gsm;
-
+    
     return $html;
 }
 
@@ -142,6 +166,53 @@ sub restrict_html {
     my $hr = HTML::Restrict->new();
     $hr->set_rules( \%allowed_tags );
     return $hr->process($html);
+}
+
+=item extract_images ( $html )
+
+Wrapper around HTML::TreeBuilder::XPath. Extract all images from given HTML string.
+Returns a list of HTML::Elements
+
+=cut
+
+sub extract_images {
+    my ($html) = @_;
+
+    my $xpath = HTML::TreeBuilder::XPath->new();
+    $xpath->parse_content($html);
+
+    my @images = $xpath->findnodes('//img');
+
+    return @images;
+}
+
+=item find_interesting_image ( $HTML )
+
+Extract images from $HTML string, and looks at their url to guess wether
+it's a tracker pixel or something interesting, resturns the first "interesting"
+image found or undef.
+
+=cut
+
+sub find_interesting_image_source {
+    my ($html) = @_;
+
+    my @images = extract_images($html);
+
+    # N.B. in reverse: in our heuristic, we guess that the most exiting images
+    # might be at the end of the text.
+    foreach my $image ( reverse @images ) {
+        my $src = $image->attr('src');
+
+        next
+          if $src =~
+          '^http[s]?:[/][/]blogger[.]googleusercontent[.]com[/]tracker';
+        next if $src =~ '^http[s]?:[/][/]feeds[.]feedburner[.]com/[~]r';
+
+        return $src;
+    }
+
+    return undef;
 }
 
 =item is_url ( $url )
