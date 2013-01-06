@@ -168,7 +168,7 @@ __PACKAGE__->set_primary_key("id");
 
 =cut
 
-__PACKAGE__->add_unique_constraint( "account_uuid_idx",
+__PACKAGE__->add_unique_constraint( "unique_account_id_uuid",
     [ "account_id", "uuid" ] );
 
 =head1 RELATIONS
