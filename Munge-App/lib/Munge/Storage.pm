@@ -42,12 +42,23 @@ class Munge::Storage {
         return $name->new();
     }
 
-    method store ( $object ) {
+    method create ( $object ) {
+        my $values = $self->_storable_attributes( $object );
+        $values->{account_id} = $self->account->id;
+
+        my $rs = $self->resultset( $self->schema_name )->create( $values );
+
+        return $rs->get_inflated_columns();
+    }
+
+    method update ( $object ) {
         my $values = $self->_storable_attributes( $object );
 
         $values->{account_id} = $self->account->id;
 
-        my $rs = $self->resultset( $self->schema_name )->update_or_create( $values );
+        my $rs = $self->resultset( $self->schema_name );
+        $rs->update_or_create( $values ); # N.B. this fetches first
+
         return $rs->get_inflated_columns();
     }
 
