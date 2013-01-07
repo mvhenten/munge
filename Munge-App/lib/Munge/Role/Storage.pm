@@ -26,13 +26,8 @@ role Munge::Role::Storage {
     
     method store {        
         my %values = $self->id ? $self->_storage->update( $self ) : $self->_storage->create( $self );
-        
-        foreach my $key ( keys %values ){
-            my $method = "_set_$key";
-            
-            next if not $self->can( $method );
-            $self->$method( $values{$key} );
-        }
+                
+        return $self->new(  %values, account => $self->account );
     }
      
     method delete {
