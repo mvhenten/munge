@@ -3,6 +3,7 @@ use MooseX::Declare;
 role Munge::Role::Schema {
     use Munge::Config;
     use Munge::Schema;
+    use DBIx::Connector;
 
     has schema => (
         is         => 'ro',

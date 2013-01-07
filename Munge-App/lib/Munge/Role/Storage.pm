@@ -24,11 +24,9 @@ role Munge::Role::Storage {
         $self->_get_storage( $self->account );
     }
     
-    method store {
-        my %values = $self->_storage->store( $self );
+    method store {        
+        my %values = $self->id ? $self->_storage->update( $self ) : $self->_storage->create( $self );
         
-        $self->_schema_class();
-
         foreach my $key ( keys %values ){
             my $method = "_set_$key";
             
