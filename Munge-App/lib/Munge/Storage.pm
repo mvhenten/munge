@@ -44,8 +44,9 @@ class Munge::Storage {
     
     method update ( $object ) {
         my $values = $self->_storable_attributes( $object );
-        my $row = $self->resultset( $self->schema_name )->new( $values );
+        $values->{account_id} = $self->account->id;
 
+        my $row = $self->resultset( $self->schema_name )->new( $values );
         $row->update();
         
         return $row->get_inflated_columns();
@@ -53,8 +54,9 @@ class Munge::Storage {
 
     method create ( $object ) {
         my $values = $self->_storable_attributes( $object );
-        my $row = $self->resultset( $self->schema_name )->create( $values );
-        
+        $values->{account_id} = $self->account->id;
+
+        my $row = $self->resultset( $self->schema_name )->create( $values );        
         return $row->get_inflated_columns();        
     }
 
