@@ -57,9 +57,9 @@ class Munge::Storage {
         $values->{account_id} = $self->account->id;
 
         my $rs = $self->resultset( $self->schema_name );
-        $rs->update_or_create( $values ); # N.B. this fetches first
+        my $row = $rs->update_or_create( $values ); # N.B. this fetches first
 
-        return $rs->get_inflated_columns();
+        return $row->get_inflated_columns();
     }
 
     method load ( $key, $value ) {
