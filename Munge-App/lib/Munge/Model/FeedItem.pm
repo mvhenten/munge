@@ -64,6 +64,12 @@ class Munge::Model::FeedItem {
           |;
     }
 
+    has id => (
+        is     => 'ro',
+        isa    => 'Int',
+        writer => '_set_id',
+    );
+
     has uuid => (
         is       => 'ro',
         isa      => UUID,
