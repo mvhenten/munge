@@ -17,7 +17,7 @@ Takes a class, stores it's public parts
 
 class Munge::Storage {
     use Data::Dumper;
-
+    
     with 'Munge::Role::Schema';
 
     has account => (
@@ -41,25 +41,23 @@ class Munge::Storage {
         my $name = $self->schema_name;
         return $name->new();
     }
+    
+    method update ( $object ) {
+        my $values = $self->_storable_attributes( $object );
+        $values->{account_id} = $self->account->id;
+
+        my $row = $self->resultset( $self->schema_name )->new( $values );
+        $row->update();
+        
+        return $row->get_inflated_columns();
+    }
 
     method create ( $object ) {
         my $values = $self->_storable_attributes( $object );
         $values->{account_id} = $self->account->id;
 
-        my $rs = $self->resultset( $self->schema_name )->create( $values );
-
-        return $rs->get_inflated_columns();
-    }
-
-    method update ( $object ) {
-        my $values = $self->_storable_attributes( $object );
-
-        $values->{account_id} = $self->account->id;
-
-        my $rs = $self->resultset( $self->schema_name );
-        my $row = $rs->update_or_create( $values ); # N.B. this fetches first
-
-        return $row->get_inflated_columns();
+        my $row = $self->resultset( $self->schema_name )->create( $values );        
+        return $row->get_inflated_columns();        
     }
 
     method load ( $key, $value ) {

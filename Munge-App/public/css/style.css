@@ -26,15 +26,40 @@ h1 {
     background-color: #fff;
 }
 
-.summary {
-    font-size: .9em;
-    margin-right: 1em;
-    margin-bottom: 1em;
-    float: left;
+.feed-list {
     background-color: #fff;
     border: 1px solid #efefef;
-    height: 260px;
-    max-width: 240px;
+}
+
+.summary {
+    padding: 1em;
+    overflow:hidden;
+}
+
+.poster-image {
+    overflow:hidden;
+    width: 165px;
+    height: 100px;
+    float: left;
+}
+
+.poster-image img {
+    width: 140px;
+}
+
+.summary-body {
+    font-size: .9em;
+    overflow:hidden;
+    min-width: 140px;
+}
+
+.summary-body h4 {
+    margin:0;
+    font-size: 1em;
+}
+
+.summary-footer {
+    font-size: 0.8em;
 }
 
 .summary-list {
