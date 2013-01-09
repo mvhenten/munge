@@ -1,6 +1,6 @@
-<h4>Older items</h4>
 <div class="summary-list">
   <div class="padding">
+    <h4>Older items</h4>
     <ul class="nav nav-stacked">
     [% FOREACH item IN items %]
     [% NEXT IF NOT item.read %]
