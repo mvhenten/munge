@@ -3,7 +3,7 @@ use MooseX::Declare;
 =head1 NAME
 
  Munge::Model::FeedItem
- 
+
 =head1 DESCRIPTION
 
 CRUD model for Feed items, uses "Storage" for load and delete.
@@ -15,7 +15,7 @@ CRUD model for Feed items, uses "Storage" for load and delete.
 
     # constructor N.B. store requires all non-maybe attributes to
     # be set...
-    
+
     my $feed_item = Munge::Model::FeedItem->new(
         account => $self->account,
         feed_id => $feed->id,
@@ -25,7 +25,7 @@ CRUD model for Feed items, uses "Storage" for load and delete.
     );
 
     # sync with a ParserItem only updates MUTABLE_ATTRIBUTES
-    
+
      Munge::Model::FeedItem->synchronize( $feed, $parser_item );
 
 =ITEM MUTABLE_ATTRIBUTES
@@ -39,7 +39,7 @@ and that have a (private) _setter
     summary
     tags
     title
-    
+
 =cut
 
 #use Munge::Types qw|UUID Account Feed ParserItem|;
@@ -190,7 +190,7 @@ class Munge::Model::FeedItem {
             my $setter = "_set_$attr";
               $feed_item->$setter( $parser_item->$attr );
           }
-        
+
         return $feed_item;
     };
 }

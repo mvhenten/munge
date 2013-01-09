@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 =head1 NAME
 
-Munge::Model::Account 
+Munge::Model::Account
 
 =head1 DESCRIPTION
 
@@ -13,7 +13,7 @@ Munge::Model::Account
 use Munge::Types qw|Uri Account|;
 
 class Munge::Model::Account {
-    
+
     use Carp::Assert;
     use Crypt::SaltedHash;
     use Data::Dumper;
@@ -24,16 +24,16 @@ class Munge::Model::Account {
         isa         => 'Munge::Schema::Result::Account',
         lazy_build  => 1,
     );
-    
+
     with 'Munge::Role::Schema';
-    
+
     method _build_account_rs {
         return $self->resultset( 'Account' );
-    }    
-    
+    }
+
     method create( Str $username, Str $plaintext_password ) {
         my $csh = Crypt::SaltedHash->new(algorithm => 'SHA-1');
-        
+
         $csh->add( $plaintext_password );
         my $salted = $csh->generate;
 
@@ -45,30 +45,36 @@ class Munge::Model::Account {
                 verification => '',
             }
         )->insert();
-   
+
         return $rs;
     }
-    
+
+    method load_from_account_id ( Int $account_id ) {
+        my ( $rs ) = $self->resultset('Account')->find( $account_id );
+
+        return $rs;
+    }
+
     method load( Str $username ){
         my ( $rs ) = $self->resultset('Account')->search({ email => $username });
 
         return $rs;
     }
-    
+
     method find( HashRef $columns ){
         return if not $columns->{id};
         assert( defined( $columns->{id} ), 'columns have id');
-        
+
         my ( $rs ) = $self->resultset('Account')->search({ id => $columns->{id} });
 
         assert( defined( $rs ), 'there is an account' );
-        
+
         return $rs;
     }
 
     method validate ( Account $account, Str $plaintext_password ) {
         my $valid = Crypt::SaltedHash->validate( $account->password, $plaintext_password );
-        
+
         return $valid;
     }
 
