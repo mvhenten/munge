@@ -39,7 +39,7 @@ h1 {
 .poster-image {
     overflow:hidden;
     width: 165px;
-    height: 100px;
+    max-height: 140px;
     float: left;
 }
 

@@ -36,20 +36,23 @@ use warnings;
 
     sub get_connection {
         if ( not $schema ) {
-            $schema = Munge::Schema->connect( sub {
-                if( $conn && $conn->connected ) {
-                    return $conn->dbh;
+            $schema = Munge::Schema->connect(
+                sub {
+                    if ( $conn && $conn->connected ) {
+                        return $conn->dbh;
+                    }
+
+                    $conn = get_connector();
+
+                    my $dbh = $conn->dbh;
+
+                    return $dbh;
+                },
+                {
+                    quote_names => 1
+
                 }
-
-                $conn = get_connector();
-
-                my $dbh = $conn->dbh;
-
-                return $dbh;
-            }, {
-                        quote_names       => 1
-
-            } );
+            );
         }
 
         return $schema;

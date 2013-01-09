@@ -10,7 +10,7 @@ use Munge::Schema;
     my $schema;
 
     sub schema {
-        if( $schema and not $schema->storage->connected ){
+        if ( $schema and not $schema->storage->connected ) {
             $schema = undef;
         }
 
@@ -32,7 +32,5 @@ use Munge::Schema;
         return $schema;
     }
 }
-
-
 
 1;
