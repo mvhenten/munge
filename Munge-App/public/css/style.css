@@ -1,6 +1,6 @@
 html, body {
     font-size: 14px;
-    background: #333 url('black_orchid.png');
+    background: #333 url('debut_dark.png');
     color: #333;
     font-family: sans-serif;
 }
@@ -12,6 +12,7 @@ a/*, a:hover, a:visited, a:active */{
 h1 {
     color: #999;
     font: 700 2em 'PT Sans Narrow', sans-serif;
+    margin-top:0;
 }
 
 #sidebar {
@@ -21,7 +22,7 @@ h1 {
 }
 
 #sidebar a {
-    font-size: 1em/1.6em;
+    font: normal 1em/1.6em 'PT Sans Narrow', sans-serif;
 }
 
 #sidebar a.unread {
@@ -77,8 +78,8 @@ h1 {
 }
 
 .summary {
-    padding: 1em;
     overflow:hidden;
+    min-width: 165px;
 }
 
 .poster-image {
@@ -86,16 +87,18 @@ h1 {
     width: 165px;
     max-height: 140px;
     float: left;
+    margin-bottom: 0.5em;
 }
 
 .poster-image img {
-    width: 140px;
+    width: 155px;    
 }
 
 .summary-body {
     font-size: .9em;
     overflow:hidden;
     min-width: 140px;
+    padding-bottom: 1em;
 }
 
 .summary-footer {
@@ -114,7 +117,7 @@ h1 {
 }
 
 .summary .padding {
-    padding: 10px 20px;
+    padding: 1em 1.4em;
 }
 
 .article .navbar {
