@@ -207,7 +207,7 @@ sub find_interesting_image_source {
         next
           if $src =~
           '^http[s]?:[/][/]blogger[.]googleusercontent[.]com[/]tracker';
-        next if $src =~ '^http[s]?:[/][/]feeds[.]feedburner[.]com/[~]r';
+        next if $src =~ '^http[s]?:[/][/]feeds[.]feedburner[.]com/[~]';
 
         return $src;
     }
