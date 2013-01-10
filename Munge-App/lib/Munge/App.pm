@@ -30,8 +30,10 @@ prefix undef;
 hook before_template_render => sub {
     my ( $template_hash ) = @_;
     
+    my $session_account = session('account');
+    
     $template_hash->{account} = {
-        email => account()->email
+        email => $session_account->{email},
     };
     
     return $template_hash;

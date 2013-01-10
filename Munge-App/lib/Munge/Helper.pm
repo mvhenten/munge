@@ -19,6 +19,7 @@ use Munge::Model::Account;
 use Munge::Model::View::Feed;
 use Try::Tiny;
 use Proc::Fork;
+use Data::Dumper;
 
 my @EXPORT_OK = qw|account feed_view synchronize_feed|;
 

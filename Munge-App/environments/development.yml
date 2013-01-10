@@ -1,21 +1,29 @@
 # configuration file for development environment
 
+# only log warning and error messsages
+# log: "debug"
+
 # the logger engine to use
 # console: log messages to STDOUT (your console where you started the
 #          application server)
 # file:    log message to a file in log/
-logger: "console"
+
+# log message to a file in logs/
+logger: "file"
 
 # the log level for this environment
 # core is the lowest, it shows Dancer's core log messages as well as yours
 # (debug, info, warning and error)
-log: "core"
+log: "warning"
 
 # should Dancer consider warnings as critical errors?
 warnings: 1
 
 # should Dancer show a stacktrace when an error is caught?
 show_errors: 1
+
+# route cache
+route_cache: 1
 
 # auto_reload is a development and experimental feature
 # you should enable it by yourself if you want it
@@ -24,7 +32,7 @@ show_errors: 1
 # Be aware it's unstable and may cause a memory leak.
 # DO NOT EVER USE THIS FEATURE IN PRODUCTION 
 # OR TINY KITTENS SHALL DIE WITH LOTS OF SUFFERING
-auto_reload: 1
+# auto_reload: 1
 
 plack_middlewares:
     -
