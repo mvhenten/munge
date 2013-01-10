@@ -4,3 +4,10 @@
 *.bak
 .build
 Munge-App/sessions/
+Munge-App/caches/
+Munge-App/logs/
+dotcloud/App/
+dotcloud/static/
+dotcloud/www.log
+perltidy.LOG
+
