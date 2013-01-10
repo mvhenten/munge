@@ -21,10 +21,21 @@ use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;
 use Munge::Storage;
 use Munge::UUID;
+use Munge::Helper qw|account|;
 
 our $VERSION = '0.1';
 
 prefix undef;
+
+hook before_template_render => sub {
+    my ( $template_hash ) = @_;
+    
+    $template_hash->{account} = {
+        email => account()->email
+    };
+    
+    return $template_hash;
+};
 
 hook 'before' => sub {
     if ( ( not session('account') and not session('authenticated') )
