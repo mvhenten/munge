@@ -54,22 +54,20 @@ class Munge::Model::View::FeedItem {
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
-    method yesterday {
-        my $min_age = $self->format_datetime( DateTime->today()->subtract('days' => 2) );
-        my $max_age = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
+    method crunch {
+        my $today = $self->format_datetime( DateTime->today() );
 
         my $items = $self->resultset('FeedItem')->search(
             {
                 'me.account_id' => $self->account->id,
-                'me.created'    => { '>=', $min_age },
-                'me.created'    => { '<=', $max_age },
+                'me.created'    => { '<', $today },
                 'me.read'       => 0,
             },
             {
                 prefetch => 'feed',
                 join => 'feed',
                 order_by   => { -desc => 'me.issued' },
-                rows       => 10,
+                rows       => 30,
             }
         );
 
@@ -80,7 +78,7 @@ class Munge::Model::View::FeedItem {
         my $items = $self->resultset('FeedItem')->search(
             {
                 'me.account_id' => $self->account->id,
-                'me.starred' => 1,                
+                'me.starred' => 1,
             },
             {
                 prefetch => 'feed',
@@ -140,7 +138,7 @@ class Munge::Model::View::FeedItem {
 
     method _create_list_view ( $feed_item ) {
         my $ug = Data::UUID->new();
-        
+
         my $issued = $feed_item->issued || DateTime->today;
 
         return {

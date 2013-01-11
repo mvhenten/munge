@@ -21,6 +21,7 @@ use HTML::TreeBuilder::XPath;
 use Method::Signatures;
 use Munge::Types qw|UUID|;
 use Proc::Fork;
+use List::MoreUtils qw|any|;
 
 our @EXPORT_OK = qw|
   find_interesting_image_source
@@ -74,7 +75,7 @@ func human_date_string( DateTime $dt ) {
     my $duration  = DateTime->now - $dt;
     my $formatter = DateTime::Format::Human::Duration->new();
 
-    foreach my $unit (qw|years months weeks days hours minutes seconds|) {        
+    foreach my $unit (qw|years months weeks days hours minutes seconds|) {
         if ( $duration->in_units($unit) ) {
             return $formatter->format_duration( $duration, 'units' => [$unit] );
         }
@@ -92,15 +93,15 @@ Generate a teaser from $string
 func string_ellipsize( Str $string, Int $max_length = 240,
     Str $ellipse = '...' ) {
     my $chop = substr( $string, 0, $max_length );
-    
+
       my $after_chop = substr( $string, 0, $max_length + 1 );
-    
+
       if ( not $after_chop and $after_chop =~ /\s/ ) {
-    
+
         # character after chop was a whitespace char
         return $chop . $ellipse;
     }
-    
+
     #find last word boundary
     my $last_space = index( reverse($chop), ' ' );
 
@@ -115,9 +116,9 @@ Strip every html comment
 
 sub strip_html_comments {
     my ($html) = @_;
-    
+
     $html =~ s/<!--(.+?)-->//gsm;
-    
+
     return $html;
 }
 
@@ -194,26 +195,35 @@ image found or undef.
 
 =cut
 
-sub find_interesting_image_source {
-    my ($html) = @_;
-
-    my @images = extract_images($html);
-
-    # N.B. in reverse: in our heuristic, we guess that the most exiting images
-    # might be at the end of the text.
-    foreach my $image ( reverse @images ) {
-        my $src = $image->attr('src');
-
-        next
-          if $src =~
-          '^http[s]?:[/][/]blogger[.]googleusercontent[.]com[/]tracker';
-        next if $src =~ '^http[s]?:[/][/]feeds[.]feedburner[.]com/[~]';
-
-        return $src;
+{
+    sub BLACKLIST {
+        return (
+            qr{^\Qhttp://api.tweetmeme.com/imagebutton.gif\E.*},
+            qr{^\Qhttp://blogger.googleusercontent.com/tracker\E.*},
+            qr{\Qflattr-badge-large.png\E$},
+        );
     }
 
-    return undef;
+    sub find_interesting_image_source {
+        my ($html) = @_;
+
+        my @images = extract_images($html);
+
+        # N.B. in reverse: in our heuristic, we guess that the most exiting images
+        # might be near the end of the text, if we attempt filter out any of the
+        # share/tracker/badge/email buttons...
+        foreach my $image ( reverse @images ) {
+            my $src = $image->attr('src');
+
+            next if any { $src =~ $_ } BLACKLIST();
+            return $src;
+        }
+
+        return undef;
+    }
+
 }
+
 
 =item is_url ( $url )
 
