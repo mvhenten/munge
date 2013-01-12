@@ -1,8 +1,26 @@
-html, body {
+body {
     font-size: 14px;
     background: #333 url('debut_dark.png');
     color: #333;
     font-family: sans-serif;
+}
+
+body.login-form {
+    background: #efefef;
+}
+
+#login-form-wrapper {
+    margin-top: 15%;   
+}
+
+#login-form-wrapper h1 {
+    padding-left: 15%;
+}
+
+#login-form {
+    padding: 3em 0;
+    padding-left: 15%;
+    background: #333 url('debut_dark.png');
 }
 
 a/*, a:hover, a:visited, a:active */{
@@ -13,6 +31,11 @@ h1 {
     color: #999;
     font: 700 2em 'PT Sans Narrow', sans-serif;
     margin-top:0;
+}
+
+.center {
+    margin: 0 auto;
+    float:none;
 }
 
 #sidebar {

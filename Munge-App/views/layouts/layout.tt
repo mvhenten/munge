@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Munge - Feed Me!</title>
-    <link href="/css/bootstrap.css" rel="stylesheet">
-    <link href="/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="/css/style.css" rel="stylesheet">
-    <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
-    <script src="[% request.uri_base %]/js/jquery.js"></script>
-    <script src="[% request.uri_base %]/js/bootstrap.js"></script>
-    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-  <body>
+[% WRAPPER 'layouts/main.tt'
+   title = 'Munge - Feed Me!'
+%]
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container-fluid">
@@ -63,4 +51,4 @@
       </div>
     </div>
   </body>
-</html>
+[% END %]

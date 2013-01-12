@@ -1,0 +1,25 @@
+[% WRAPPER 'layouts/main.tt'
+   title = 'Munge - Login'
+   body_class = 'login-form'
+%]
+<div id="login-form-wrapper">
+  <h1>Feed me. Munge</h1>
+  <div id="login-form">
+    <form class="form-horizontal" action='' method="POST">
+      <fieldset>
+        <div class="control-group">
+          <input type="text" id="username" name="username" placeholder="username" class="input-xlarge">
+        </div>
+     
+        <div class="control-group">
+          <input type="password" id="password" name="password" placeholder="password" class="input-xlarge">
+        </div>
+     
+        <div class="control-group">
+          <button class="btn btn-success">Login</button>
+        </div>
+      </fieldset>
+    </form>    
+  </div>  
+</div>
+[% END %]

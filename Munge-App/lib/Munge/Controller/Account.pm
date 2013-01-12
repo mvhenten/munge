@@ -15,11 +15,7 @@ get '/create' => sub {
 post '/create' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
 
-    debug "Got username, password: $username, $password";
-
     my $account = Munge::Model::Account->new()->create( $username, $password );
-
-    debug "Now account created, now redirecting";
 
     redirect 'account/login';
 };
@@ -27,30 +23,25 @@ post '/create' => sub {
 get '/login' => sub {
     return redirect '/' if session('authenticated');
 
-    return
-      '<form method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
+    return template 'account/login', {}, { layout => undef };
 };
 
 get '/logout' => sub {
-    return redirect '/' unless session('authenticated');
-
+   
     session->destroy;
+
     redirect 'account/login';
 };
 
 post '/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
-    debug "LOGIN: Got username, password: $username, $password";
 
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
 
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
-
-        #         session account => $account_rs;
         session authenticated => true;
         session account       => { $account_rs->get_inflated_columns() };
-
         redirect '/';
         return;
     }
@@ -59,7 +50,7 @@ post '/login' => sub {
         debug "Cannot load $username";
     }
     else {
-        debug "Validation failed for $username, $password";
+        debug "Validation failed for $username";
     }
 
     redirect 'account/login?failed=1';
