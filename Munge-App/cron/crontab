@@ -1,0 +1,2 @@
+MAILTO="matthijs@ischen.nl"
+26,56 * * * * /opt/perl5/perls/current/bin/perl ~/current/bin/sync.pl
