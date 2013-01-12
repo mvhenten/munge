@@ -1,7 +1,5 @@
 www:
     type: perl
     approot: App
-    requirements:
-        - DBD::mysql
 db:
     type: mysql

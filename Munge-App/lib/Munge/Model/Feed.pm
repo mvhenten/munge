@@ -133,15 +133,10 @@ class Munge::Model::Feed {
         $self->_set_description( $feed_parser->description || '' );
 
         for my $item ( $feed_parser->items ) {
-            $self->_synchronize_feed_item( $item );
+            my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
         }
       }
       
-      method _synchronize_feed_item ( $item ){
-            my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
-            $feed_item->store();        
-      }
-
       method _get_feed_client {
         my $uri = URI->new( $self->link );
 

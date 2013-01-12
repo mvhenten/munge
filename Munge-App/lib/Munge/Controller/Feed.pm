@@ -118,7 +118,9 @@ get '/:feed' => sub {
         $feed_info = $feed_view->feed_view($feed_id);
     }
 
-    return template 'feed/index',
+    my $template = ( $feed_id and ( $feed_id eq 'archive' )) ? 'crunge' : 'index';
+
+    return template "feed/$template",
       {
         feed  => $feed_info,
         feeds => $feed_view->all_feeds,
@@ -138,7 +140,7 @@ sub feed_item_view {
     debug $feed_id;
 
     return $view->today()     if $feed_id eq 'today';
-    return $view->yesterday() if $feed_id eq 'archive';
+    return $view->crunch() if $feed_id eq 'archive';
     return $view->starred()   if $feed_id eq 'starred';
     return $view->list($feed_id) if to_UUID($feed_id);
     return;
