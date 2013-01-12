@@ -145,7 +145,7 @@ class Munge::Model::View::FeedItem {
             $feed_item->get_inflated_columns(),
             human_date          => human_date_string( $issued ),
             date                => $issued->ymd,
-            poster_image        => find_interesting_image_source( $feed_item->content ) || undef,
+            poster_image        => find_interesting_image_source( $feed_item->content, $feed_item->feed->link ) || undef,
             feed_description    => $feed_item->feed->description,
             feed_title          => $feed_item->feed->title,
             feed_uuid           => $feed_item->feed->uuid,

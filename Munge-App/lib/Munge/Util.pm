@@ -22,6 +22,7 @@ use Method::Signatures;
 use Munge::Types qw|UUID|;
 use Proc::Fork;
 use List::MoreUtils qw|any|;
+use URI;
 
 our @EXPORT_OK = qw|
   find_interesting_image_source
@@ -198,14 +199,15 @@ image found or undef.
 {
     sub BLACKLIST {
         return (
-            qr{^\Qhttp://api.tweetmeme.com/imagebutton.gif\E.*},
+            qr{.*gif$},
             qr{^\Qhttp://blogger.googleusercontent.com/tracker\E.*},
             qr{\Qflattr-badge-large.png\E$},
+            qr{^\Qhttp://feeds.feedburner.com/\E.*},
         );
     }
 
     sub find_interesting_image_source {
-        my ($html) = @_;
+        my ($html, $feed_link ) = @_;
 
         my @images = extract_images($html);
 
@@ -216,6 +218,13 @@ image found or undef.
             my $src = $image->attr('src');
 
             next if any { $src =~ $_ } BLACKLIST();
+            
+            if( $src !~ /^http.*/ ){
+                my $uri = URI->new( $feed_link );
+                $uri->path( $src );
+                $src = $uri->as_string;
+            }
+            
             return $src;
         }
 
