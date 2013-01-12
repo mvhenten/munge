@@ -69,7 +69,7 @@ class t::Munge::Model::Feed {
 
     test feed_synchronize {
         my $override =
-          Sub::Override->new( 'Munge::Model::FeedItem::store' => sub { 1 } );
+          Sub::Override->new( 'Munge::Model::Feed::Item::store' => sub { 1 } );
 
         my $feed = $self->create_test_feed;
         $feed->store();

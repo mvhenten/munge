@@ -9,7 +9,7 @@ use Data::Dumper;
 use Munge::Helper qw|account synchronize_feed feed_view|;
 use Munge::Model::Account;
 use Munge::Model::Feed;
-use Munge::Model::FeedItem;
+use Munge::Model::Feed::Item;
 use Munge::Model::Feed::ItemCollection;
 use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;

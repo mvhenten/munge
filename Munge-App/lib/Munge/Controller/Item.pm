@@ -7,7 +7,7 @@ use Dancer ':syntax';
 use Data::Dumper;
 
 use Munge::Model::Account;
-use Munge::Model::FeedItem;
+use Munge::Model::Feed::Item;
 use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
@@ -30,7 +30,7 @@ sub account {
 get '/unread/:uuid' => sub {
     my $uuid = param('uuid');
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), account() );
+    my $model = Munge::Model::Feed::Item->load( to_UUID($uuid), account() );
     $model->set_unread();
     $model->store();
 
@@ -41,7 +41,7 @@ get '/unread/:uuid' => sub {
 get '/star/:uuid' => sub {
     my $uuid = param('uuid');
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), account() );
+    my $model = Munge::Model::Feed::Item->load( to_UUID($uuid), account() );
     $model->toggle_star();
     $model->store();
 
@@ -64,7 +64,7 @@ get '/:feed' => sub {
 
     return status('not_found') if not $item;
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
+    my $model = Munge::Model::Feed::Item->load( to_UUID($item_id), $account );
 
     if ( not $model->read ) {
         $model->set_read();
