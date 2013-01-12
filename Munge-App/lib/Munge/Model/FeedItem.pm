@@ -2,7 +2,7 @@ use MooseX::Declare;
 
 =head1 NAME
 
- Munge::Model::Feed::Item
+ Munge::Model::FeedItem
 
 =head1 DESCRIPTION
 
@@ -11,12 +11,12 @@ CRUD model for Feed items, uses "Storage" for load and delete.
 =head1 SYNOPSIS
 
     # factory
-    my $feed_item = Munge::Model::Feed::Item->load( $uuid, $account );
+    my $feed_item = Munge::Model::FeedItem->load( $uuid, $account );
 
     # constructor N.B. store requires all non-maybe attributes to
     # be set...
 
-    my $feed_item = Munge::Model::Feed::Item->new(
+    my $feed_item = Munge::Model::FeedItem->new(
         account => $self->account,
         feed_id => $feed->id,
         uuid    => $item->uuid_bin,
@@ -26,7 +26,7 @@ CRUD model for Feed items, uses "Storage" for load and delete.
 
     # sync with a ParserItem only updates MUTABLE_ATTRIBUTES
 
-     Munge::Model::Feed::Item->synchronize( $feed, $parser_item );
+     Munge::Model::FeedItem->synchronize( $feed, $parser_item );
 
 =ITEM MUTABLE_ATTRIBUTES
 
@@ -44,7 +44,7 @@ and that have a (private) _setter
 
 #use Munge::Types qw|UUID Account Feed ParserItem|;
 
-class Munge::Model::Feed::Item {
+class Munge::Model::FeedItem {
 
     use DateTime;
     use Munge::Types qw|UUID Account ParserItem|;
@@ -175,10 +175,10 @@ class Munge::Model::Feed::Item {
 
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {
         my $feed_item =
-          Munge::Model::Feed::Item->load( $parser_item->uuid_bin, $feed->account );
+          Munge::Model::FeedItem->load( $parser_item->uuid_bin, $feed->account );
 
           if ( not $feed_item ) {
-            $feed_item = Munge::Model::Feed::Item->new(
+            $feed_item = Munge::Model::FeedItem->new(
                 account => $feed->account,
                 feed_id => $feed->id,
                 uuid    => $parser_item->uuid_bin,

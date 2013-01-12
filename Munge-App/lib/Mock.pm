@@ -21,7 +21,7 @@ package Munge::Model::Feed::Client;
 
 # fooling prereq scanner
 
-package Munge::Model::Feed::Item;
+package Munge::Model::FeedItem;
 
 # fooling prereq scanner
 

@@ -64,7 +64,7 @@ role Test::Munge::Role::Feed {
     method add_feed_item ( Munge::Model::Feed $feed, %item_data ) {
         my $storage = Munge::Storage->new(
             account     => $feed->account,
-            schema_name => Munge::Model::Feed::Item->_schema_class(),
+            schema_name => Munge::Model::FeedItem->_schema_class(),
             schema      => $self->schema,
         );
 
@@ -75,7 +75,7 @@ role Test::Munge::Role::Feed {
         $item_data{feed_id} = $feed->id;
         $item_data{_storage} = $storage;
 
-        my $feed_item = Munge::Model::Feed::Item->new(
+        my $feed_item = Munge::Model::FeedItem->new(
             title       => 'Test Feed Item Title ' . $feed->n_feed_items,
             description => 'Test Feed Item Description ' . $feed->n_feed_items,
             uuid        => $uuid,

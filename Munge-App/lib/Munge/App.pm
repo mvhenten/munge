@@ -16,7 +16,7 @@ use Munge::Controller::Manage;
 use Munge::Model::Account;
 use Munge::Model::Feed;
 use Munge::Model::Feed::Client;
-use Munge::Model::Feed::Item;
+use Munge::Model::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;
 use Munge::Storage;

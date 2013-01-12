@@ -34,7 +34,7 @@ class Munge::Model::Feed {
     use URI;
 
     use Munge::Model::Feed::Client;
-    use Munge::Model::Feed::Item;
+    use Munge::Model::FeedItem;
     use Munge::Model::Feed::Parser;
     use Munge::Types qw|UUID|;
     use Munge::UUID;
@@ -138,7 +138,7 @@ class Munge::Model::Feed {
       }
       
       method _synchronize_feed_item ( $item ){
-            my $feed_item = Munge::Model::Feed::Item->synchronize( $self, $item );
+            my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
             $feed_item->store();        
       }
 

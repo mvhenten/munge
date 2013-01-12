@@ -2,9 +2,9 @@ use MooseX::Declare;
 
 use Munge::Types qw|Feed|;
 
-class t::Munge::Model::Feed::Item {
+class t::Munge::Model::FeedItem {
 
-    use Munge::Model::Feed::Item;
+    use Munge::Model::FeedItem;
     use Test::Sweet;
     use Munge::UUID;
     use Data::Dumper;
@@ -20,7 +20,7 @@ class t::Munge::Model::Feed::Item {
         $feed->store();
         my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
     
-        my $feed_item = Munge::Model::Feed::Item->new(
+        my $feed_item = Munge::Model::FeedItem->new(
             account     => $feed->account,
             feed_id     => $feed->id,
             uuid        => $uuid,
@@ -45,11 +45,11 @@ class t::Munge::Model::Feed::Item {
         
         
         lives_ok {
-            $new_item = Munge::Model::Feed::Item->load( $item->uuid, $feed->account, $self->storage( $feed->account ) );
+            $new_item = Munge::Model::FeedItem->load( $item->uuid, $feed->account, $self->storage( $feed->account ) );
         }
         'load lives with existing feedItem';
                 
-        isa_ok( $new_item, 'Munge::Model::Feed::Item', 'load returns an undef');
+        isa_ok( $new_item, 'Munge::Model::FeedItem', 'load returns an undef');
         
     }
     
@@ -63,7 +63,7 @@ class t::Munge::Model::Feed::Item {
         my $item;
         
         lives_ok {
-            $item = Munge::Model::Feed::Item->load( $uuid, $feed->account, $feed->_storage );
+            $item = Munge::Model::FeedItem->load( $uuid, $feed->account, $feed->_storage );
         }
         'load lives with non-existing feedItem';
         
@@ -74,7 +74,7 @@ class t::Munge::Model::Feed::Item {
         my $uri     = $self->create_test_feed_uri;
         my $uuid    = Munge::UUID->new( uri => $uri )->uuid_bin;
         
-        my $feed_item = Munge::Model::Feed::Item->new(
+        my $feed_item = Munge::Model::FeedItem->new(
             account     => $feed->account,
             feed_id     => $feed->id,
             uuid        => $uuid,
@@ -89,6 +89,6 @@ class t::Munge::Model::Feed::Item {
     }
     
     method storage ( Account $account ){
-        return $self->_test_storage( $account, Munge::Model::Feed::Item->_schema_class() );
+        return $self->_test_storage( $account, Munge::Model::FeedItem->_schema_class() );
     }
 }
