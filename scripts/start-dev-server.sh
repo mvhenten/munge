@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PROGRAM='./bin/app.pl'
+PROGRAM='./Munge-App/bin/app.pl'
 
 $PROGRAM &
 
@@ -12,6 +12,6 @@ terminate_pid () {
    done;
 }
 
-while inotifywait -e modify -r ./lib;
+while inotifywait -e modify -r ./Munge-App/lib;
     do terminate_pid; sleep 1 && $PROGRAM &
 done;
