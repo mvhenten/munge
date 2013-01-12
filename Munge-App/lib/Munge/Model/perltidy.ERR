@@ -1,8 +1,0 @@
-
-There is no previous '?' to match a ':' on line 100
-100: method create ( $class: Uri $link, Account $account ){
-                           ^
-100:	syntax error at ') {', didn't see one of: case elsif for foreach given if switch unless until when while
-110:	syntax error at ') {', didn't see one of: case elsif for foreach given if switch unless until when while
-148:	syntax error at ') {', didn't see one of: case elsif for foreach given if switch unless until when while
-155:	To save a full .LOG file rerun with -g

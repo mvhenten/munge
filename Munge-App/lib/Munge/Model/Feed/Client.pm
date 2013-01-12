@@ -40,6 +40,12 @@ class Munge::Model::Feed::Client {
         }
     );
 
+    sub CLIENT_TIMEOUT {
+        # Slow timeout, this value is still experimental. just dont want to
+        # wait for slow hosts.
+        return 2; 
+    }
+    
     sub USER_AGENT_STRING {
 
         # pretend we're google, prevents us being labelled as spammer by
@@ -55,6 +61,7 @@ class Munge::Model::Feed::Client {
         my $ua = LWP::UserAgent->new;
 
         $ua->agent( USER_AGENT_STRING() );
+        $ua->timeout( CLIENT_TIMEOUT() );
 
         if ( $self->last_modified_since ) {
             $ua->default_header(

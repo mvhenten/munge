@@ -175,9 +175,17 @@ class Munge::Model::FeedItem {
 
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {
         my $feed_item =
-          Munge::Model::FeedItem->load( $parser_item->uuid_bin, $feed->account );
+          Munge::Model::FeedItem->load( $parser_item->uuid_bin,
+            $feed->account );
+          
+          
 
-          if ( not $feed_item ) {
+        if ($feed_item) {
+            return $feed_item
+              if DateTime->compare( $feed_item->modified,
+                $parser_item->modified ) eq 0;
+        }
+        else {
             $feed_item = Munge::Model::FeedItem->new(
                 account => $feed->account,
                 feed_id => $feed->id,
@@ -186,11 +194,15 @@ class Munge::Model::FeedItem {
             );
         }
 
-        for my $attr ( MUTABLE_ATTRIBUTES() ){
+        for my $attr ( MUTABLE_ATTRIBUTES() ) {
             my $setter = "_set_$attr";
-              $feed_item->$setter( $parser_item->$attr );
-          }
-
-        return $feed_item;
-    };
+            $feed_item->$setter( $parser_item->$attr );
+        }
+        
+        $feed_item->store();
+        
+        return;
+    }
+    
+    
 }
