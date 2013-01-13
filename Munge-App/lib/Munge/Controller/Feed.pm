@@ -118,7 +118,7 @@ get '/:feed' => sub {
         $feed_info = $feed_view->feed_view($feed_id);
     }
 
-    my $template = _get_template( $feed_id );
+    my $template = _get_template($feed_id);
 
     return template "feed/$template",
       {
@@ -130,9 +130,9 @@ get '/:feed' => sub {
 };
 
 sub _get_template {
-    my ( $feed_id ) = @_;
-    
-    return 'index' if not $feed_id;
+    my ($feed_id) = @_;
+
+    return 'index'  if not $feed_id;
     return 'crunge' if $feed_id eq 'archive';
     return 'saved'  if $feed_id eq 'starred';
     return 'index';
@@ -148,9 +148,9 @@ sub feed_item_view {
 
     debug $feed_id;
 
-    return $view->today()     if $feed_id eq 'today';
-    return $view->crunch() if $feed_id eq 'archive';
-    return $view->starred()   if $feed_id eq 'starred';
+    return $view->today()        if $feed_id eq 'today';
+    return $view->crunch()       if $feed_id eq 'archive';
+    return $view->starred()      if $feed_id eq 'starred';
     return $view->list($feed_id) if to_UUID($feed_id);
     return;
 }

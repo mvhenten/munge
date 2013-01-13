@@ -30,14 +30,15 @@ sub account {
 
 get '/unread/:uuid' => sub {
     my $uuid = param('uuid');
-    
+
     my $account = account();
 
     my $model = Munge::Model::FeedItem->load( to_UUID($uuid), $account );
     $model->set_unread();
     $model->store();
-    
-    my ( $feed ) = Munge::Model::Feed->search( $account, { id => $model->feed_id } );
+
+    my ($feed) =
+      Munge::Model::Feed->search( $account, { id => $model->feed_id } );
 
     redirect '/feed/' . uuid_string( $feed->uuid );
 };
@@ -70,7 +71,8 @@ get '/:feed' => sub {
 
     my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
 
-    if ( not $model->read ) {
+    if ( ( not $model->read ) or $model->starred ) {
+        $model->unset_star();
         $model->set_read();
         $model->store();
     }

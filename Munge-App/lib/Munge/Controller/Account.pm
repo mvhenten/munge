@@ -27,7 +27,7 @@ get '/login' => sub {
 };
 
 get '/logout' => sub {
-   
+
     session->destroy;
 
     redirect 'account/login';

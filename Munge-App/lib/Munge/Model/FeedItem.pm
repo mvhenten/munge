@@ -178,8 +178,6 @@ class Munge::Model::FeedItem {
           Munge::Model::FeedItem->load( $parser_item->uuid_bin,
             $feed->account );
           
-          
-
         if ($feed_item) {
             return $feed_item
               if DateTime->compare( $feed_item->modified,

@@ -41,11 +41,12 @@ class Munge::Model::Feed::Client {
     );
 
     sub CLIENT_TIMEOUT {
+
         # Slow timeout, this value is still experimental. just dont want to
         # wait for slow hosts.
-        return 2; 
+        return 2;
     }
-    
+
     sub USER_AGENT_STRING {
 
         # pretend we're google, prevents us being labelled as spammer by
