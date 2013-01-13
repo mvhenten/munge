@@ -11,6 +11,7 @@ use Munge::Model::FeedItem;
 use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
+use Munge::Util qw|uuid_string|;
 
 prefix '/item';
 
@@ -29,13 +30,16 @@ sub account {
 
 get '/unread/:uuid' => sub {
     my $uuid = param('uuid');
+    
+    my $account = account();
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), account() );
+    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), $account );
     $model->set_unread();
     $model->store();
+    
+    my ( $feed ) = Munge::Model::Feed->search( $account, { id => $model->feed_id } );
 
-    redirect "/item/$uuid#article";
-
+    redirect '/feed/' . uuid_string( $feed->uuid );
 };
 
 get '/star/:uuid' => sub {

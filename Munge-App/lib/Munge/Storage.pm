@@ -110,8 +110,7 @@ class Munge::Storage {
     }
 
     method _search ( HashRef $kv ) {
-        my ( $rs ) = $self->resultset( $self->schema_name )->search( { %{ $kv },  account_id => $self->account->id } );
-        return $rs;
+        return $self->resultset( $self->schema_name )->search( { %{ $kv },  account_id => $self->account->id } );
     }
 
     method _storable_attributes ( Object $object ) {
