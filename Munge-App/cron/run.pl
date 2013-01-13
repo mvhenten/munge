@@ -1,8 +1,14 @@
 #!/usr/bin/env perl
-
 use JSON qw|decode_json|;
 use strict;
 use warnings;
+
+=HEAD script runner for dotcloud
+
+this is a workaround for dotcloud's cron: we need information from the
+environment.json to be available for our scripts, and set PER5LIB correctly
+
+=cut
 
 run( @ARGV );
 
@@ -15,6 +21,9 @@ sub run {
     foreach my $key ( keys %{$json}  ) {
         $ENV{$key} = $json->{$key};
     }
+
+    $ENV{'PERL5LIB'} = '/home/dotcloud/perl5/lib/perl5';
     
-    system( "$cmd" );
+    system( "PERL5LIB=/home/dotcloud/perl5/lib/perl5 /opt/perl5/perls/current/bin/perl $cmd" );
+    return;
 }
