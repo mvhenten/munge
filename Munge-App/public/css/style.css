@@ -121,12 +121,12 @@ h1 {
     width: 90%;
 }
 
- .feed-list-crunge .poster-image {
+ .feed-list-compact .poster-image {
     width: 96px;
     max-height: 64px;
  }
 
- .feed-list-crunge .summary .padding {
+ .feed-list-compact .summary .padding {
     padding: 1em 1em 0;
  }
 
@@ -141,10 +141,13 @@ h1 {
     font-size: 0.8em;
 }
 
- .feed-list-crunge .summary-body {
+ .feed-list-compact .summary-body {
     padding: 0;
  }
 
+.padding {
+    padding: 0.5em 1em;
+}
 
 .summary-list .padding,
 .article .padding {

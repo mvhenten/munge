@@ -1,4 +1,3 @@
-[% NEXT IF item.read %]
 <div id="[%  current ? 'article' : 'summary-' _ loop.index %]" class="[% item.read ? 'read' : 'unread' %] [%  current ? 'article' : 'summary' %]">
   <div class="padding">
     <div class="poster-image">

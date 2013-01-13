@@ -1,4 +1,4 @@
-<div class="float-wrap feed-list feed-list-crunge" id="accordion">
+<div class="float-wrap feed-list feed-list-compact" id="accordion">
 [% FOREACH item IN items %]
     [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
 [% END %]

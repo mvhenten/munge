@@ -1,9 +1,18 @@
 [% IF feed %]
     [% INCLUDE 'feed/block/head.tt' title = feed.title, uuid_string = feed.uuid_string, description = feed.description %]
 [% END %]
-<div class="float-wrap feed-list" id="accordion">
+<div class="float-wrap feed-list">
 [% FOREACH item IN items %]
+    [% NEXT IF item.read %]
     [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
 [% END %]
 </div>
-[% INCLUDE 'feed/block/read.tt' items = items %]
+<div class="float-wrap feed-list feed-list-compact">
+    <div class="padding">
+        <h4>Items you've read</h4>
+    </div>
+[% FOREACH item IN items %]
+    [% NEXT IF NOT item.read %]
+    [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
+[% END %]
+</div>

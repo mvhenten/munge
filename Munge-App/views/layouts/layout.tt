@@ -11,6 +11,10 @@
             <span class="icon-bar"></span>
           </a>
           <div class="nav-collapse collapse navbar-responsive-collapse">
+            <form class="navbar-form pull-right" action="/manage/subscribe" method="post">
+              <input placeholder="import feed url" type="text" name="feed_url" id="subscribe-feed-url" />
+              <button type="submit" class="btn"><i class="icon-ok-sign"></i>import</button>
+            </form>
             <ul class="nav pull-right">
               <li class="divider-vertical"></li>
               <li class="dropdown">
@@ -18,15 +22,9 @@
                 <ul class="dropdown-menu">
                   <li><a href="/account/logout">  logout</a></li>
                   <li><a href="/manage/import">import feeds from file</a></li>
-                  <li><a href="/feed/refresh">refresh feeds</a></li>
                 </ul>
               </li>
-              <li><a title="reload feeds" href="/feed/refresh"><i class="icon-refresh icon-white"></i></a></li>
             </ul>
-            <form class="navbar-form pull-right" action="/manage/subscribe" method="post">
-              <input placeholder="import feed url" type="text" name="feed_url" id="subscribe-feed-url" />
-              <button type="submit" class="btn"><i class="icon-ok-sign"></i>import</button>
-            </form>
           </div><!--/.nav-collapse -->
         </div>
       </div>
