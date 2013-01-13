@@ -11,13 +11,4 @@
     [% END %]
 [% END %]
 </div>
-<br/>
-<div class="float-wrap feed-list feed-list-compact">
-    <div class="padding">
-        <h4>Items you've read</h4>
-    </div>
-    [% FOREACH item IN items %]
-        [% NEXT IF NOT item.read %]
-        [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
-    [% END %]        
-</div>
+[% INCLUDE 'feed/block/read.tt', items = items, feed = feed %]

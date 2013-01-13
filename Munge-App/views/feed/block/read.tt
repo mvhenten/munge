@@ -1,18 +1,11 @@
-<div class="float-wrap feed-list feed-list-compact" id="accordion">
-<h4>Items you've read</h4>
-[% FOREACH item IN items %]
-    [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
-[% END %]
-</div>
-
-<div class="summary-list">
-  <div class="padding">
-    <h4>Older items</h4>
-    <ul class="nav nav-stacked">
+<br/>
+<div class="float-wrap feed-list feed-list-compact">
+    <div class="padding">
+        <h4>Items you've read</h4>
+    </div>
     [% FOREACH item IN items %]
-    [% NEXT IF NOT item.read %]
-      <li><strong><a href="/item/[% item.uuid_string %]">[% item.title %]</a></strong> [% item.summary %]</li>
-    [% END %]
-    </ul>
-  </div>
+        [% NEXT IF NOT item.read %]
+        [% NEXT IF item.uuid_string == feed.uuid_string %]
+        [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
+    [% END %]        
 </div>
