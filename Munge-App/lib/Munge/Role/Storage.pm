@@ -37,15 +37,26 @@ role Munge::Role::Storage {
     method load ( $class: UUID $uuid, Account $account, $storage? ){        
         $storage ||= $class->_get_storage( $account );
                         
-        my $rs = $storage->load( uuid => $uuid );        
-        return if not $rs;
-                
-        delete( $rs->{account_id} );
+        my $columns = $storage->load( uuid => $uuid );        
+        return if not $columns;
+        
+        return $class->_load_from_resultrow( $account, $columns );
+    }
+    
+    method search ( $class: Account $account, HashRef $search, $storage ? ){
+        $storage ||= $class->_get_storage( $account );
+        
+        my @instances = map { $class->_load_from_resultrow( $account, $_ ) } $storage->search( $search );
+        
+        return @instances;
+    }
+    
+    method _load_from_resultrow( $class: Account $account, $rs ) {
         my @keys = grep { defined( $rs->{$_} ) } keys %{ $rs };
         
         delete( $rs->{@keys} );
         
-        return $class->new(  %{ $rs }, account => $account );
+        return $class->new(  %{ $rs }, account => $account );        
     }
                 
     method _schema_class ( $class: ){

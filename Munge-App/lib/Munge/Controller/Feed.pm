@@ -118,7 +118,7 @@ get '/:feed' => sub {
         $feed_info = $feed_view->feed_view($feed_id);
     }
 
-    my $template = ( $feed_id and ( $feed_id eq 'archive' )) ? 'crunge' : 'index';
+    my $template = _get_template( $feed_id );
 
     return template "feed/$template",
       {
@@ -128,6 +128,15 @@ get '/:feed' => sub {
       };
 
 };
+
+sub _get_template {
+    my ( $feed_id ) = @_;
+    
+    return 'index' if not $feed_id;
+    return 'crunge' if $feed_id eq 'archive';
+    return 'saved'  if $feed_id eq 'starred';
+    return 'index';
+}
 
 sub feed_item_view {
     my ($feed_id) = @_;

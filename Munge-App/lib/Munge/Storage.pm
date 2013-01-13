@@ -64,13 +64,36 @@ class Munge::Storage {
     }
 
     method load ( $key, $value ) {
-        my ( $result ) = $self->_find( $key, $value );
-
-        return defined( $result ) ?  { $result->get_inflated_columns() } : undef;
+        my ( $result ) = $self->_search( { $key => $value } );
+        
+        return undef if not $result;
+        
+        return $self->_get_inflated_columns( $result );
+    }
+    
+    method search ( HashRef $search ) {
+        my $rs = $self->_search( $search );
+        return undef if not $rs;
+        
+        my @collect;
+        
+        foreach my $row ( $rs->all() ){
+            push( @collect, $self->_get_inflated_columns( $row ) );
+        }
+        
+        return @collect;
+    }
+    
+    method _get_inflated_columns( $rs_row ) {
+        my %columns = $rs_row->get_inflated_columns();
+        
+        delete( $columns{account_id} );
+        
+        return \%columns;        
     }
 
     method delete ( $key, $value ) {
-        my ( $result ) = $self->_find( $key, $value );
+        my ( $result ) = $self->_search( { $key => $value } );
 
         for my $relation ($result->relationships ) {
             my $info = $result->relationship_info( $relation );
@@ -86,8 +109,8 @@ class Munge::Storage {
         return;
     }
 
-    method _find ( $key, $value ) {
-        my ( $rs ) = $self->resultset( $self->schema_name )->search( { $key => $value, account_id => $self->account->id } );
+    method _search ( HashRef $kv ) {
+        my ( $rs ) = $self->resultset( $self->schema_name )->search( { %{ $kv },  account_id => $self->account->id } );
         return $rs;
     }
 

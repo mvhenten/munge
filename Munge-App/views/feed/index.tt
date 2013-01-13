@@ -7,4 +7,6 @@
     [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
 [% END %]
 </div>
-[% INCLUDE 'feed/block/read.tt', items = items, feed = feed %]
+[% IF feed %]
+    [% INCLUDE 'feed/block/read.tt', items = items, feed = feed %]
+[% END %]
