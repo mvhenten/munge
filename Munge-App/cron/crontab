@@ -1,2 +1,2 @@
 MAILTO="matthijs@ischen.nl"
-0,30,45,15 * * * *  ~/current/cron/run.pl ~/current/bin/sync.pl
+22,42 * * * *  ~/current/cron/run.pl ~/current/bin/sync.pl
