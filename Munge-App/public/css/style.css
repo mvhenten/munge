@@ -18,7 +18,11 @@ body.login-form {
 }
 
 #login-form {
+    -webkit-box-shadow: inset 0px 5px 15px 1px #222;
+    box-shadow: inset 0px 5px 15px 1px #202020;
+    border-bottom: 1px solid #202020;
     padding: 3em 0;
+
     padding-left: 15%;
     background: #333 url('debut_dark.png');
 }
