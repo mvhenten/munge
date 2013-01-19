@@ -151,9 +151,19 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 feed_uuids
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:24:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:IEYhEG7BbwmCsHx/G+ZddA
+Type: many_to_many
+
+Composing rels: L</account_feeds> -> feed_uuid
+
+=cut
+
+__PACKAGE__->many_to_many("feed_uuids", "account_feeds", "feed_uuid");
+
+
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:36:16
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:XDmhisH2zA2GeEe9Y9BESw
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

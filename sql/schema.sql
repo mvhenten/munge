@@ -18,6 +18,8 @@ CREATE TABLE `account_feed` (
   `feed_uuid` binary(16) NOT NULL,
   PRIMARY KEY (`account_id`,`feed_uuid`),
   KEY `account_key` (`account_id`),
+  KEY `feed_uuid_key` (`feed_uuid`),
+  CONSTRAINT `account_feed_ibfk_1` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`),
   CONSTRAINT `account_fk` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -133,6 +133,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 account_feeds
+
+Type: has_many
+
+Related object: L<Munge::Schema::Result::AccountFeed>
+
+=cut
+
+__PACKAGE__->has_many(
+  "account_feeds",
+  "Munge::Schema::Result::AccountFeed",
+  { "foreign.feed_uuid" => "self.uuid" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 feed_items
 
 Type: has_many
@@ -148,9 +163,19 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 accounts
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:24:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:p6V+GbUO3WqDLSt7XNhZMg
+Type: many_to_many
+
+Composing rels: L</account_feeds> -> account
+
+=cut
+
+__PACKAGE__->many_to_many("accounts", "account_feeds", "account");
+
+
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:36:16
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YV+WvpoRNvGDQ6czPPrZkA
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->has_many(

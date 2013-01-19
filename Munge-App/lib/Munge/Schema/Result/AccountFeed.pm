@@ -47,6 +47,7 @@ __PACKAGE__->table("account_feed");
 =head2 feed_uuid
 
   data_type: 'binary'
+  is_foreign_key: 1
   is_nullable: 0
   size: 16
 
@@ -61,7 +62,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "feed_uuid",
-  { data_type => "binary", is_nullable => 0, size => 16 },
+  { data_type => "binary", is_foreign_key => 1, is_nullable => 0, size => 16 },
 );
 
 =head1 PRIMARY KEY
@@ -95,10 +96,32 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
+=head2 feed_uuid
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:24:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:n9ML/oCornLUZ7f+eOuFPQ
+Type: belongs_to
+
+Related object: L<Munge::Schema::Result::Feed>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "feed_uuid",
+  "Munge::Schema::Result::Feed",
+  { uuid => "feed_uuid" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+);
+
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:36:16
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L1QiNXjhF65fPCYZVFYf7w
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+__PACKAGE__->belongs_to(
+  "feed",
+  "Munge::Schema::Result::Feed",
+  { uuid => "feed_uuid" },
+  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+);
+
 1;

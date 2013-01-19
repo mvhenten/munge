@@ -1,24 +1,24 @@
-CREATE TABLE `account_feed` (
-  `account_id` int(10) unsigned NOT NULL,
-  `feed_uuid` binary(16) NOT NULL,
-  PRIMARY KEY (`account_id`,`feed_uuid`) ,
-  KEY `account_key` (`account_id`),
-  CONSTRAINT `account_fk` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `account_feed_item` (
-  `account_id` int(10) unsigned NOT NULL,
-  `feed_item_uuid` binary(16) NOT NULL,
-  `feed_uuid` binary(16) NOT NULL,
-  `read` tinyint(2) NOT NULL DEFAULT '0',
-  `starred` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`account_id`,`feed_uuid`, `feed_item_uuid`),
-  KEY `feed_uuid_fk` (`feed_uuid`),
-  KEY `read_idx` (`read`),
-  KEY `star_idx` (`starred`),
-  CONSTRAINT `feed_uuid_fk` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--CREATE TABLE `account_feed` (
+--  `account_id` int(10) unsigned NOT NULL,
+--  `feed_uuid` binary(16) NOT NULL,
+--  PRIMARY KEY (`account_id`,`feed_uuid`) ,
+--  KEY `account_key` (`account_id`),
+--  CONSTRAINT `account_fk` FOREIGN KEY (`account_id`) REFERENCES `account` (`id`)
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--
+--
+--CREATE TABLE `account_feed_item` (
+--  `account_id` int(10) unsigned NOT NULL,
+--  `feed_item_uuid` binary(16) NOT NULL,
+--  `feed_uuid` binary(16) NOT NULL,
+--  `read` tinyint(2) NOT NULL DEFAULT '0',
+--  `starred` int(11) NOT NULL DEFAULT '0',
+--  PRIMARY KEY (`account_id`,`feed_uuid`, `feed_item_uuid`),
+--  KEY `feed_uuid_fk` (`feed_uuid`),
+--  KEY `read_idx` (`read`),
+--  KEY `star_idx` (`starred`),
+--  CONSTRAINT `feed_uuid_fk` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`)
+--) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `feed` ADD KEY `uuid_key` (`uuid`);
 
@@ -66,9 +66,11 @@ SET `feed_uuid` = f.`uuid`;
 ALTER TABLE `feed_item` DROP FOREIGN KEY `feed_id_fk`;
 ALTER TABLE `feed_item` DROP KEY `feed_id_fk`;
 ALTER TABLE `feed_item` ADD KEY `feed_uuid_key` (`feed_uuid`); 
-ALTER TABLE `feed_item` ADD CONSTRAINT
+-- now what ALTER TABLE `feed_item` ADD CONSTRAINT
 ALTER TABLE `feed_item` DROP COLUMN `feed_id`;
-FOREIGN KEY `feed_uuid_key` (`feed_uuid`) REFERENCES `feed` (`uuid`);
+
+ALTER TABLE `feed_item` ADD CONSTRAINT
+    FOREIGN KEY `feed_uuid_key` (`feed_uuid`) REFERENCES `feed` (`uuid`);
 
 ALTER TABLE `feed_item` DROP COLUMN `id`;
 ALTER TABLE `feed` DROP COLUMN `id`;
@@ -79,3 +81,12 @@ ALTER TABLE `feed` ADD CONSTRAINT PRIMARY KEY (`uuid`);
 ALTER TABLE `feed_item` ADD CONSTRAINT PRIMARY KEY (`uuid`);
 
 ALTER TABLE `feed_item` ADD COLUMN `poster_image` varchar(2048) NOT NULL DEFAULT '';
+
+
+-- fixups later, must be in schema now
+ALTER TABLE `account_feed` ADD KEY `feed_uuid_key` ( `feed_uuid` );
+ALTER TABLE `account_feed` ADD CONSTRAINT
+    FOREIGN KEY `feed_uuid_key` (`feed_uuid`) REFERENCES `feed` (`uuid`);
+
+
+

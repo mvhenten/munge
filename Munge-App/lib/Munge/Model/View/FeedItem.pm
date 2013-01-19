@@ -37,21 +37,25 @@ class Munge::Model::View::FeedItem {
     method today {
         my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
 
-        my $items = $self->resultset('FeedItem')->search(
+        my $items = $self->resultset('AccountFeedItem')->search(
             {
                 'me.account_id' => $self->account->id,
-                'me.created'    => { '>', $yesterday },
-                'me.read'       => 0,
+                #'me.created'    => { '>', $yesterday },
+                #'me.read'       => 0,
             },
             {
-                prefetch => 'feed',
-                join => 'feed',
-                order_by   => { -desc => 'me.issued' },
+                #prefetch => 'feed',
+                #join => 'feed',
+                #order_by   => { -desc => 'me.issued' },
                 rows       => 40,
             }
         );
+        
+        my ( $row ) = $items->all();
+        
+        warn Dumper $row->feed_item;
 
-        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
+#        return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
     method crunch {

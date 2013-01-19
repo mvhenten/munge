@@ -24,10 +24,10 @@ role Munge::Role::Storage {
         $self->_get_storage( $self->account );
     }
     
-    method store {        
-        my %values = $self->id ? $self->_storage->update( $self ) : $self->_storage->create( $self );
+    method store {
+#        my %values = $self->id ? $self->_storage->update( $self ) : $self->_storage->create( $self );
                 
-        return $self->new(  %values, account => $self->account );
+     #   return $self->new(  %values, account => $self->account );
     }
      
     method delete {
