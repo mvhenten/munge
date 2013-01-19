@@ -35,6 +35,8 @@ CREATE TABLE `account_feed_item` (
   KEY `feed_uuid_fk` (`feed_uuid`),
   KEY `read_idx` (`read`),
   KEY `star_idx` (`starred`),
+  KEY `feed_item_uuid_key` (`feed_item_uuid`),
+  CONSTRAINT `account_feed_item_ibfk_1` FOREIGN KEY (`feed_item_uuid`) REFERENCES `feed_item` (`uuid`),
   CONSTRAINT `feed_uuid_fk` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

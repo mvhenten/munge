@@ -87,6 +87,11 @@ ALTER TABLE `feed_item` ADD COLUMN `poster_image` varchar(2048) NOT NULL DEFAULT
 ALTER TABLE `account_feed` ADD KEY `feed_uuid_key` ( `feed_uuid` );
 ALTER TABLE `account_feed` ADD CONSTRAINT
     FOREIGN KEY `feed_uuid_key` (`feed_uuid`) REFERENCES `feed` (`uuid`);
+    
+ALTER TABLE `account_feed_item` ADD KEY `feed_item_uuid_key` ( `feed_item_uuid` );
+ALTER TABLE `account_feed_item` ADD CONSTRAINT
+    FOREIGN KEY `feed_item_uuid_key` (`feed_item_uuid`) REFERENCES `feed_item` (`uuid`);
+
 
 
 

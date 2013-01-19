@@ -173,6 +173,21 @@ __PACKAGE__->set_primary_key("uuid");
 
 =head1 RELATIONS
 
+=head2 account_feed_items
+
+Type: has_many
+
+Related object: L<Munge::Schema::Result::AccountFeedItem>
+
+=cut
+
+__PACKAGE__->has_many(
+  "account_feed_items",
+  "Munge::Schema::Result::AccountFeedItem",
+  { "foreign.feed_item_uuid" => "self.uuid" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 feed_uuid
 
 Type: belongs_to
@@ -194,8 +209,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:24:45
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:S6JgWiTSbHg7G/lp/ytlGg
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:51:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z+S5O0svpsK6UU4tOySRxw
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;
