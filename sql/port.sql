@@ -32,7 +32,9 @@ INSERT INTO `account_feed_item` ( `account_id`, `feed_uuid`, `feed_item_uuid`, `
     LEFT JOIN feed f ON f.id = fi.feed_id
 );
 
-; DELETE FROM `feed` WHERE account != 3;
+-- delete all feeds that are "double" for given accounts
+-- e.g. 
+-- DELETE FROM `feed` WHERE account != 3;
 
 ALTER TABLE `feed` DROP KEY `account_uuid_idx`;
 ALTER TABLE `feed` DROP  FOREIGN KEY `account_id_fk`;
@@ -46,8 +48,9 @@ ALTER TABLE `feed_item` DROP KEY  `account_id_fk`;
 ALTER TABLE `feed_item` DROP KEY  `read_idx`;
 ALTER TABLE `feed_item` DROP KEY  `star_idx`;
 
-; possibly
-; DELETE FROM `feed_item` WHERE `account_id` != '';
+-- possibly delete all double items too
+-- DELETE FROM `feed_item` WHERE `account_id` != '';
+-- 
 
 ALTER TABLE `feed_item` DROP COLUMN `account_id`;
 ALTER TABLE `feed_item` DROP COLUMN `read`;
