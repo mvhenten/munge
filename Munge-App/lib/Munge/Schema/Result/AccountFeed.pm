@@ -124,4 +124,20 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
+__PACKAGE__->has_many(
+    "unread_items",
+    "Munge::Schema::Result::AccountFeedItem",
+    sub {
+        my ($args) = @_;
+
+        my ( $foreign, $self ) = @{$args}{qw|foreign_alias self_alias|};
+
+        return {
+            "$foreign.account_id" => { -ident => "$self.account_id" },
+            "$foreign.feed_uuid" => { -ident => "$self.feed_uuid" },
+            "$foreign.read"    => 0,
+        };
+    }
+);
+
 1;
