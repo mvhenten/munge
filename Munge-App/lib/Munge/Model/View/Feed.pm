@@ -32,30 +32,37 @@ class Munge::Model::View::Feed {
     }
 
     method all_feeds {
-        my $items = $self->resultset('AccountFeed')->search(
-            { 'me.account_id' => $self->account->id  },
-            {
-                prefetch => [ 'feed' ],
-                join => [
-                    'feed',
-                ],
-                order_by => { -desc => 'feed.title' },
-             }
+        my $sql = '
+            SELECT count(afi.`read`) AS unread, f.title, f.uuid
+            FROM account_feed af
+            RIGHT JOIN feed f
+                ON af.feed_uuid = f.uuid
+            LEFT JOIN (
+                SELECT *
+                FROM account_feed_item
+                WHERE `read` = 0
+            ) afi
+                ON afi.account_id = af.account_id
+                AND afi.feed_uuid = af.feed_uuid
+            WHERE af.account_id = ?
+            GROUP BY f.uuid
+            ORDER BY unread DESC, f.title DESC
+        ';
+
+        my $dbh = $self->schema->storage->dbh;
+        
+        my $items = $dbh->selectall_arrayref( $sql,
+            { Slice => {} },  $self->account->id
         );
 
-        return [ map { $self->_get_list_view( $_ ) } $items->all ];
+        return [ map { $self->_get_list_view( $_ ) } @{ $items } ];
     }
 
-    method _get_list_view ( $account_feed ) {
-        my $feed = $account_feed->feed;
-        
-#        my $x = $account_feed->account_feed_items;
-        
+    method _get_list_view ( $feed ) {
         return {
-            $feed->get_inflated_columns,
-            uuid_string => uuid_string( $feed->uuid ),
-            title       => $feed->title || $feed->link,
-            unread_items => $account_feed->unread_items->count() || 0,
+            uuid_string => uuid_string( $feed->{uuid} ),
+            title       => $feed->{title} || $feed->{link},
+            unread_items => $feed->{unread} || 0,
         }
     }
 }

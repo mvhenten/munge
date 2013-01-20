@@ -111,11 +111,19 @@ get '/:feed' => sub {
     my $account   = account();
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
-    my $feed_info =
-      { title => ucfirst($feed_id), description => 'Unread posts' };
+    my $feed_info;
+    my $item_list_view = feed_item_view($feed_id);
 
-    if ( to_UUID($feed_id) ) {
-        $feed_info = $feed_view->feed_view($feed_id);
+    if ( $feed_id and to_UUID($feed_id) ) {
+        $feed_info      = {
+            title       => $item_list_view->[0]->{feed_title},
+            description => $item_list_view->[0]->{feed_description},
+            uuid_string => $item_list_view->[0]->{feed_uuid_string},
+        };
+    }
+    else {
+        $feed_info =
+          { title => ucfirst($feed_id), description => 'Unread posts' };
     }
 
     my $template = _get_template($feed_id);
@@ -124,7 +132,7 @@ get '/:feed' => sub {
       {
         feed  => $feed_info,
         feeds => $feed_view->all_feeds,
-        items => feed_item_view($feed_id) || undef,
+        items => $item_list_view || undef,
       };
 
 };
@@ -140,15 +148,11 @@ sub _get_template {
 
 sub feed_item_view {
     my ($feed_id) = @_;
-    
-    return [];
 
     $feed_id ||= 'today';
 
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
-
-    debug $feed_id;
 
     return $view->today()        if $feed_id eq 'today';
     return $view->crunch()       if $feed_id eq 'archive';
