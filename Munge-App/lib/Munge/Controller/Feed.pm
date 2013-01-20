@@ -140,6 +140,8 @@ sub _get_template {
 
 sub feed_item_view {
     my ($feed_id) = @_;
+    
+    return [];
 
     $feed_id ||= 'today';
 
