@@ -92,6 +92,48 @@ ALTER TABLE `account_feed_item` ADD KEY `feed_item_uuid_key` ( `feed_item_uuid` 
 ALTER TABLE `account_feed_item` ADD CONSTRAINT
     FOREIGN KEY `feed_item_uuid_key` (`feed_item_uuid`) REFERENCES `feed_item` (`uuid`);
 
+-- queries
 
+SELECT count(afi.`read`), af.account_id, f.title
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+LEFT JOIN account_feed_item afi
+    ON afi.feed_uuid = af.feed_uuid
+    AND afi.account_id = af.account_id
+    AND afi.read = 0
+WHERE af.account_id = 3
+GROUP BY f.uuid
+;
+
+SELECT count(afi.`read`) AS unread, f.*
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+LEFT JOIN (
+    SELECT *
+    FROM account_feed_item
+    WHERE `read` = 0
+) afi
+    ON afi.account_id = af.account_id
+    AND afi.feed_uuid = af.feed_uuid
+WHERE af.account_id = 3
+GROUP BY f.uuid
+ORDER BY unread DESC, f.title DESC
+;
+
+
+SELECT af.account_id, f.title, unread_items
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+WHERE unread_items = (
+    SELECT COUNT(1)
+    FROM account_feed_items
+    WHERE 
+)
+WHERE af.account_id = 3
+GROUP BY f.uuid
+;
 
 
