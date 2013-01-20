@@ -35,11 +35,12 @@ class Munge::Model::View::Feed {
         my $items = $self->resultset('AccountFeed')->search(
             { 'me.account_id' => $self->account->id  },
             {
-#                join    => 'unread_items',
-#                order_by => { -desc => 'me.title', -desc => 'unread_items' },
-#                distinct => 1,
- #               '+select' => [ { count => 'unread_items.read', -as => 'unread_items' } ],
-            }
+                prefetch => [ 'feed' ],
+                join => [
+                    'feed',
+                ],
+                order_by => { -desc => 'feed.title' },
+             }
         );
 
         return [ map { $self->_get_list_view( $_ ) } $items->all ];
@@ -47,12 +48,14 @@ class Munge::Model::View::Feed {
 
     method _get_list_view ( $account_feed ) {
         my $feed = $account_feed->feed;
-
+        
+#        my $x = $account_feed->account_feed_items;
+        
         return {
             $feed->get_inflated_columns,
             uuid_string => uuid_string( $feed->uuid ),
             title       => $feed->title || $feed->link,
-            unread_items => 0,
+            unread_items => $account_feed->unread_items->count() || 0,
         }
     }
 }
