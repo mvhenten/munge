@@ -37,54 +37,37 @@ class Munge::Model::View::FeedItem {
     method today {
         my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
 
-        my $items = $self->resultset('FeedItem')->search( {
-                    'account_feed_items.account_id' => $self->account->id,
-                }, {
-
-
-                prefetch => ['feed', 'account_feed_items'],
-                join => ['feed', 'account_feed_items'],
+        my $items = $self->resultset('FeedItem')->search(
+            {
+                'account_feed_items.account_id' => $self->account->id,
+                'me.created'    => { '>', $yesterday },
+                'account_feed_items.read'       => 0,
+            },
+            {
+                prefetch => [ 'feed', 'account_feed_items'],
+                join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
                 rows       => 40,        
-                
-                }
-                                                         
+            }
         );
-        
-        #    {
-        #        'me.account_id' => $self->account->id,
-        #        #'me.created'    => { '>', $yesterday },
-        #        #'me.read'       => 0,
-        #    },
-        #    {
-        #        #prefetch => 'feed',
-        #        #join => 'feed',
-        #        #order_by   => { -desc => 'me.issued' },
-        #        rows       => 40,
-        #    }
-        #);
-        
-#        my ( $row ) = $items->all();
-        
- #       warn Dumper $row->feed_item_uuid;
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
-
+    
     method crunch {
         my $today = $self->format_datetime( DateTime->today() );
 
         my $items = $self->resultset('FeedItem')->search(
             {
-                'me.account_id' => $self->account->id,
+                'account_feed_items.account_id' => $self->account->id,
                 'me.created'    => { '<', $today },
-                'me.read'       => 0,
+                'account_feed_items.read'       => 0,
             },
             {
-                prefetch => 'feed',
-                join => 'feed',
+                prefetch => [ 'feed', 'account_feed_items'],
+                join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 30,
+                rows       => 30,        
             }
         );
 
@@ -94,46 +77,43 @@ class Munge::Model::View::FeedItem {
     method starred {
         my $items = $self->resultset('FeedItem')->search(
             {
-                'me.account_id' => $self->account->id,
-                'me.starred' => 1,
+                'account_feed_items.account_id' => $self->account->id,
+                'account_feed_items.starred'       => 1,
             },
             {
-                prefetch => 'feed',
-                join => 'feed',
+                prefetch => [ 'feed', 'account_feed_items'],
+                join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 50,
+                rows       => 30,        
             }
         );
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
 
-
-    method list_account( Account $account, Int $page=1 ){
+    method list( Str $uuid, Int $page=1 ){
         my $items = $self->resultset('FeedItem')->search(
-            { account_id => $account->id },
             {
-                prefetch => 'feed',
-                join => 'feed',
-                order_by   => { -asc => 'issued' },
-                page       => $page,
-                rows       => 25,
+                'account_feed_items.account_id' => $self->account->id,
+                'me.feed_uuid' => to_UUID( $uuid ),
+            },
+            {
+                prefetch => [ 'feed', 'account_feed_items'],
+                join => ['account_feed_items', 'feed' ],
+                order_by   => { -desc => 'me.issued' },
+                rows       => 30,        
             }
         );
 
-        return [ $items->all() ];
-    }
-
-    method list( Str $uuid, Int $page=1 ){
-        my $items = $self->resultset('FeedItem')->search({
-            'feed.uuid' => to_UUID( $uuid ),
-            'feed.account_id' => $self->account->id
-        },
-        {
-            prefetch => 'feed',
-            join => 'feed',
-            order_by   => { -desc => 'me.issued' },
-        });
+        #my $items = $self->resultset('FeedItem')->search({
+        #    'feed.uuid' => to_UUID( $uuid ),
+        #    'feed.account_id' => $self->account->id
+        #},
+        #{
+        #    prefetch => 'feed',
+        #    join => 'feed',
+        #    order_by   => { -desc => 'me.issued' },
+        #});
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
