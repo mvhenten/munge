@@ -27,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
 
 =head1 TABLE: C<feed_item>
 
@@ -118,45 +118,70 @@ __PACKAGE__->table("feed_item");
 =cut
 
 __PACKAGE__->add_columns(
-  "uuid",
-  { data_type => "binary", is_nullable => 0, size => 16 },
-  "link",
-  { data_type => "varchar", is_nullable => 0, size => 2048 },
-  "author",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 2048 },
-  "title",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 512 },
-  "tags",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 1024 },
-  "summary",
-  { data_type => "text", is_nullable => 1 },
-  "content",
-  { data_type => "mediumtext", is_nullable => 1 },
-  "issued",
-  {
-    data_type => "datetime",
-    datetime_undef_if_invalid => 1,
-    default_value => "0000-00-00 00:00:00",
-    is_nullable => 1,
-  },
-  "modified",
-  {
-    data_type => "datetime",
-    datetime_undef_if_invalid => 1,
-    default_value => "0000-00-00 00:00:00",
-    is_nullable => 1,
-  },
-  "created",
-  {
-    data_type => "timestamp",
-    datetime_undef_if_invalid => 1,
-    default_value => \"current_timestamp",
-    is_nullable => 0,
-  },
-  "feed_uuid",
-  { data_type => "binary", is_foreign_key => 1, is_nullable => 1, size => 16 },
-  "poster_image",
-  { data_type => "varchar", default_value => "", is_nullable => 0, size => 2048 },
+    "uuid",
+    { data_type => "binary", is_nullable => 0, size => 16 },
+    "link",
+    { data_type => "varchar", is_nullable => 0, size => 2048 },
+    "author",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 2048
+    },
+    "title",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 512
+    },
+    "tags",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 1024
+    },
+    "summary",
+    { data_type => "text", is_nullable => 1 },
+    "content",
+    { data_type => "mediumtext", is_nullable => 1 },
+    "issued",
+    {
+        data_type                 => "datetime",
+        datetime_undef_if_invalid => 1,
+        default_value             => "0000-00-00 00:00:00",
+        is_nullable               => 1,
+    },
+    "modified",
+    {
+        data_type                 => "datetime",
+        datetime_undef_if_invalid => 1,
+        default_value             => "0000-00-00 00:00:00",
+        is_nullable               => 1,
+    },
+    "created",
+    {
+        data_type                 => "timestamp",
+        datetime_undef_if_invalid => 1,
+        default_value             => \"current_timestamp",
+        is_nullable               => 0,
+    },
+    "feed_uuid",
+    {
+        data_type      => "binary",
+        is_foreign_key => 1,
+        is_nullable    => 1,
+        size           => 16
+    },
+    "poster_image",
+    {
+        data_type     => "varchar",
+        default_value => "",
+        is_nullable   => 0,
+        size          => 2048
+    },
 );
 
 =head1 PRIMARY KEY
@@ -182,10 +207,10 @@ Related object: L<Munge::Schema::Result::AccountFeedItem>
 =cut
 
 __PACKAGE__->has_many(
-  "account_feed_items",
-  "Munge::Schema::Result::AccountFeedItem",
-  { "foreign.feed_item_uuid" => "self.uuid" },
-  { cascade_copy => 0, cascade_delete => 0 },
+    "account_feed_items",
+    "Munge::Schema::Result::AccountFeedItem",
+    { "foreign.feed_item_uuid" => "self.uuid" },
+    { cascade_copy             => 0, cascade_delete => 0 },
 );
 
 =head2 feed_uuid
@@ -197,20 +222,32 @@ Related object: L<Munge::Schema::Result::Feed>
 =cut
 
 __PACKAGE__->belongs_to(
-  "feed_uuid",
-  "Munge::Schema::Result::Feed",
-  { uuid => "feed_uuid" },
-  {
-    is_deferrable => 1,
-    join_type     => "LEFT",
-    on_delete     => "RESTRICT",
-    on_update     => "RESTRICT",
-  },
+    "feed_uuid",
+    "Munge::Schema::Result::Feed",
+    { uuid => "feed_uuid" },
+    {
+        is_deferrable => 1,
+        join_type     => "LEFT",
+        on_delete     => "RESTRICT",
+        on_update     => "RESTRICT",
+    },
 );
-
 
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:51:19
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z+S5O0svpsK6UU4tOySRxw
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+__PACKAGE__->belongs_to(
+    "feed",
+    "Munge::Schema::Result::Feed",
+    { uuid => "feed_uuid" },
+    {
+        is_deferrable => 1,
+        join_type     => "LEFT",
+        on_delete     => "RESTRICT",
+        on_update     => "RESTRICT",
+    },
+);
+
 1;

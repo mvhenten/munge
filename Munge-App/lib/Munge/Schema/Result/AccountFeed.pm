@@ -27,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
 
 =head1 TABLE: C<account_feed>
 
@@ -54,15 +54,20 @@ __PACKAGE__->table("account_feed");
 =cut
 
 __PACKAGE__->add_columns(
-  "account_id",
-  {
-    data_type => "integer",
-    extra => { unsigned => 1 },
-    is_foreign_key => 1,
-    is_nullable => 0,
-  },
-  "feed_uuid",
-  { data_type => "binary", is_foreign_key => 1, is_nullable => 0, size => 16 },
+    "account_id",
+    {
+        data_type      => "integer",
+        extra          => { unsigned => 1 },
+        is_foreign_key => 1,
+        is_nullable    => 0,
+    },
+    "feed_uuid",
+    {
+        data_type      => "binary",
+        is_foreign_key => 1,
+        is_nullable    => 0,
+        size           => 16
+    },
 );
 
 =head1 PRIMARY KEY
@@ -77,7 +82,7 @@ __PACKAGE__->add_columns(
 
 =cut
 
-__PACKAGE__->set_primary_key("account_id", "feed_uuid");
+__PACKAGE__->set_primary_key( "account_id", "feed_uuid" );
 
 =head1 RELATIONS
 
@@ -90,10 +95,10 @@ Related object: L<Munge::Schema::Result::Account>
 =cut
 
 __PACKAGE__->belongs_to(
-  "account",
-  "Munge::Schema::Result::Account",
-  { id => "account_id" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+    "account",
+    "Munge::Schema::Result::Account",
+    { id            => "account_id" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 feed_uuid
@@ -105,23 +110,20 @@ Related object: L<Munge::Schema::Result::Feed>
 =cut
 
 __PACKAGE__->belongs_to(
-  "feed_uuid",
-  "Munge::Schema::Result::Feed",
-  { uuid => "feed_uuid" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+    "feed_uuid", "Munge::Schema::Result::Feed",
+    { uuid          => "feed_uuid" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:36:16
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L1QiNXjhF65fPCYZVFYf7w
 
-
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 
 __PACKAGE__->belongs_to(
-  "feed",
-  "Munge::Schema::Result::Feed",
-  { uuid => "feed_uuid" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+    "feed", "Munge::Schema::Result::Feed",
+    { uuid          => "feed_uuid" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 __PACKAGE__->has_many(
@@ -134,8 +136,8 @@ __PACKAGE__->has_many(
 
         return {
             "$foreign.account_id" => { -ident => "$self.account_id" },
-            "$foreign.feed_uuid" => { -ident => "$self.feed_uuid" },
-            "$foreign.read"    => 0,
+            "$foreign.feed_uuid"  => { -ident => "$self.feed_uuid" },
+            "$foreign.read"       => 0,
         };
     }
 );
