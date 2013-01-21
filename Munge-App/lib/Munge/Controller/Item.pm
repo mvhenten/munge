@@ -7,7 +7,7 @@ use Dancer ':syntax';
 use Data::Dumper;
 
 use Munge::Model::Account;
-use Munge::Model::FeedItem;
+use Munge::Model::AccountFeedItem;
 use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
@@ -60,17 +60,21 @@ get '/:feed' => sub {
     my $account   = account();
     my $item_view = Munge::Model::View::FeedItem->new( account => $account );
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
-
-    my $feed_info =
-      { title => ucfirst($item_id), description => 'Unread posts' };
+    
 
     return status('not_found') if not to_UUID($item_id);
-    my $item = $item_view->get_item($item_id);
+    my $item            = $item_view->get_item($item_id);
+    my $item_list_view  = $item_view->list( $item->{feed_uuid} );
 
     return status('not_found') if not $item;
+    
+#    warn Dumper $item;
+    
+    my $model = Munge::Model::AccountFeedItem->load(
+        to_UUID($item_id), to_UUID( $item->{feed_uuid_string} ), $account );
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
-
+    #my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
+    #
     if ( ( not $model->read ) or $model->starred ) {
         $model->unset_star();
         $model->set_read();
@@ -81,7 +85,7 @@ get '/:feed' => sub {
       {
         feed  => $item,
         feeds => $feed_view->all_feeds,
-        items => $item_view->list( $item->{feed_uuid} ),
+        items => $item_list_view,
       };
 
 };
