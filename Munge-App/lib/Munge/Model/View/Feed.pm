@@ -25,11 +25,11 @@ class Munge::Model::View::Feed {
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
 
-    method feed_view ( $uuid ) {
-        my ( $item ) = $self->resultset('Feed')->search({ uuid => to_UUID( $uuid ), account_id => $self->account->id });
-
-        return $self->_get_list_view( $item );
-    }
+    #method feed_view ( $uuid ) {
+    #    my ( $item ) = $self->resultset('Feed')->search({ uuid => to_UUID( $uuid ), account_id => $self->account->id });
+    #
+    #    return $self->_get_list_view( $item );
+    #}
 
     method all_feeds {
         my $sql = '

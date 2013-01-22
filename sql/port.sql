@@ -136,4 +136,17 @@ WHERE af.account_id = 3
 GROUP BY f.uuid
 ;
 
+-- get all feed_items for given feed uuid and account uuid
+
+SELECT fi.*, f.title, f.description, afi.`read`, afi.starred
+FROM feed_item fi
+LEFT JOIN feed f
+    ON f.uuid = fi.uuid
+LEFT JOIN account_feed_item afi
+    ON afi.feed_uuid = fi.feed_uuid
+WHERE fi.feed_uuid = UNHEX('F93779986CADE1398B54598459118A4D')
+;
+
+
+
 
