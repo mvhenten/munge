@@ -27,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
+__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
 
 =head1 TABLE: C<account_feed_item>
 
@@ -72,16 +72,26 @@ __PACKAGE__->table("account_feed_item");
 =cut
 
 __PACKAGE__->add_columns(
-  "account_id",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
-  "feed_item_uuid",
-  { data_type => "binary", is_foreign_key => 1, is_nullable => 0, size => 16 },
-  "feed_uuid",
-  { data_type => "binary", is_foreign_key => 1, is_nullable => 0, size => 16 },
-  "read",
-  { data_type => "tinyint", default_value => 0, is_nullable => 0 },
-  "starred",
-  { data_type => "integer", default_value => 0, is_nullable => 0 },
+    "account_id",
+    { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+    "feed_item_uuid",
+    {
+        data_type      => "binary",
+        is_foreign_key => 1,
+        is_nullable    => 0,
+        size           => 16
+    },
+    "feed_uuid",
+    {
+        data_type      => "binary",
+        is_foreign_key => 1,
+        is_nullable    => 0,
+        size           => 16
+    },
+    "read",
+    { data_type => "tinyint", default_value => 0, is_nullable => 0 },
+    "starred",
+    { data_type => "integer", default_value => 0, is_nullable => 0 },
 );
 
 =head1 PRIMARY KEY
@@ -98,7 +108,7 @@ __PACKAGE__->add_columns(
 
 =cut
 
-__PACKAGE__->set_primary_key("account_id", "feed_uuid", "feed_item_uuid");
+__PACKAGE__->set_primary_key( "account_id", "feed_uuid", "feed_item_uuid" );
 
 =head1 RELATIONS
 
@@ -111,10 +121,10 @@ Related object: L<Munge::Schema::Result::FeedItem>
 =cut
 
 __PACKAGE__->belongs_to(
-  "feed_item_uuid",
-  "Munge::Schema::Result::FeedItem",
-  { uuid => "feed_item_uuid" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+    "feed_item_uuid",
+    "Munge::Schema::Result::FeedItem",
+    { uuid          => "feed_item_uuid" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
 
 =head2 feed_uuid
@@ -126,16 +136,13 @@ Related object: L<Munge::Schema::Result::Feed>
 =cut
 
 __PACKAGE__->belongs_to(
-  "feed_uuid",
-  "Munge::Schema::Result::Feed",
-  { uuid => "feed_uuid" },
-  { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
+    "feed_uuid", "Munge::Schema::Result::Feed",
+    { uuid          => "feed_uuid" },
+    { is_deferrable => 1, on_delete => "RESTRICT", on_update => "RESTRICT" },
 );
-
 
 # Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:51:19
 # DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:g5+3zu+GJybU3+IKCj4mKQ
-
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 1;

@@ -115,7 +115,7 @@ get '/:feed' => sub {
     my $item_list_view = feed_item_view($feed_id);
 
     if ( $feed_id and to_UUID($feed_id) ) {
-        $feed_info      = {
+        $feed_info = {
             title       => $item_list_view->[0]->{feed_title},
             description => $item_list_view->[0]->{feed_description},
             uuid_string => $item_list_view->[0]->{feed_uuid_string},
