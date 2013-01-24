@@ -40,8 +40,6 @@ class Munge::Model::Feed {
     use Munge::UUID;
     use Munge::Storage;
 
-    with 'Munge::Role::Schema';
-    with 'Munge::Role::Account';
     with 'Munge::Role::Storage';
 
     has link => (
@@ -97,13 +95,12 @@ class Munge::Model::Feed {
         return DateTime->now();
     }
 
-    method create( $class: Uri $link, Account $account ) {
+    method create( $class: Uri $link ) {
         my $uuid = Munge::UUID->new( uri => $link )->uuid_bin;
 
           return $class->new(
             link    => $link->as_string,
             uuid    => $uuid,
-            account => $account,
           );
       }
 
@@ -112,18 +109,15 @@ class Munge::Model::Feed {
         {
             $self->_set_updated(undef);
         }
-        
+
         my $feed_client = $self->_get_feed_client();
 
-          return unless $feed_client->updated;
-          return unless $feed_client->success;
+        return unless $feed_client->updated;
+        return unless $feed_client->success;
 
-          confess('Must store feed before calling synchronize')
-          unless $self->id;
+        my $feed_parser = $self->_get_feed_parser( $feed_client->content );
 
-          my $feed_parser = $self->_get_feed_parser( $feed_client->content );
-
-          if ( not $feed_parser->xml_feed ) {
+        if ( not $feed_parser->xml_feed ) {
             warn 'Cannot parse feed: ' . $self->link;
             return;
         }
@@ -136,7 +130,7 @@ class Munge::Model::Feed {
             my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
         }
       }
-      
+
       method _get_feed_client {
         my $uri = URI->new( $self->link );
 

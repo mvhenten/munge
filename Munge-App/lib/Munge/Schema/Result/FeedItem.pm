@@ -213,30 +213,38 @@ __PACKAGE__->has_many(
     { cascade_copy             => 0, cascade_delete => 0 },
 );
 
-=head2 feed_uuid
+#=head2 feed_uuid
+#
+#Type: belongs_to
+#
+#Related object: L<Munge::Schema::Result::Feed>
+#
+#=cut
+#
+#__PACKAGE__->belongs_to(
+#    "feed_uuid",
+#    "Munge::Schema::Result::Feed",
+#    { uuid => "feed_uuid" },
+#    {
+#        is_deferrable => 1,
+#        join_type     => "LEFT",
+#        on_delete     => "RESTRICT",
+#        on_update     => "RESTRICT",
+#    },
+#);
+
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:51:19
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z+S5O0svpsK6UU4tOySRxw
+
+# You can replace this text with custom code or comments, and it will be preserved on regeneration
+
+=head2 feed
 
 Type: belongs_to
 
 Related object: L<Munge::Schema::Result::Feed>
 
 =cut
-
-__PACKAGE__->belongs_to(
-    "feed_uuid",
-    "Munge::Schema::Result::Feed",
-    { uuid => "feed_uuid" },
-    {
-        is_deferrable => 1,
-        join_type     => "LEFT",
-        on_delete     => "RESTRICT",
-        on_update     => "RESTRICT",
-    },
-);
-
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:51:19
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:Z+S5O0svpsK6UU4tOySRxw
-
-# You can replace this text with custom code or comments, and it will be preserved on regeneration
 
 __PACKAGE__->belongs_to(
     "feed",
