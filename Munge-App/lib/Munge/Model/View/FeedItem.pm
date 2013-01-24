@@ -47,13 +47,13 @@ class Munge::Model::View::FeedItem {
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 40,        
+                rows       => 40,
             }
         );
 
         return [ map { $self->_create_list_view( $_ ) } $items->all() ];
     }
-    
+
     method crunch {
         my $today = $self->format_datetime( DateTime->today() );
 
@@ -67,7 +67,7 @@ class Munge::Model::View::FeedItem {
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 30,        
+                rows       => 30,
             }
         );
 
@@ -84,7 +84,7 @@ class Munge::Model::View::FeedItem {
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 30,        
+                rows       => 30,
             }
         );
 
@@ -101,7 +101,7 @@ class Munge::Model::View::FeedItem {
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 order_by   => { -desc => 'me.issued' },
-                rows       => 30,        
+                rows       => 30,
             }
         );
 
@@ -118,20 +118,9 @@ class Munge::Model::View::FeedItem {
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 #order_by   => { -desc => 'me.issued' },
-                rows       => 1,        
+                rows       => 1,
             }
         );
-
-
-        #my $search = $self->resultset('FeedItem')->search({
-        #    'me.uuid' => to_UUID( $uuid ),
-        #    'feed.account_id' => $self->account->id
-        #},
-        #{
-        #    prefetch => 'feed',
-        #    join => 'feed',
-        #    order_by   => { -asc => 'me.issued' },
-        #});
 
         my ( $item ) = $search->all();
         return $item ? $self->_create_list_view( $item ) : undef;
@@ -141,14 +130,9 @@ class Munge::Model::View::FeedItem {
         my $ug = Data::UUID->new();
 
         my $issued = $feed_item->issued || DateTime->today;
-        
+
         my %cols = $feed_item->get_inflated_columns();
         my $feed = $feed_item->feed->description;
-        
-#        warn Dumper [ keys %cols ];
-
-        return {};
-
 
         return {
             $feed_item->get_inflated_columns(),
