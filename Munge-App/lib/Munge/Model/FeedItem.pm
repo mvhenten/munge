@@ -148,7 +148,6 @@ class Munge::Model::FeedItem {
           Munge::Model::FeedItem->load( $parser_item->uuid_bin );
 
         if ($feed_item and $feed_item->feed_uuid eq $feed->uuid ) {
-            warn 'HIER';
             return $feed_item
               if DateTime->compare( $feed_item->modified,
                 $parser_item->modified ) eq 0;

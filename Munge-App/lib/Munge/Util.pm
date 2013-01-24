@@ -57,14 +57,18 @@ sub HTML4_TAGS {
 Saves one line of code and maybe a use statement. possibly some cognitive load
 
 =cut
+{
+    my $ug;
 
-func uuid_string($uuid) {
-    assert( is_UUID($uuid) );
+    func uuid_string($uuid) {
+        assert( is_UUID($uuid) );
 
-      my $ug = Data::UUID->new();
+        my $ug = Data::UUID->new() unless $ug;
 
-      return $ug->to_string($uuid);
-  }
+        return $ug->to_string($uuid);
+    }
+}
+
 
 =item human_date_string ()
 
@@ -218,13 +222,13 @@ image found or undef.
             my $src = $image->attr('src');
 
             next if any { $src =~ $_ } BLACKLIST();
-            
+
             if( $src !~ /^http.*/ ){
                 my $uri = URI->new( $feed_link );
                 $uri->path( $src );
                 $src = $uri->as_string;
             }
-            
+
             return $src;
         }
 
