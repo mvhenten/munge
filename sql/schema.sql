@@ -70,6 +70,6 @@ CREATE TABLE `feed_item` (
   `poster_image` varchar(2048) NOT NULL DEFAULT '',
   PRIMARY KEY (`uuid`),
   KEY `feed_uuid_key` (`feed_uuid`),
-  CONSTRAINT `feed_item_ibfk_1` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`)
+  CONSTRAINT `feed_item_ibfk_1` FOREIGN KEY `feed` (`feed_uuid`) REFERENCES `feed` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
