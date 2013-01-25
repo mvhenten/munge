@@ -115,7 +115,7 @@ get '/:feed' => sub {
     my $item_list_view = feed_item_view($feed_id);
 
     if ( $feed_id and to_UUID($feed_id) ) {
-        $feed_info      = {
+        $feed_info = {
             title       => $item_list_view->[0]->{feed_title},
             description => $item_list_view->[0]->{feed_description},
             uuid_string => $item_list_view->[0]->{feed_uuid_string},
@@ -154,9 +154,9 @@ sub feed_item_view {
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->today()        if $feed_id eq 'today';
-    return $view->crunch()       if $feed_id eq 'archive';
-    return $view->starred()      if $feed_id eq 'starred';
+    return $view->today()   if $feed_id eq 'today';
+    return $view->crunch()  if $feed_id eq 'archive';
+    return $view->starred() if $feed_id eq 'starred';
     return $view->list($feed_id) if to_UUID($feed_id);
     return;
 }

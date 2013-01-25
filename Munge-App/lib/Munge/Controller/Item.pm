@@ -60,18 +60,18 @@ get '/:feed' => sub {
     my $account   = account();
     my $item_view = Munge::Model::View::FeedItem->new( account => $account );
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
-    
 
     return status('not_found') if not to_UUID($item_id);
-    my $item            = $item_view->get_item($item_id);
-    my $item_list_view  = $item_view->list( $item->{feed_uuid} );
+    my $item           = $item_view->get_item($item_id);
+    my $item_list_view = $item_view->list( $item->{feed_uuid} );
 
     return status('not_found') if not $item;
-    
-#    warn Dumper $item;
-    
-    my $model = Munge::Model::AccountFeedItem->load(
-        to_UUID($item_id), to_UUID( $item->{feed_uuid_string} ), $account );
+
+    #    warn Dumper $item;
+
+    my $model =
+      Munge::Model::AccountFeedItem->load( to_UUID($item_id),
+        to_UUID( $item->{feed_uuid_string} ), $account );
 
     #my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
     #

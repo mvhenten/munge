@@ -15,7 +15,8 @@ class t::Munge::Model::Feed {
     with 'Test::Munge::Role::Feed';
 
     method override_schema {
-        my $override = Sub::Override->new('Munge::Schema::Connection::schema', sub { return $self->schema });
+        my $override = Sub::Override->new( 'Munge::Schema::Connection::schema',
+            sub { return $self->schema } );
     }
 
     test feed_create {
@@ -23,11 +24,11 @@ class t::Munge::Model::Feed {
 
         my $feed;
 
-        my $uri = URI->new('http://example.com/atom.xml?rand=' . rand()  );
-        my $uuid    = Munge::UUID->new( uri => $uri )->uuid_bin;
+        my $uri = URI->new( 'http://example.com/atom.xml?rand=' . rand() );
+        my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
 
         lives_ok {
-            $feed = Munge::Model::Feed->create( $uri );
+            $feed = Munge::Model::Feed->create($uri);
             $feed->store();
         }
         'create lives';
@@ -40,12 +41,12 @@ class t::Munge::Model::Feed {
     test feed_store {
         my $override = $self->override_schema;
 
-        my $uri     = URI->new( $self->create_test_feed_uri );
-        my $uuid    = Munge::UUID->new( uri => $uri )->uuid_bin;
+        my $uri = URI->new( $self->create_test_feed_uri );
+        my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
 
         my $feed = Munge::Model::Feed->new(
-            uuid     => $uuid,
-            link     => $uri->as_string,
+            uuid => $uuid,
+            link => $uri->as_string,
         );
 
         $feed->store();
@@ -55,7 +56,8 @@ class t::Munge::Model::Feed {
     }
 
     test load_by_uuid {
-        my $feed = Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
+        my $feed =
+          Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
 
         ok( $self->resultset('Feed')->search( { uuid => $feed->uuid } ),
             'Feed was stored' );
@@ -68,7 +70,8 @@ class t::Munge::Model::Feed {
     test feed_synchronize {
         my $override = $self->override_schema;
 
-        my $feed = Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
+        my $feed =
+          Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
 
         is( $feed->updated,     undef, 'Updated is not yet defined' );
         is( $feed->title,       undef, 'Title is not yet set' );
@@ -84,14 +87,17 @@ class t::Munge::Model::Feed {
 
         $feed->store();
 
-
-        is( $self->resultset('FeedItem')->search( { feed_uuid => $feed->uuid } ), 1,
-            'Feed items were saved' );
+        is(
+            $self->resultset('FeedItem')
+              ->search( { feed_uuid => $feed->uuid } ),
+            1,
+            'Feed items were saved'
+        );
 
         # TODO test this somewhere
-#        my @items = $feed->feed_items;
+        #        my @items = $feed->feed_items;
 
-#        warn Dumper \@items;
+        #        warn Dumper \@items;
         #
         #for my $item (@items) {
         #    is(

@@ -37,18 +37,19 @@ sub main {
 
     while ( my $row = $rs->next ) {
         if ( recently_updated($row) ) {
-            printf "skip feed %s:%s\n", uuid_string($row->uuid), $row->title;
+            printf "skip feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
             next;
         }
 
-        printf "work on feed %s:%s\n", uuid_string($row->uuid), $row->title;
+        printf "work on feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
         my $feed = Munge::Model::Feed->new( $row->get_inflated_columns() );
 
         try {
             $feed->synchronize();
             $feed->store();
 
-            printf " * synchronized feed items %s:%s\n", uuid_string($feed->uuid),
+            printf " * synchronized feed items %s:%s\n",
+              uuid_string( $feed->uuid ),
               $feed->title;
         }
         catch {
