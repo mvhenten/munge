@@ -11,13 +11,12 @@ CRUD model for Feed items, uses "Storage" for load and delete.
 =head1 SYNOPSIS
 
     # factory
-    my $feed_item = Munge::Model::FeedItem->load( $uuid, $account );
+    my $feed_item = Munge::Model::FeedItem->load( $uuid );
 
     # constructor N.B. store requires all non-maybe attributes to
     # be set...
 
     my $feed_item = Munge::Model::FeedItem->new(
-        account => $self->account,
         feed_id => $feed->id,
         uuid    => $item->uuid_bin,
         link    => $item->link,
@@ -47,10 +46,8 @@ and that have a (private) _setter
 class Munge::Model::FeedItem {
 
     use DateTime;
-    use Munge::Types qw|UUID Account ParserItem|;
+    use Munge::Types qw|UUID ParserItem|;
 
-    with 'Munge::Role::Schema';
-    with 'Munge::Role::Account';
     with 'Munge::Role::Storage';
 
     sub MUTABLE_ATTRIBUTES {
@@ -64,13 +61,13 @@ class Munge::Model::FeedItem {
           |;
     }
 
-    has id => (
-        is     => 'ro',
-        isa    => 'Int',
-        writer => '_set_id',
+    has uuid => (
+        is       => 'ro',
+        isa      => UUID,
+        required => 1,
     );
 
-    has uuid => (
+    has feed_uuid => (
         is       => 'ro',
         isa      => UUID,
         required => 1,
@@ -80,35 +77,6 @@ class Munge::Model::FeedItem {
         is       => 'ro',
         isa      => 'Str',
         required => 1,
-    );
-
-    has feed_id => (
-        is       => 'ro',
-        isa      => 'Int',
-        required => 1,
-    );
-
-    has read => (
-        traits  => ['Bool'],
-        is      => 'ro',
-        isa     => 'Bool',
-        default => 0,
-        handles => {
-            set_read   => 'set',
-            set_unread => 'unset',
-        }
-    );
-
-    has starred => (
-        traits  => ['Bool'],
-        is      => 'ro',
-        isa     => 'Bool',
-        default => 0,
-        handles => {
-            set_star    => 'set',
-            unset_star  => 'unset',
-            toggle_star => 'toggle',
-        }
     );
 
     has created => (
@@ -173,22 +141,22 @@ class Munge::Model::FeedItem {
         return DateTime->today();
     }
 
+    use Data::Dumper;
+
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {
         my $feed_item =
-          Munge::Model::FeedItem->load( $parser_item->uuid_bin,
-            $feed->account );
-          
-        if ($feed_item) {
+          Munge::Model::FeedItem->load( $parser_item->uuid_bin );
+
+        if ($feed_item and $feed_item->feed_uuid eq $feed->uuid ) {
             return $feed_item
               if DateTime->compare( $feed_item->modified,
                 $parser_item->modified ) eq 0;
         }
         else {
             $feed_item = Munge::Model::FeedItem->new(
-                account => $feed->account,
-                feed_id => $feed->id,
-                uuid    => $parser_item->uuid_bin,
-                link    => $parser_item->link,
+                uuid        => $parser_item->uuid_bin,
+                feed_uuid   => $feed->uuid,
+                link        => $parser_item->link,
             );
         }
 
@@ -196,11 +164,9 @@ class Munge::Model::FeedItem {
             my $setter = "_set_$attr";
             $feed_item->$setter( $parser_item->$attr );
         }
-        
+
         $feed_item->store();
-        
+
         return;
     }
-    
-    
 }

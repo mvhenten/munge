@@ -20,12 +20,6 @@ class Munge::Storage {
 
     with 'Munge::Role::Schema';
 
-    has account => (
-        is       => 'ro',
-        isa      => 'Munge::Schema::Result::Account',
-        required => 1,
-    );
-
     has schema_name => (
         is       => 'ro',
         isa      => 'Str',
@@ -42,11 +36,15 @@ class Munge::Storage {
         return $name->new();
     }
 
+    method store ( $object ) {
+        my $values = $self->_storable_attributes( $object );
+        my $row =$self->resultset( $self->schema_name )->update_or_create( $values );
+
+        return $row->get_inflated_columns();
+    }
+
     method update ( $object ) {
         my $values = $self->_storable_attributes( $object );
-        $values->{account_id} = $self->account->id;
-
-
         my $row = $self->resultset( $self->schema_name )->new({});
 
         $row->in_storage(1);
@@ -57,39 +55,36 @@ class Munge::Storage {
 
     method create ( $object ) {
         my $values = $self->_storable_attributes( $object );
-        $values->{account_id} = $self->account->id;
-
         my $row = $self->resultset( $self->schema_name )->create( $values );
+
         return $row->get_inflated_columns();
     }
 
     method load ( $key, $value ) {
         my ( $result ) = $self->_search( { $key => $value } );
-        
+
         return undef if not $result;
-        
+
         return $self->_get_inflated_columns( $result );
     }
-    
+
     method search ( HashRef $search ) {
         my $rs = $self->_search( $search );
         return undef if not $rs;
-        
+
         my @collect;
-        
+
         foreach my $row ( $rs->all() ){
             push( @collect, $self->_get_inflated_columns( $row ) );
         }
-        
+
         return @collect;
     }
-    
+
     method _get_inflated_columns( $rs_row ) {
         my %columns = $rs_row->get_inflated_columns();
-        
-        delete( $columns{account_id} );
-        
-        return \%columns;        
+
+        return \%columns;
     }
 
     method delete ( $key, $value ) {
@@ -110,7 +105,7 @@ class Munge::Storage {
     }
 
     method _search ( HashRef $kv ) {
-        return $self->resultset( $self->schema_name )->search( { %{ $kv },  account_id => $self->account->id } );
+        return $self->resultset( $self->schema_name )->search( $kv );
     }
 
     method _storable_attributes ( Object $object ) {

@@ -16,6 +16,16 @@ role Test::Munge::Role::Feed {
 
     requires qw|create_test_account|;
 
+    has feed_created_counts => (
+        is => 'ro',
+        isa => 'Int',
+        traits => ['Counter'],
+        default => sub { int( rand() * 100_000_000 ) },
+        handles => {
+            inc_feeds_created => 'inc',
+        }
+    );
+
     sub APPLICATION_PATH {
         my ($app_dir) = realpath(__FILE__) =~ m/(.+\/Munge-App\/)/;
         return $app_dir;
@@ -25,7 +35,9 @@ role Test::Munge::Role::Feed {
         my $filename = realpath(__FILE__);
 
         my $uri =
-          URI->new( 'file:/' . APPLICATION_PATH() . '/t/resource/atom.xml' );
+          URI->new( 'file:/' . APPLICATION_PATH() . '/t/resource/atom.xml?rand=' . $self->inc_feeds_created );
+
+        return $uri;
     }
 
     method create_test_feed_with_items( ArrayRef $items, Account $account? ){
@@ -89,13 +101,13 @@ role Test::Munge::Role::Feed {
         $feed_item->store();
         $feed->_add_feed_item( $feed );
     }
-    
+
     method _test_storage ( Account $account, $schema_name ) {
         my $storage = Munge::Storage->new(
             account     => $account,
             schema_name => $schema_name,
             schema      => $self->schema,``
-        );        
+        );
     }
 
 }

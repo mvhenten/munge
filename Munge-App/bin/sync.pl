@@ -11,6 +11,7 @@ use FindBin;
 use lib "$FindBin::Bin/../lib";
 use Munge::Model::Feed;
 use Munge::Schema::Connection;
+use Munge::Util qw|uuid_string|;
 
 main(@ARGV);
 
@@ -25,24 +26,6 @@ main(@ARGV);
     }
 }
 
-{
-    my %users;
-
-    sub get_account {
-        my ($account_id) = @_;
-
-        if ( not %users ) {
-            my $schema = Munge::Schema::Connection->schema();
-            my $rs =
-              $schema->resultset('Munge::Schema::Result::Account')->search();
-
-            %users = map { $_->id => $_ } $rs->all();
-        }
-
-        return $users{$account_id};
-    }
-}
-
 sub RECENT_IN_MINUTES {
     return 30;
 }
@@ -54,19 +37,19 @@ sub main {
 
     while ( my $row = $rs->next ) {
         if ( recently_updated($row) ) {
-            printf "skip feed %s:%s\n", $row->id, $row->title;
+            printf "skip feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
             next;
         }
 
-        printf "work on feed %s:%s\n", $row->id, $row->title;
-        my $feed = Munge::Model::Feed->new( $row->get_inflated_columns(),
-            account => get_account( $row->account_id ) );
+        printf "work on feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
+        my $feed = Munge::Model::Feed->new( $row->get_inflated_columns() );
 
         try {
             $feed->synchronize();
             $feed->store();
 
-            printf " * syncrhonized feed items %s:%s\n", $feed->id,
+            printf " * synchronized feed items %s:%s\n",
+              uuid_string( $feed->uuid ),
               $feed->title;
         }
         catch {
@@ -85,4 +68,3 @@ sub recently_updated {
 
     return $duration->in_units('minutes') < RECENT_IN_MINUTES();
 }
-

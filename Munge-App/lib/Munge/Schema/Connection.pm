@@ -5,6 +5,7 @@ use warnings;
 
 use Munge::Config;
 use Munge::Schema;
+use Data::Dumper;
 
 {
     my $schema;
