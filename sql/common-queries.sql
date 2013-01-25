@@ -39,3 +39,59 @@ SET `read` = 1
 WHERE feed_uuid = unhex('2CA7173A7EC61538AF35D6BBC4D1EFBA')
 AND account_id = 3
 ;
+
+
+-- queries
+
+SELECT count(afi.`read`), af.account_id, f.title
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+LEFT JOIN account_feed_item afi
+    ON afi.feed_uuid = af.feed_uuid
+    AND afi.account_id = af.account_id
+    AND afi.read = 0
+WHERE af.account_id = 3
+GROUP BY f.uuid
+;
+
+SELECT count(afi.`read`) AS unread, f.*
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+LEFT JOIN (
+    SELECT *
+    FROM account_feed_item
+    WHERE `read` = 0
+) afi
+    ON afi.account_id = af.account_id
+    AND afi.feed_uuid = af.feed_uuid
+WHERE af.account_id = 3
+GROUP BY f.uuid
+ORDER BY unread DESC, f.title DESC
+;
+
+
+SELECT af.account_id, f.title, unread_items
+FROM account_feed af
+RIGHT JOIN feed f
+    ON af.feed_uuid = f.uuid
+WHERE unread_items = (
+    SELECT COUNT(1)
+    FROM account_feed_items
+    WHERE
+)
+WHERE af.account_id = 3
+GROUP BY f.uuid
+;
+
+-- get all feed_items for given feed uuid and account uuid
+
+SELECT fi.*, f.title, f.description, afi.`read`, afi.starred
+FROM feed_item fi
+LEFT JOIN feed f
+    ON f.uuid = fi.uuid
+LEFT JOIN account_feed_item afi
+    ON afi.feed_uuid = fi.feed_uuid
+WHERE fi.feed_uuid = UNHEX('F93779986CADE1398B54598459118A4D')
+;
