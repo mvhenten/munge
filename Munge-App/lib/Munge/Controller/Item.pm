@@ -28,29 +28,45 @@ sub account {
     return $account;
 }
 
+sub _get_account_feed_item {
+    my ( $uuid_string ) = @_;
+
+    my $uuid = to_UUID( $uuid_string );
+    return if not $uuid;
+
+    my $account         = account();
+    my $item_view       = Munge::Model::View::FeedItem->new( account => $account );
+    my $feed_item_data  = $item_view->get_feed_item_data( $uuid );
+
+    return if not $feed_item_data;
+
+    my $model = Munge::Model::AccountFeedItem->load( $uuid,
+        to_UUID( $feed_item_data->{feed_uuid} ), $account );
+
+    return $model;
+
+}
+
 get '/unread/:uuid' => sub {
-    my $uuid = param('uuid');
+    my $account_feed_item = _get_account_feed_item(  param('uuid') );
 
-    my $account = account();
+    return status('not_found') if not $account_feed_item;
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), $account );
-    $model->set_unread();
-    $model->store();
+    $account_feed_item->set_unread();
+    $account_feed_item->store();
 
-    my ($feed) =
-      Munge::Model::Feed->search( $account, { id => $model->feed_id } );
-
-    redirect '/feed/' . uuid_string( $feed->uuid );
+    redirect '/feed/' . uuid_string( $account_feed_item->feed_uuid );
 };
 
 get '/star/:uuid' => sub {
-    my $uuid = param('uuid');
+    my $account_feed_item = _get_account_feed_item(  param('uuid') );
 
-    my $model = Munge::Model::FeedItem->load( to_UUID($uuid), account() );
-    $model->toggle_star();
-    $model->store();
+    return status('not_found') if not $account_feed_item;
 
-    redirect "/item/$uuid#article";
+    $account_feed_item->toggle_star();
+    $account_feed_item->store();
+
+    redirect '/feed/' . uuid_string( $account_feed_item->feed_uuid );
 
     return;
 };
@@ -62,15 +78,16 @@ get '/:feed' => sub {
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
     return status('not_found') if not to_UUID($item_id);
-    my $item           = $item_view->get_item($item_id);
-    my $item_list_view = $item_view->list( $item->{feed_uuid} );
 
-    return status('not_found') if not $item;
+    my $feed_item_data = $item_view->get_feed_item_data($item_id);
 
-    #    warn Dumper $item;
+    return status('not_found') if not $feed_item_data;
+
+    my $item_list_view = $item_view->list( $feed_item_data->{feed_uuid} );
+
 
     my $model = Munge::Model::AccountFeedItem->load( to_UUID($item_id),
-        to_UUID( $item->{feed_uuid_string} ), $account );
+        to_UUID( $feed_item_data->{feed_uuid} ), $account );
 
     #my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
     #
@@ -82,7 +99,7 @@ get '/:feed' => sub {
 
     template 'feed/item',
       {
-        feed  => $item,
+        feed  => $feed_item_data,
         feeds => $feed_view->all_feeds,
         items => $item_list_view,
       };

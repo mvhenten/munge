@@ -12,4 +12,8 @@ role Munge::Role::Schema {
     method schema {
         return Munge::Schema::Connection->schema();
     }
+
+    method dbh {
+        return $self->schema->storage->dbh;
+    }
 }

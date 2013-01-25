@@ -53,7 +53,7 @@ SQL
         isa => 'Munge::Schema::Result::Account',
         required => 1,
     );
-    
+
     has _data_uuid => (
         is => 'ro',
         isa => 'Data::UUID',
@@ -62,7 +62,7 @@ SQL
             uuid_to_string => 'to_string',
         }
     );
-    
+
     method _build__data_uuid {
         return Data::UUID->new();
     }
@@ -85,9 +85,9 @@ SQL
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
             { Slice => {} }, $yesterday
-        );    
+        );
     }
-    
+
     method crunch {
         my $today = $self->format_datetime( DateTime->today() );
 
@@ -99,7 +99,7 @@ SQL
         my $items = $dbh->selectall_arrayref( $sql,
             { Slice => {} }, $today
         );
-    
+
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
     }
 
@@ -111,35 +111,48 @@ SQL
         my $items = $dbh->selectall_arrayref( $sql,
             { Slice => {} },
         );
-    
+
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
     }
 
-    method list( Str $uuid, Int $page=1 ){
+    method list( UUID $feed_uuid, Int $page=1 ){
         my $sql = FEED_ITEM_QUERY() .
                 'WHERE fi.feed_uuid = ?' . FEED_ITEM_ORDER_SQL();
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
-            { Slice => {} }, to_UUID( $uuid ) 
+            { Slice => {} }, $feed_uuid
         );
-    
+
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
     }
-    
+
+    method get_feed_item_data ( Str $item_uuid ) {
+        my $sql = 'SELECT fi.*, f.title AS feed_title, f.description AS feed_description FROM feed_item fi LEFT JOIN feed f ON f.uuid = fi.feed_uuid WHERE fi.uuid = ? LIMIT 1';
+        my $dbh = $self->schema->storage->dbh;
+
+        my ( $item ) = @{ $dbh->selectall_arrayref( $sql,
+            { Slice => {} }, to_UUID( $item_uuid )
+        )};
+
+        return $self->_create_list_view( $item );
+    }
+
     method _create_list_view ( HashRef $item ) {
-        
+
         my $poster_image = find_interesting_image_source( $item->{content}, $item->{feed_link} );
         my $issued_dt    = DateTime::Format::MySQL->parse_datetime( $item->{issued} );
-        
+
         return {
             %{ $item },
             human_date          => human_date_string( $issued_dt  ),
             poster_image        => $poster_image || undef,
             feed_uuid_string => $self->uuid_to_string( $item->{feed_uuid} ),
             uuid_string => $self->uuid_to_string( $item->{uuid} ),
-        };        
+        };
     }
+
+
 
     method get_item( Str $uuid ){
         my $search = $self->resultset('FeedItem')->search(
@@ -151,7 +164,7 @@ SQL
                 prefetch => [ 'feed', 'account_feed_items'],
                 join => ['account_feed_items', 'feed' ],
                 #order_by   => { -desc => 'me.issued' },
-                rows       => 1,        
+                rows       => 1,
             }
         );
 
@@ -175,10 +188,10 @@ SQL
         my $ug = Data::UUID->new();
 
         my $issued = $feed_item->issued || DateTime->today;
-        
+
         my %cols = $feed_item->get_inflated_columns();
 #        my $feed = $feed_item->feed->description;
-        
+
 #        warn Dumper [ keys %cols ];
 
         return {};
