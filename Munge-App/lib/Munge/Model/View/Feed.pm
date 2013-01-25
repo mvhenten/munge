@@ -33,24 +33,21 @@ class Munge::Model::View::Feed {
 
     method all_feeds {
         my $sql = '
-            SELECT count(afi.`read`) AS unread, f.title, f.uuid
+            SELECT f.title, f.uuid, COUNT( fi.uuid ) - SUM( afi.`read` ) AS unread
             FROM account_feed af
-            RIGHT JOIN feed f
+            LEFT JOIN feed f
                 ON af.feed_uuid = f.uuid
-            LEFT JOIN (
-                SELECT *
-                FROM account_feed_item
-                WHERE `read` = 0
-            ) afi
-                ON afi.account_id = af.account_id
-                AND afi.feed_uuid = af.feed_uuid
+            LEFT JOIN feed_item fi
+                ON fi.feed_uuid = f.uuid
+            LEFT JOIN account_feed_item afi
+                ON afi.feed_item_uuid = fi.uuid
             WHERE af.account_id = ?
-            GROUP BY f.uuid
-            ORDER BY unread DESC, f.title DESC
+            GROUP BY af.feed_uuid
+            ORDER BY unread DESC, f.title ASC
         ';
 
         my $dbh = $self->schema->storage->dbh;
-        
+
         my $items = $dbh->selectall_arrayref( $sql,
             { Slice => {} },  $self->account->id
         );
