@@ -54,7 +54,7 @@ get '/read/:feed' => sub {
     redirect('/') if not to_UUID($feed_id);
 
     my $account = account();
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id) );
+    my $feed    = Munge::Model::Feed->load( to_UUID($feed_id) );
 
     my $collection = Munge::Model::Feed::ItemCollection->new(
         feed    => $feed,
@@ -154,10 +154,10 @@ sub feed_item_view {
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->today()   if $feed_id eq 'today';
-    return $view->crunch()  if $feed_id eq 'archive';
-    return $view->starred() if $feed_id eq 'starred';
-    return $view->list( to_UUID( $feed_id ) ) if to_UUID($feed_id);
+    return $view->today()                   if $feed_id eq 'today';
+    return $view->crunch()                  if $feed_id eq 'archive';
+    return $view->starred()                 if $feed_id eq 'starred';
+    return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);
     return;
 }
 

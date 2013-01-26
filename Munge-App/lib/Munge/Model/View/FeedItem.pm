@@ -43,7 +43,7 @@ SQL
 sub FEED_ITEM_ORDER_SQL {
     my $sql = <<'SQL'
     ORDER BY
-        afi.`read` DESC,
+        afi.`read` ASC,
         fi.issued DESC
 SQL
 }
@@ -77,10 +77,7 @@ SQL
         my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
 
         my $today = $self->format_datetime( DateTime->today() );
-
-        my $sql = FEED_ITEM_QUERY()
-                . 'WHERE fi.created < ? AND afi.`read` = 0'
-                . FEED_ITEM_ORDER_SQL();
+        my $sql = $self->_wrap_sql( 'WHERE fi.created < ? AND afi.`read` = 0' );
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
@@ -90,10 +87,8 @@ SQL
 
     method crunch {
         my $today = $self->format_datetime( DateTime->today() );
+        my $sql = $self->_wrap_sql( 'WHERE fi.created < ? AND afi.`read` = 0' );
 
-        my $sql = FEED_ITEM_QUERY()
-                . 'WHERE fi.created < ? AND afi.`read` = 0'
-                . FEED_ITEM_ORDER_SQL();
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
@@ -104,8 +99,7 @@ SQL
     }
 
     method starred {
-        my $sql = FEED_ITEM_QUERY() .
-                'WHERE afi.starred = 1' . FEED_ITEM_ORDER_SQL();
+        my $sql = $self->_wrap_sql( 'WHERE afi.starred = 1' );
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
@@ -116,8 +110,7 @@ SQL
     }
 
     method list( UUID $feed_uuid, Int $page=1 ){
-        my $sql = FEED_ITEM_QUERY() .
-                'WHERE fi.feed_uuid = ?' . FEED_ITEM_ORDER_SQL();
+        my $sql = $self->_wrap_sql( 'WHERE fi.feed_uuid = ?' );
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
@@ -136,6 +129,15 @@ SQL
         )};
 
         return $self->_create_list_view( $item );
+    }
+    
+    method _wrap_sql( Str $query ) {
+        my $sql =
+            FEED_ITEM_QUERY() . $query .
+            FEED_ITEM_ORDER_SQL()
+            . 'LIMIT 25 OFFSET 0'
+            ;
+        return $sql;
     }
 
     method _create_list_view ( HashRef $item ) {
@@ -168,47 +170,8 @@ SQL
             }
         );
 
-
-        #my $search = $self->resultset('FeedItem')->search({
-        #    'me.uuid' => to_UUID( $uuid ),
-        #    'feed.account_id' => $self->account->id
-        #},
-        #{
-        #    prefetch => 'feed',
-        #    join => 'feed',
-        #    order_by   => { -asc => 'me.issued' },
-        #});
-
         my ( $item ) = $search->all();
         return $item ? $self->_old_create_list_view( $item ) : undef;
     }
-
-    method _old_create_list_view ( $feed_item ) {
-#        return {};
-        my $ug = Data::UUID->new();
-
-        my $issued = $feed_item->issued || DateTime->today;
-
-        my %cols = $feed_item->get_inflated_columns();
-#        my $feed = $feed_item->feed->description;
-
-#        warn Dumper [ keys %cols ];
-
-        return {};
-
-
-        return {
-            $feed_item->get_inflated_columns(),
-            # human_date          => human_date_string( $issued ),
-            date                => $issued->ymd,
-#            poster_image        => find_interesting_image_source( $feed_item->content, $feed_item->feed->link ) || undef,
-            #feed_description    => $feed_item->feed->description,
-            #feed_title          => $feed_item->feed->title,
-            #feed_uuid           => $feed_item->feed->uuid,
-#            feed_uuid_string    => $ug->to_string( $feed_item->feed->uuid ),
-            uuid_string         => $self->uuid_to_string( $feed_item->uuid ),
-          }
-    }
-
 
 }
