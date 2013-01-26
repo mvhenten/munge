@@ -1,3 +1,5 @@
+ALTER TABLE `feed` ADD KEY `uuid_key` (`uuid`);
+
 CREATE TABLE `account_feed` (
   `account_id` int(10) unsigned NOT NULL,
   `feed_uuid` binary(16) NOT NULL,
@@ -23,8 +25,6 @@ CREATE TABLE `account_feed_item` (
   CONSTRAINT `feed_uuid_fk` FOREIGN KEY (`feed_uuid`) REFERENCES `feed` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `feed` ADD KEY `uuid_key` (`uuid`);
-
 INSERT INTO `account_feed` ( `account_id`, `feed_uuid` ) (
     SELECT account_id, uuid FROM feed
 );
@@ -46,6 +46,7 @@ ALTER TABLE `feed` DROP KEY `account_id_fk`;
 ALTER TABLE `feed` DROP COLUMN `account_id`;
 
 
+--
 ALTER TABLE `feed_item` DROP KEY `account_feed_uuid`;
 ALTER TABLE `feed_item` DROP FOREIGN KEY `item_account_id_fk`;
 ALTER TABLE `feed_item` DROP KEY  `account_id_fk`;
