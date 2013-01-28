@@ -154,9 +154,9 @@ sub feed_item_view {
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->today()                   if $feed_id eq 'today';
-    return $view->crunch()                  if $feed_id eq 'archive';
-    return $view->starred()                 if $feed_id eq 'starred';
+    return $view->today()   if $feed_id eq 'today';
+    return $view->crunch()  if $feed_id eq 'archive';
+    return $view->starred() if $feed_id eq 'starred';
     return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);
     return;
 }

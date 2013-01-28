@@ -45,8 +45,10 @@ and that have a (private) _setter
 
 class Munge::Model::FeedItem {
 
+    use Data::Dumper;
     use DateTime;
     use Munge::Types qw|UUID ParserItem|;
+    use Munge::Util qw|find_interesting_image_source|;
 
     with 'Munge::Role::Storage';
 
@@ -104,6 +106,14 @@ class Munge::Model::FeedItem {
         writer => '_set_title',
     );
 
+    has poster_image => (
+        is          => 'ro',
+        isa         => 'Maybe[Str]',
+        writer      => '_set_poster_image',
+        clearer     => '_clear_poster_image',
+        lazy_build  => 1,
+    );
+
     has content => (
         is     => 'ro',
         isa    => 'Maybe[Str]',
@@ -141,7 +151,9 @@ class Munge::Model::FeedItem {
         return DateTime->today();
     }
 
-    use Data::Dumper;
+    method _build_poster_image {
+        return find_interesting_image_source( $self->content );
+    }
 
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {
         my $feed_item =

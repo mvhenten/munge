@@ -130,7 +130,7 @@ SQL
 
         return $self->_create_list_view( $item );
     }
-    
+
     method _wrap_sql( Str $query ) {
         my $sql =
             FEED_ITEM_QUERY() . $query .
@@ -148,30 +148,8 @@ SQL
         return {
             %{ $item },
             human_date          => human_date_string( $issued_dt  ),
-            poster_image        => $poster_image || undef,
             feed_uuid_string => $self->uuid_to_string( $item->{feed_uuid} ),
             uuid_string => $self->uuid_to_string( $item->{uuid} ),
         };
     }
-
-
-
-    method get_item( Str $uuid ){
-        my $search = $self->resultset('FeedItem')->search(
-            {
-                'account_feed_items.account_id' => $self->account->id,
-                'me.uuid' => to_UUID( $uuid ),
-            },
-            {
-                prefetch => [ 'feed', 'account_feed_items'],
-                join => ['account_feed_items', 'feed' ],
-                #order_by   => { -desc => 'me.issued' },
-                rows       => 1,
-            }
-        );
-
-        my ( $item ) = $search->all();
-        return $item ? $self->_old_create_list_view( $item ) : undef;
-    }
-
 }

@@ -40,7 +40,8 @@ sub _get_account_feed_item {
 
     return if not $feed_item_data;
 
-    my $model = Munge::Model::AccountFeedItem->load( $uuid,
+    my $model =
+      Munge::Model::AccountFeedItem->load( $uuid,
         to_UUID( $feed_item_data->{feed_uuid} ), $account );
 
     return $model;
@@ -85,7 +86,8 @@ get '/:feed' => sub {
 
     my $item_list_view = $item_view->list( $feed_item_data->{feed_uuid} );
 
-    my $model = Munge::Model::AccountFeedItem->load( to_UUID($item_id),
+    my $model =
+      Munge::Model::AccountFeedItem->load( to_UUID($item_id),
         to_UUID( $feed_item_data->{feed_uuid} ), $account );
 
     #my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
