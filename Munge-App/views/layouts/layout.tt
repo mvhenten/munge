@@ -43,7 +43,7 @@
                 [% END %]
             </ul>
         </div>
-        <div class="span9">
+        <div id="content-main" class="">
           [% content %]
         </div>
       </div>

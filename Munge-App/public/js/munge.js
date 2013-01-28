@@ -27,7 +27,7 @@ $( document ).ready( function(){
         });
     });
 
-    $('#sidebar a').ahah('#sidebar, .span9');
+    $('#sidebar a').ahah('#sidebar, #content-main');
     $( document ).trigger('munge::init');
 });
 

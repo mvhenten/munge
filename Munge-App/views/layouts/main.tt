@@ -8,6 +8,7 @@
     <link href="/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
+    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
   <body class="[% body_class %]">
     [% content %]

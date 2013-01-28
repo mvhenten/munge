@@ -1,8 +1,8 @@
 body {
-    font-size: 14px;
+    font-size: 15px;
     background: #333 url('debut_dark.png');
-    color: #333;
-    font-family: sans-serif;
+    color: #555;
+    font-family: 'PT Sans', sans-serif;
 }
 
 body.login-form {
@@ -10,7 +10,7 @@ body.login-form {
 }
 
 #login-form-wrapper {
-    margin-top: 15%;   
+    margin-top: 15%;
 }
 
 #login-form-wrapper h1 {
@@ -85,17 +85,30 @@ h1 {
     background-color: #fff;
 }
 
+#content-main {
+    padding: 0 1em;
+    overflow:auto;
+}
+
+#feed-heading {
+    height: 114px;
+    margin-bottom:1.3em;
+    text-align: right;
+}
+
 .float-wrap {
     overflow: hidden;
 }
 
 .article {
+    border-radius: 3px;
     max-width: 640px;
     border: 1px solid #eee  ;
     float: left;
     clear: left;
-    margin: 1em 0 1em 1em;
     background-color: #fff;
+    margin: 0 1em 1em 0;
+
 }
 
 .article img {
@@ -103,14 +116,14 @@ h1 {
 }
 
 .feed-list {
-    background-color: #efefef;
-    border: 1px solid #ccc;
-    border-radius: 3px;
 }
 
 .summary {
     overflow:hidden;
     min-width: 165px;
+    background-color: #efefef;
+    border-radius: 3px;
+    margin-bottom:1em;
 }
 
 .poster-image {
@@ -124,6 +137,12 @@ h1 {
 .poster-image img {
     width: 90%;
 }
+
+ .feed-list-compact {
+    padding: 0 1em;
+    background-color: rgba( 33, 33, 33, 0.4 );
+    border-radius: 3px;
+ }
 
  .feed-list-compact .poster-image {
     width: 96px;
@@ -184,5 +203,5 @@ input[type="text"].input-small {
 .article h2,
 .article h3,
 .article h4 {
-    font: 13px 'PT Sans Narrow', sans-serif;
+    font: bold 16px 'PT Sans Narrow', sans-serif;
 }

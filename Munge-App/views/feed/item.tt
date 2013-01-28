@@ -1,5 +1,5 @@
 [% INCLUDE 'feed/block/head.tt' title = feed.feed_title, uuid_string = feed.feed_uuid_string, description = feed.feed_description %]
-<div class="float-wrap feed-list" id="accordion">
+<div class="float-wrap feed-list">
 [% INCLUDE 'feed/block/item.tt' item = feed, feed = feed %]
 [% FOREACH item IN items %]
     [% SET current = item.uuid_string == feed.uuid_string ? 1 : 0  %]

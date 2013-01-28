@@ -1,4 +1,4 @@
-<div>
+<div id="feed-heading">
   <h1>[% title %]</h1>
   <div class="feed-description"><em>[% description %]</em></div>
   <div class="btn-group">
@@ -7,4 +7,3 @@
     <a class="btn btn-mini" href="/feed/refresh/[% uuid_string %]"><i class="icon-refresh"></i>refresh</a>
   </div>
 </div>
-<br/>
