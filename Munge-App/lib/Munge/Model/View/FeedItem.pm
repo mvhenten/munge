@@ -76,23 +76,37 @@ SQL
     method today {
         my $yesterday = $self->format_datetime( DateTime->today()->subtract('days' => 1) );
 
-        my $today = $self->format_datetime( DateTime->today() );
-        my $sql = $self->_wrap_sql( 'WHERE fi.created < ? AND afi.`read` = 0' );
+        my $sql = $self->_wrap_sql('
+            AND afi.`read` != 1
+            RIGHT JOIN account_feed af
+                ON af.feed_uuid = f.uuid
+            WHERE af.account_id = ?
+            AND fi.issued > ?
+        ');
 
         my $dbh = $self->schema->storage->dbh;
         my $items = $dbh->selectall_arrayref( $sql,
-            { Slice => {} }, $yesterday
+            { Slice => {} }, $self->account->id, $yesterday
         );
+
+        return [ map { $self->_create_list_view( $_ ) } @{$items} ];
     }
 
     method crunch {
         my $today = $self->format_datetime( DateTime->today() );
-        my $sql = $self->_wrap_sql( 'WHERE fi.created < ? AND afi.`read` = 0' );
 
+        my $sql = $self->_wrap_sql('
+            AND afi.`read` != 1
+            RIGHT JOIN account_feed af
+                ON af.feed_uuid = f.uuid
+            WHERE af.account_id = ?
+            AND fi.issued < ?
+        ');
 
         my $dbh = $self->schema->storage->dbh;
+
         my $items = $dbh->selectall_arrayref( $sql,
-            { Slice => {} }, $today
+            { Slice => {} }, $self->account->id, $today
         );
 
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
@@ -121,7 +135,17 @@ SQL
     }
 
     method get_feed_item_data ( Str $item_uuid ) {
-        my $sql = 'SELECT fi.*, f.title AS feed_title, f.description AS feed_description FROM feed_item fi LEFT JOIN feed f ON f.uuid = fi.feed_uuid WHERE fi.uuid = ? LIMIT 1';
+        my $sql = '
+            SELECT
+                fi.*,
+                f.title  AS feed_title,
+                f.description AS feed_description
+            FROM feed_item fi
+            LEFT JOIN feed f ON f.uuid = fi.feed_uuid
+            WHERE fi.uuid = ?
+            LIMIT 1
+        ';
+
         my $dbh = $self->schema->storage->dbh;
 
         my ( $item ) = @{ $dbh->selectall_arrayref( $sql,
@@ -135,8 +159,9 @@ SQL
         my $sql =
             FEED_ITEM_QUERY() . $query .
             FEED_ITEM_ORDER_SQL()
-            . 'LIMIT 25 OFFSET 0'
+            . 'LIMIT 25 OFFSET 0' # TODO FIXME MAKE PAGER
             ;
+
         return $sql;
     }
 
