@@ -1,5 +1,5 @@
 <div class="float-wrap feed-list feed-list-compact">
-    <div class="padding">
+    <div id="header-read" class="padding">
         <h4>Items you've read</h4>
     </div>
     [% FOREACH item IN items %]

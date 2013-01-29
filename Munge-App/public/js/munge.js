@@ -25,9 +25,22 @@ $( document ).ready( function(){
         $('.feed-content a').each(function(){
             $(this).attr('target', '_blank');
         });
+
+        // open links from the sidebar
+        // trough an ahah request
+        $('#sidebar a, .feed-title a').ahah('#sidebar, #content-main');
+        $('#feed-heading a').ahah( '#sidebar' );
+
+        $('#feed-heading a').click( function( evt ){
+            evt.preventDefault();
+            if( $(this).is( '#mark-read' ) ){
+                $('#header-read').after( $('.summary.unread').removeClass('unread').remove() );
+            }
+
+        });
+
     });
 
-    $('#sidebar a').ahah('#sidebar, #content-main');
     $( document ).trigger('munge::init');
 });
 
@@ -54,10 +67,9 @@ $( document ).ready( function(){
             var self = this;
 
             $(this).one( 'click', function( evt ){
-                $( replaceSelectors ).fadeTo(100, 0.9);
+                $( replaceSelectors ).fadeTo(100, 0.7);
                 clickHandler.call( self, evt, replaceSelectors, function(){
                     $( replaceSelectors ).fadeTo( 100, 1 );
-                    bindEvents( selector, replaceSelectors );
                     $( document ).trigger('munge::init');
                 });
             });
