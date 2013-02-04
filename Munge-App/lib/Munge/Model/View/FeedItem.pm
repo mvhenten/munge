@@ -21,7 +21,7 @@ class Munge::Model::View::FeedItem {
     use Munge::Types qw|UUID|;
     use Data::Dumper;
     use DateTime::Format::MySQL;
-    use Munge::Util qw|human_date_string find_interesting_image_source|;
+    use Munge::Util qw|human_date_string|;
 
 sub FEED_ITEM_QUERY {
     my $sql = <<'SQL'
@@ -205,7 +205,6 @@ SQL
 
     method _create_list_view ( HashRef $item ) {
 
-        my $poster_image = find_interesting_image_source( $item->{content}, $item->{feed_link} );
         my $issued_dt    = DateTime::Format::MySQL->parse_datetime( $item->{issued} );
 
         return {
