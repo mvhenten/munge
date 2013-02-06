@@ -11,6 +11,7 @@ use Munge::Controller::Account;
 use Munge::Controller::Feed;
 use Munge::Controller::Item;
 use Munge::Controller::Manage;
+use Munge::Controller::REST;
 
 # most not needed, but preloading
 use Munge::Model::Account;
