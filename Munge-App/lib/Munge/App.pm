@@ -40,7 +40,7 @@ hook before_template_render => sub {
 
 hook 'before' => sub {
     if ( ( not session('account') and not session('authenticated') )
-        && request->path_info !~ m{^/account/(login|create)} )
+        && request->path_info !~ m{/account/(login|create)$} )
     {
 
         #        var requested_path => request->path_info;
