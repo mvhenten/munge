@@ -14,25 +14,6 @@ set serializer => 'JSON';
 
 prefix '/API/v1';
 
-hook 'before' => sub {
-    return if ( request->path_info !~ m{^/API/v1} );
-
-    header( 'Access-Control-Allow-Origin' => '*' );
-    header( 'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE' );
-    header( 'Access-Control-Allow-Headers' => join( q|,|, qw|Origin Accept Content-Type X-Requested-With X-CSRF-Token|) );
-
-    debug 'INSIDE BEFORE HOOK';
-};
-
-options '/*' => sub {
-  header( 'Access-Control-Allow-Origin' => '*' );
-  header( 'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE' );
-  header( 'Access-Control-Allow-Headers' => join( q|,|, qw|Origin Accept Content-Type X-Requested-With X-CSRF-Token|) );
-
-  return {};
-#  head(:ok) if request.request_method == "OPTIONS"
-};
-
 post '/account/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
 
@@ -45,7 +26,7 @@ post '/account/login' => sub {
         session authenticated => true;
         session account       => { $account_rs->get_inflated_columns() };
 
-        return { success => 1, id =>  session->{id} };
+        return { success => 1, session_id => session->{id} };
     }
 
     if ( not $account_rs ) {
@@ -58,14 +39,13 @@ post '/account/login' => sub {
     return { succcess => 0 };
 };
 
-
 get '/feeds' => sub {
     my $feed_view = feed_view();
 
     return {
         items => [],
         feeds => $feed_view->all_feeds,
-    }
+      }
 
 };
 
@@ -77,7 +57,7 @@ get '/feeds/today' => sub {
     return {
         items => $view->today(),
         feeds => $feed_view->all_feeds,
-    }
+    };
 };
 
 1;

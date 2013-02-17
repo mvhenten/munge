@@ -28,6 +28,21 @@ our $VERSION = '0.1';
 
 prefix undef;
 
+sub set_cors_headers {
+    header( 'Access-Control-Allow-Origin'  => '*' );
+    header( 'Access-Control-Allow-Methods' => 'GET, POST, PUT, DELETE' );
+    header(
+        'Access-Control-Allow-Headers' => join( q|,|,
+            qw|Origin Accept Content-Type X-Requested-With X-CSRF-Token| )
+    );
+
+    return;
+}
+
+sub is_api_request {
+    return request->path_info =~ m{^/API/v1};
+}
+
 hook before_template_render => sub {
     my ($template_hash) = @_;
 
@@ -39,14 +54,13 @@ hook before_template_render => sub {
 };
 
 hook 'before' => sub {
-    if ( ( not session('account') and not session('authenticated') )
-        && request->path_info !~ m{/account/(login|create)$} )
-    {
+    set_cors_headers() if is_api_request();
 
-        #        var requested_path => request->path_info;
-        request->path_info('/account/login');
+    if ( not session('authenticated')
+        and request->path_info !~ m{/account/(login|create)$} )
+    {
+        send_error( 'Autentication required', 403 ) if is_api_request();
         redirect 'account/login';
-        return;
     }
 };
 
