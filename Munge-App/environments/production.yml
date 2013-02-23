@@ -15,3 +15,6 @@ show_errors: 1
 # cache route resolution for maximum performance
 route_cache: 1
 
+# cookie sessions so sessions stay "on" between deployments
+session: "cookie"
+session_cookie_key: "116f411b46ea08ba0cd9d63f51ab738f"

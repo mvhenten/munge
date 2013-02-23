@@ -25,6 +25,10 @@ show_errors: 1
 # route cache
 route_cache: 0
 
+# use the simple yaml session thingy for dev
+session: "YAML"
+
+
 # auto_reload is a development and experimental feature
 # you should enable it by yourself if you want it
 # Module::Refresh is needed 

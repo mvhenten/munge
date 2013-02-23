@@ -32,13 +32,6 @@ engines:
     start_tag: '[%'
     end_tag:   '%]'
 
-# session, memcached over socket
-
-session: "YAML"
-
-#session: "memcached"
-#memcached_servers: "/var/sock/memcached"
-
 plugins:
     DBIC:
         schema_class: Munge::Schema
