@@ -12,6 +12,7 @@ use MooseX::Method::Signatures;
 
  Munge::Model::AccountFeed
 
+
 =head1 DESCRIPTION
 
 TODO
@@ -41,14 +42,14 @@ method subscribe ( $class: Account $account, Uri $uri ) {
     );
 
     $feed->store();
-    
+
     my $subscription = $class->new(
         account => $account,
         feed    => $feed,
     );
-    
+
     $subscription->store();
-    
+
     return $subscription;
 }
 
@@ -58,7 +59,7 @@ method store {
         account_id     => $self->account->id,
     });
 
-    return; 
+    return;
 }
 
 

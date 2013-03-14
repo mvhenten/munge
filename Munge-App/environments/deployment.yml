@@ -20,3 +20,4 @@ route_cache: 1
 # session_cookie_key: "116f411b46ea08ba0cd9d63f51ab738f"
 # TODO enable better session. for now, testing with YAML is ok
 session: "YAML"
+
