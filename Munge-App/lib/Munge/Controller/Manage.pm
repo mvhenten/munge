@@ -21,28 +21,25 @@ get '/import' => sub {
 
 post '/import' => sub {
     my $upload = request->upload('subscriptions');
-    
-    die('NOT PORTED TO NEW DB STRUCTURE YET');
 
-    my $opml = Munge::Model::OPML->new(
-        account  => account(),
-        filename => $upload->tempname,
-    );
+    my $opml_importer = Munge::Model::OPML->new( account => account() );
+    my $imported_feeds = $opml_importer->import_feeds( $upload->tempname );
 
-    template 'manage/import',
-      {
-        feeds    => feed_view()->all_feeds,
-        imported => opml_feed_view($opml),
-      };
+    # TODO Notify user that feeds have been importeded
+    return redirect('/feed/');
+
+    #template 'manage/import',
+    #  {
+    #    feeds    => feed_view()->all_feeds,
+    #    imported => opml_feed_view($imported_feeds),
+    #  };
 
 };
-
 
 post '/subscribe' => sub {
     my $url = param('feed_url');
 
     if ( my $uri = is_url($url) ) {
-        debug($uri);
 
         my $subscription =
           Munge::Model::AccountFeed->subscribe( account(), $uri );
@@ -54,11 +51,12 @@ post '/subscribe' => sub {
 };
 
 sub opml_feed_view {
-    my ($opml) = @_;
+    my ($imported_feeds) = @_;
 
     my @feeds =
-      map { { title => $_->title, description => $_->description, } }
-      $opml->get_feeds;
+      map {
+        { title => $_->feed->title, description => $_->feed->description, }
+      } @{$imported_feeds};
 
     return \@feeds;
 }
