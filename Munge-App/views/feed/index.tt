@@ -6,6 +6,13 @@
     [% NEXT IF item.read %]
     [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
 [% END %]
+[% IF NOT items.length %]
+<div class="alert alert-info">
+    You haven't subscribed any feeds yet. Best way to get started is to upload the subscription list (OPML file format) from your <em>"other"</em> reader...
+</div>
+    [% INCLUDE 'manage/import.tt' %]
+
+[% END %]
 </div>
 [% IF feed %]
     [% INCLUDE 'feed/block/read.tt', items = items, feed = feed %]
