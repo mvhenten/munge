@@ -6,14 +6,11 @@ use warnings;
 use Dancer ':syntax';
 use Data::Dumper;
 
-use Munge::Helper qw|account feed_view synchronize_feed|;
-use Munge::Model::Account;
-use Munge::Model::FeedItem;
+use Munge::Helper qw|account feed_view|;
+use Munge::Model::AccountFeed;
 use Munge::Model::OPML;
-use Munge::Model::View::Feed;
-use Munge::Model::View::FeedItem;
 use Munge::Types qw|UUID|;
-use Munge::Util qw|is_url proc_fork|;
+use Munge::Util qw|is_url proc_fork uuid_string|;
 
 prefix '/manage';
 
@@ -24,6 +21,8 @@ get '/import' => sub {
 
 post '/import' => sub {
     my $upload = request->upload('subscriptions');
+    
+    die('NOT PORTED TO NEW DB STRUCTURE YET');
 
     my $opml = Munge::Model::OPML->new(
         account  => account(),
@@ -38,27 +37,17 @@ post '/import' => sub {
 
 };
 
+
 post '/subscribe' => sub {
     my $url = param('feed_url');
 
     if ( my $uri = is_url($url) ) {
-        my $uuid = Munge::UUID->new( uri => $uri );
+        debug($uri);
 
-        my $feed = Munge::Model::Feed->new(
-            link    => $uri->as_string,
-            uuid    => $uuid->uuid_bin,
-            account => account(),
-        );
+        my $subscription =
+          Munge::Model::AccountFeed->subscribe( account(), $uri );
 
-        $feed->store();
-
-        proc_fork(
-            sub {
-                synchronize_feed($feed);
-            }
-        );
-
-        return redirect( q|/feed/| . $uuid->uuid );
+        return redirect( q|/feed/| . uuid_string( $subscription->feed->uuid ) );
     }
 
     template 'manage/subscribe', { url => $url, };

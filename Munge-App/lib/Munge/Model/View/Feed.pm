@@ -35,6 +35,7 @@ class Munge::Model::View::Feed {
                 ON fi.feed_uuid = f.uuid
             LEFT JOIN account_feed_item afi
                 ON afi.feed_item_uuid = fi.uuid
+                AND afi.account_id = af.account_id
             WHERE af.account_id = ?
             GROUP BY af.feed_uuid
             ORDER BY unread DESC, f.title ASC
