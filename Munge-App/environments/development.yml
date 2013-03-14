@@ -42,3 +42,4 @@ session: "YAML"
 plack_middlewares:
     -
       - Plack::Middleware::Deflater
+
