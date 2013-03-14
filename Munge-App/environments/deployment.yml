@@ -21,7 +21,3 @@ route_cache: 1
 # TODO enable better session. for now, testing with YAML is ok
 session: "YAML"
 
-plack_middlewares:
-    -
-      - Plack::Middleware::Deflater
-
