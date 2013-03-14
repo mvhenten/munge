@@ -18,6 +18,12 @@ Installation
 ------------
 I've got it all setup for running on dotcloud, checkout the `deploy.sh` file in the dotcloud directory.
 
+Screenshot
+----------
+A picture says it all right.
+
+![Munge feed reader screenshot](https://raw.github.com/mvhenten/munge/master/munge-screenshot.png)
+
 Copyright
 ---------
 Copyright 2012-2013 Matthijs van Henten
