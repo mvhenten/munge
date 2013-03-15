@@ -118,7 +118,7 @@ h1 {
 .feed-list {
 }
 
-.summary {
+.form-wrap, .summary {
     overflow:hidden;
     min-width: 165px;
     background-color: #efefef;
