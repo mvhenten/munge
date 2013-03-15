@@ -12,7 +12,8 @@ role Test::Munge::Role::Schema {
 
     method _build_schema {
         my $filename = ':memory:';    # use in-memory database
-        my $filename = 'test.db';     # use in-memory database
+
+        #        my $filename = 'test.db';     # use file database for debug
 
         my $schema = Munge::Schema->connect(
             "DBI:SQLite:$filename",
