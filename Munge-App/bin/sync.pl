@@ -12,6 +12,7 @@ use lib "$FindBin::Bin/../lib";
 use Munge::Model::Feed;
 use Munge::Schema::Connection;
 use Munge::Util qw|uuid_string|;
+use Munge::Email;
 
 main(@ARGV);
 
@@ -23,6 +24,20 @@ main(@ARGV);
             $start = DateTime->now();
         }
         return $start;
+    }
+
+    my @logs;
+
+    sub log_message {
+        my ($message) = @_;
+        my $log_message = sprintf( '%s: %s', DateTime->now, $message );
+
+        print "$log_message\n";
+        push( @logs, $log_message );
+    }
+
+    sub get_log_messages {
+        return @logs;
     }
 }
 
@@ -37,26 +52,51 @@ sub main {
 
     while ( my $row = $rs->next ) {
         if ( recently_updated($row) ) {
-            printf "skip feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
+            log_message(
+                sprintf( 'skip feed %s:%s',
+                    uuid_string( $row->uuid ),
+                    $row->title )
+            );
             next;
         }
 
-        printf "work on feed %s:%s\n", uuid_string( $row->uuid ), $row->title;
+        log_message(
+            printf(
+                'work on feed %s:%s',
+                uuid_string( $row->uuid ),
+                $row->title
+            )
+        );
         my $feed = Munge::Model::Feed->new( $row->get_inflated_columns() );
 
         try {
             $feed->synchronize();
             $feed->store();
 
-            printf " * synchronized feed items %s:%s\n",
-              uuid_string( $feed->uuid ),
-              $feed->title;
+            log_message(
+                printf(
+                    ' * synchronized feed items %s:%s',
+                    uuid_string( $feed->uuid ),
+                    $feed->title
+                )
+            );
         }
         catch {
-            warn $_;
+            log_message("ERROR $_");
         }
 
     }
+
+    my $duration = DateTime->now - SYNC_START_TIME();
+
+    my $mail = Munge::Email->new(
+        to      => $ENV{MUNGE_SMTP_USERNAME},
+        subject => sprintf( 'Sync finished in %dm%ds',
+            $duration->in_units( 'minutes', 'seconds' ) ),
+        body => join( "\n", get_log_messages() ),
+    );
+
+    $mail->submit();
 }
 
 sub recently_updated {
