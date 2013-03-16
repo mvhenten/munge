@@ -11,7 +11,8 @@ use Munge::Controller::Account;
 use Munge::Controller::Feed;
 use Munge::Controller::Item;
 use Munge::Controller::Manage;
-use Munge::Controller::REST;
+
+# use Munge::Controller::REST;
 
 # most not needed, but preloading
 use Munge::Model::Account;
@@ -57,7 +58,7 @@ hook 'before' => sub {
     set_cors_headers() if is_api_request();
 
     if ( not session('authenticated')
-        and request->path_info !~ m{/account/(login|create)$} )
+        and request->path_info !~ m{/account/(login|create|verify\/([\w=]+))$} )
     {
         send_error( 'Autentication required', 403 ) if is_api_request();
         redirect 'account/login';

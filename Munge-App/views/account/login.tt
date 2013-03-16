@@ -8,6 +8,16 @@
   <h1>Feed me. Munge</h1>
   <div id="login-form">
     <form class="form-horizontal" action='' method="POST">
+        [% IF need_verification %]
+        <div class="alert alert-error" style="width: 640px">
+            Your account needs to be verified first!
+        </div>
+        [% END %]
+        [% IF login_failed %]
+        <div class="alert alert-error" style="width: 640px">
+            Login failed! please check your credentials!
+        </div>
+        [% END %]
       <fieldset>
         <div class="control-group">
           <input type="text" id="username" name="username" placeholder="username" class="input-xlarge">

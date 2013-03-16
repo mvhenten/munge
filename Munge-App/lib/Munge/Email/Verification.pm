@@ -13,7 +13,7 @@ use Munge::Email;
 with 'Munge::Role::Account';
 
 sub _MAIL_BODY {
-    my ( $verification_url ) = @_;
+    my ($verification_url) = @_;
 
     my $body = <<"BODY"
 Hello,
@@ -36,40 +36,37 @@ Note: it may take some time for feeds to appear after an import, a
 sync script runs every 5 minutes for now.
 
 BODY
-;
+      ;
     return $body;
 }
 
-
-
 method submit {
-    my $token = encode_base64( $self->account->verification );
-    my $verification_uri =  uri_for( 'account/verify/' . $token );
+    my $token            = encode_base64( $self->account->verification );
+    my $verification_uri = uri_for( 'account/verify/' . $token );
 
     my $mail = Munge::Email->new(
         to      => $self->account->email,
-        subject => '[MUNGE] Account verification for ' . $verification_uri->host,
-        body    => _MAIL_BODY( $verification_uri ),
+        subject => '[MUNGE] Account verification for '
+          . $verification_uri->host,
+        body => _MAIL_BODY($verification_uri),
     );
 
     $mail->submit();
 
-    if( $mail->has_error ){
-        debug( 'ERROR SENDING MAIL ', $mail->error);
+    if ( $mail->has_error ) {
+        debug( 'ERROR SENDING MAIL ', $mail->error );
     }
-    
+
     debug( 'EMAIL SEND TO ', $mail->to );
 
-    
     my $copy = Munge::Email->new(
         to      => $ENV{MUNGE_SMTP_USERNAME},
         subject => '[COPY] Account verification for ' . $verification_uri->host,
-        body    => _MAIL_BODY( $verification_uri ),
+        body    => _MAIL_BODY($verification_uri),
     );
 
     $copy->submit();
 }
-    
 
 __PACKAGE__->meta->make_immutable;
 

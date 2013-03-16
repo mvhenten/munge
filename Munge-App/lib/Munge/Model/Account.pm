@@ -96,6 +96,8 @@ class Munge::Model::Account {
     }
 
     method validate ( Account $account, Str $plaintext_password ) {
+        return 0 if not $account->verified;
+        
         my $valid = Crypt::SaltedHash->validate( $account->password, $plaintext_password );
 
         return $valid;
