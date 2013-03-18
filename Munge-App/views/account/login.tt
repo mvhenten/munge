@@ -18,6 +18,11 @@
             Login failed! please check your credentials!
         </div>
         [% END %]
+        [% IF verifcation_sent %]
+        <div class="alert alert-success" style="width: 640px">
+            All right! all you need to do now is check your e-mail for the confirmation link!
+        </div>
+        [% END %]
       <fieldset>
         <div class="control-group">
           <input type="text" id="username" name="username" placeholder="username" class="input-xlarge">
@@ -30,7 +35,7 @@
         <div class="control-group">
           <button class="btn btn-success">Login</button>
         </div>
-        <a href="http://mvhenten.wufoo.com/forms/want-in/">Want more information? need an account?</a>
+        <a href="/account/create">Signup for an account</a>
       </fieldset>
     </form>
   </div>

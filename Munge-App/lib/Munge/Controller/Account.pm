@@ -5,23 +5,45 @@ use Dancer ':syntax';
 use Data::Dumper;
 use Munge::Email::Verification;
 use Munge::Model::Account;
+use Data::Validate::Email qw|is_email|;
 
 prefix '/account';
 
 get '/create' => sub {
-    return
-      '<form action="/account/create" method="post"><input name="username" /><input type="password" name="password" /><input type="submit" /></form>';
+
+    return template 'account/create',
+      { error  => param('error'), },
+      { layout => undef };
 };
 
 post '/create' => sub {
-    my ( $username, $password ) = @{ params() }{qw|username password|};
+    my ( $username, $password, $confirm ) =
+      @{ params() }{qw|username password password-confirm|};
 
-    my $account = Munge::Model::Account->new()->create( $username, $password );
+    if ( not length($password) or ( $confirm ne $password ) ) {
+        redirect 'account/create?error=password';
+        return;
+    }
 
-    my $mail = Munge::Email::Verification->new( account => $account );
+    if ( not length($username) or ( not is_email($username) ) ) {
+        redirect 'account/create?error=email';
+        return;
+    }
+
+    my $account    = Munge::Model::Account->new();
+    my $account_rs = $account->load($username);
+
+    if ($account_rs) {
+        redirect 'account/create?error=email';
+        return;
+    }
+
+    my $created_user =
+      Munge::Model::Account->new()->create( $username, $password );
+    my $mail = Munge::Email::Verification->new( account => $created_user );
     $mail->submit();
 
-    redirect 'account/login';
+    redirect 'account/login?signup=1';
 };
 
 get '/login' => sub {
@@ -29,6 +51,7 @@ get '/login' => sub {
 
     return template 'account/login',
       {
+        verifcation_sent  => param('signup'),
         need_verification => param('need_verification'),
         login_failed      => param('failed'),
       },

@@ -1,0 +1,120 @@
+[% WRAPPER 'layouts/main.tt'
+   title = 'Munge - Login'
+   body_class = 'login-form'
+%]
+<a href="https://github.com/mvhenten/munge"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+<div id="login-form-wrapper">
+  <h1>Feed me. Munge</h1>
+  <div id="login-form">
+    <form class="form-horizontal" action='' method="POST">
+        <div class="alert alert-info" style="width: 640px">
+            <p>Munge is still in an early state of development.
+            However, feel free to give it a try tell us what you think. We'll send you an e-mail for confirmation right away!</p>
+        </div>
+
+      <fieldset>
+        <div class="control-group [% IF error == 'email' %]error[% END %]">
+            <input type="text" id="username" name="username" placeholder="you@example.com" class="input-xlarge">
+            <span class="help-inline">A valid e-mail address</span>
+        </div>
+
+        <div class="control-group [% IF error == 'password' %]error[% END %]">
+          <input type="password" id="password" name="password" placeholder="password" class="input-xlarge">
+        </div>
+
+        <div class="control-group [% IF error == 'password' %]error[% END %]">
+           <input type="password" id="password-confirm" name="password-confirm" placeholder="confirm password" class="input-xlarge">
+           <span class="help-inline">Passwords should match</span>
+        </div>
+        
+        <div id="progress" class="progress" style="width:240px;">
+            <div class="bar" style="width: 60%"></div>
+        </div>
+
+        <div class="control-group">
+          <button id="submit" class="btn btn-success">Login</button>
+        </div>
+        <a href="/">Login to Munge</a>
+      </fieldset>
+    </form>
+    <script>
+(function($) {
+  var validateForm = function() {
+    var progress = 0,
+    errors = [];
+
+    $('#progress').removeClass('progress-danger progress-warning progress-success');
+    $('.control-group').removeClass('error');
+
+    var validations = {
+      '#username': function($el) {
+        if ($el.val().lenght == 0) {
+          return[0];
+        }
+
+        if ($('#username').val().search(/^[-+.\w]+@[-+.\w]+\.\w+$/) == -1) {
+          return[30, false];
+        }
+
+        return[30, true];
+      },
+      '#password': function($el) {
+        if ($el.val().length == 0) {
+          return[0];
+        }
+
+        return[30, true];
+      },
+      '#password-confirm': function($el) {
+        if ($el.val().length == 0) {
+          return[0];
+        }
+        if ($el.val() !== $('#password').val()) {
+          return[0, false];
+        }
+
+        return[40, true];
+      }
+    }
+
+    $.each(validations, function(key, fn) {
+      var $el = $(key),
+      validation = fn($el, progress),
+      updateProgress = validation[0],
+      isValid = validation[1];
+
+      progress += updateProgress;
+
+      if (isValid === false) {
+        $('#progress').addClass('progress-danger');
+        $el.parents('.control-group').addClass('error');
+      }
+
+      if (progress === 100 && isValid) {
+        $('#progress').addClass('progress-success');
+        $('#submit').removeAttr('disabled');
+      }
+      else {
+        $('#submit').attr('disabled', 'disabled');
+      }
+
+      $('.bar').css({
+        width: progress + '%'
+      });
+    });
+  };
+
+  $(document).ready(function() {
+    $('input').on('change keyup', function() {
+      validateForm();
+    });
+
+    // validateForm();
+  });
+
+})($);
+    </script>
+  </div>
+</div>
+[% END %]
