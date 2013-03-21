@@ -69,7 +69,7 @@ sub FEED_ITEM_UNREAD_TODAY_SQL {
             ON afi.account_id = af.account_id
             AND afi.feed_item_uuid = fi.uuid
         WHERE af.account_id = ?
-        AND fi.issued > DATE_SUB( NOW(), INTERVAL 1 DAY )
+        AND fi.issued > DATE_SUB( NOW(), INTERVAL 2 DAY )
         AND ( afi.`read` IS NULL OR afi.`read` = 0 )
         ORDER BY fi.issued DESC
         LIMIT 50
