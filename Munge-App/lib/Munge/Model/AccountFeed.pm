@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use MooseX::Method::Signatures;
+use Munge::Types qw|UUID|;
 
 # use MooseX::Declare;
 
@@ -42,7 +43,17 @@ method subscribe ( $class: Account $account, Uri $uri ) {
     );
 
     $feed->store();
+    
+    return $class->_subscribe_feed( $account, $feed );
+}
 
+method subscribe_feed( $class: Account $account, UUID $feed_uuid ) {
+    my $feed = Munge::Model::Feed->load( $feed_uuid );
+
+    return $class->_subscribe_feed( $account, $feed );
+}
+
+method _subscribe_feed( $class: $account, $feed ) {
     my $subscription = $class->new(
         account => $account,
         feed    => $feed,
@@ -50,7 +61,7 @@ method subscribe ( $class: Account $account, Uri $uri ) {
 
     $subscription->store();
 
-    return $subscription;
+    return $subscription;        
 }
 
 method store {

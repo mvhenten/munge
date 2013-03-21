@@ -21,12 +21,28 @@ prefix '/feed';
 get '/' => sub {
     my $feed_view = feed_view();
 
+    my $all_feeds_list = $feed_view->all_feeds;
+    my $item_list_view = feed_item_view( undef, scalar( @{$all_feeds_list} ) );
+
     return template 'feed/index',
       {
-        feeds => $feed_view->all_feeds,
-        items => feed_item_view(),
+        feeds => $all_feeds_list,
+        items => $item_list_view,
       };
 
+};
+
+get '/subscribe/:feed' => sub {
+    my $feed_id = param('feed');
+
+    my $feed_uuid = to_UUID($feed_id);
+
+    redirect('/') if not $feed_uuid;
+
+    my $subscription =
+      Munge::Model::AccountFeed->subscribe_feed( account(), $feed_uuid );
+
+    redirect( '/feed/' . $feed_id );
 };
 
 get '/refresh/:feed' => sub {
@@ -111,8 +127,26 @@ get '/:feed' => sub {
     my $account   = account();
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
+    my $all_feeds_list = $feed_view->all_feeds;
+    my $item_list_view =
+      feed_item_view( $feed_id, scalar( @{$all_feeds_list} ) );
+
+    my $feed_info = _get_feed_info( $feed_id, $item_list_view );
+    my $template = _get_template($feed_id);
+
+    return template "feed/$template",
+      {
+        feed  => $feed_info,
+        feeds => $all_feeds_list,
+        items => $item_list_view || undef,
+      };
+
+};
+
+sub _get_feed_info {
+    my ( $feed_id, $item_list_view ) = @_;
+
     my $feed_info;
-    my $item_list_view = feed_item_view($feed_id);
 
     if ( $feed_id and to_UUID($feed_id) ) {
         $feed_info = {
@@ -126,16 +160,8 @@ get '/:feed' => sub {
           { title => ucfirst($feed_id), description => 'Unread posts' };
     }
 
-    my $template = _get_template($feed_id);
-
-    return template "feed/$template",
-      {
-        feed  => $feed_info,
-        feeds => $feed_view->all_feeds,
-        items => $item_list_view || undef,
-      };
-
-};
+    return $feed_info;
+}
 
 sub _get_template {
     my ($feed_id) = @_;
@@ -147,16 +173,16 @@ sub _get_template {
 }
 
 sub feed_item_view {
-    my ($feed_id) = @_;
-
+    my ( $feed_id, $subscription_count ) = @_;
     $feed_id ||= 'today';
 
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->today()   if $feed_id eq 'today';
-    return $view->crunch()  if $feed_id eq 'archive';
-    return $view->starred() if $feed_id eq 'starred';
+    return $view->no_subscriptions()        if $subscription_count == 0;
+    return $view->today()                   if $feed_id eq 'today';
+    return $view->crunch()                  if $feed_id eq 'archive';
+    return $view->starred()                 if $feed_id eq 'starred';
     return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);
     return;
 }

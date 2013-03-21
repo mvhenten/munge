@@ -1,17 +1,19 @@
 [% IF feed %]
     [% INCLUDE 'feed/block/head.tt' title = feed.title, uuid_string = feed.uuid_string, description = feed.description %]
 [% END %]
-<div class="float-wrap feed-list">
-[% FOREACH item IN items %]
-    [% NEXT IF item.read %]
-    [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
-[% END %]
 [% UNLESS feeds.0 %]
 <div class="alert alert-info">
     You haven't subscribed any feeds yet. Best way to get started is to upload the subscription list (OPML file format) from your <em>"other"</em> reader...
 </div>
     [% INCLUDE 'manage/import.tt' %]
-
+<div class="alert alert-success">
+    Meanwhile, munge away on these feeds that others have been enjoying:
+</div>
+[% END %]
+<div class="float-wrap feed-list">
+[% FOREACH item IN items %]
+    [% NEXT IF item.read %]
+    [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
 [% END %]
 </div>
 [% IF feed %]

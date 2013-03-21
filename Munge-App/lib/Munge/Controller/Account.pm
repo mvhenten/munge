@@ -85,7 +85,7 @@ post '/login' => sub {
         debug "Validation failed for $username";
     }
 
-    if ( $account_rs && not $account_rs->verified ) {
+    if ( $account_rs and not $account_rs->verified ) {
         my $mail = Munge::Email::Verification->new( account => $account_rs );
         $mail->submit();
 
