@@ -1,0 +1,6 @@
+<div class="form-wrap">
+
+    <h1>Import from google reader</h1>
+
+    <p>Import your subscriptions from <a href="[% authorization_url | html %]">Google Reader</a></p>
+</div>
