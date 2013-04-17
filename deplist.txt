@@ -21,6 +21,7 @@ Exporter::Lite
 ExtUtils::MakeMaker
 File::Basename
 File::Slurp
+File::Util
 FindBin
 HTML::Restrict
 HTML::TreeBuilder::XPath

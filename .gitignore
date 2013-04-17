@@ -12,3 +12,4 @@ dotcloud/static/
 dotcloud/www.log
 perltidy.LOG
 caches
+munge-env

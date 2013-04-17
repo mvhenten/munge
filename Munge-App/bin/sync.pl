@@ -1,5 +1,14 @@
 #!/usr/bin/env perl
 
+=NAME sync.pl
+    Synchronize feeds.
+
+    run this from a cronjob or manually.
+
+    TODO clean this mess up :0)
+
+=cut
+
 use strict;
 use warnings;
 
@@ -7,12 +16,16 @@ use Data::Dumper;
 use DateTime;
 use Try::Tiny;
 
+use File::Basename;
+use File::Slurp qw|read_file write_file|;
+use File::Util qw|existent|;
 use FindBin;
+use JSON qw|encode_json decode_json|;
 use lib "$FindBin::Bin/../lib";
+use Munge::Email;
 use Munge::Model::Feed;
 use Munge::Schema::Connection;
 use Munge::Util qw|uuid_string|;
-use Munge::Email;
 
 main(@ARGV);
 
@@ -51,26 +64,31 @@ sub main {
     my $rs = $schema->resultset('Munge::Schema::Result::Feed')->search();
 
     while ( my $row = $rs->next ) {
+        my $uuid_string = uuid_string( $row->uuid );
+
         if ( recently_updated($row) ) {
             log_message(
-                sprintf( 'skip feed %s:%s',
-                    uuid_string( $row->uuid ),
-                    $row->title )
-            );
+                sprintf( 'skip feed %s:%s', $uuid_string, $row->title ) );
+            next;
+        }
+
+        if ( is_blacklisted($uuid_string) ) {
+            log_message( 'SKIP BLACKLISTED FEED: ' . $uuid_string );
             next;
         }
 
         log_message(
-            printf(
-                'work on feed %s:%s',
-                uuid_string( $row->uuid ),
-                $row->title
-            )
-        );
+            printf( 'work on feed %s:%s', $uuid_string, $row->title ) );
         my $feed = Munge::Model::Feed->new( $row->get_inflated_columns() );
 
         try {
-            $feed->synchronize();
+            my $error = $feed->synchronize();
+
+            if ($error) {
+                blacklist_feed( uuid_string( $feed->uuid ) );
+                return;
+            }
+
             $feed->store();
 
             log_message(
@@ -83,6 +101,7 @@ sub main {
         }
         catch {
             log_message("ERROR $_");
+            blacklist_feed( uuid_string( $feed->uuid ) );
         }
 
     }
@@ -97,6 +116,53 @@ sub main {
     );
 
     $mail->submit();
+    write_blacklist();
+}
+
+{
+    my %blacklist;
+
+    sub BLACKLIST_FILE {
+        return dirname(__FILE__) . '/blacklist.json';
+    }
+
+    sub is_blacklisted {
+        my ($uuid_string) = @_;
+
+        init_blacklist();
+
+        return defined( $blacklist{$uuid_string} );
+    }
+
+    sub blacklist_feed {
+        my ($uuid_string) = @_;
+
+        log_message( 'BLACKLISTING ' . $uuid_string );
+
+        init_blacklist();
+
+        $blacklist{$uuid_string} = 1;
+    }
+
+    sub init_blacklist {
+        return if %blacklist;
+
+        if ( existent( BLACKLIST_FILE() ) ) {
+            my $blacklist = read_file( BLACKLIST_FILE() );
+
+            if ($blacklist) {
+                %blacklist = %{ decode_json($blacklist) };
+            }
+        }
+
+        return;
+    }
+
+    sub write_blacklist {
+        my $blacklist = encode_json( \%blacklist );
+        write_file( BLACKLIST_FILE(), $blacklist );
+        return;
+    }
 }
 
 sub recently_updated {

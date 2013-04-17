@@ -119,7 +119,7 @@ class Munge::Model::Feed {
 
         if ( not $feed_parser->xml_feed ) {
             warn 'Cannot parse feed: ' . $self->link;
-            return;
+            return 1;
         }
 
         $self->_set_title( $feed_parser->title );
