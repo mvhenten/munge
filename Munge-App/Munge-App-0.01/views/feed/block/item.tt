@@ -1,0 +1,40 @@
+[% SET current = item.uuid_string == feed.uuid_string ? 1 : 0  %]
+[% NEXT IF current AND skip_current %]
+[% NEXT IF NOT current AND item.read %]
+<div id="[%  current ? 'article' : 'summary-' _ loop.index %]" class="[% item.read ? 'read' : 'unread' %] [%  current ? 'article' : 'summary' %]">
+  <div class="padding">
+    [% IF current %]
+    <div class="float-wrap">
+      <small>
+        <em>[% item.human_date %] ago</em>
+        <em><a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a></em>
+        <em> - <a target="_blank" href="[% item.link %]">website</a></em>
+      </small>
+    </div>
+    <div class="navbar">
+      <div class="container">
+        <h4 class="feed-title span6" id="collapse-today-[% loop.index %]"><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h4>
+        <ul class="nav pull-right span6">
+          <li><a href="/item/unread/[% item.uuid_string %]"><i class="icon-ok-sign"></i> mark unread</a></li>
+          <li><a href="/item/star/[% item.uuid_string %]"><i class="icon-time"></i> later</a></li>
+        </ul>
+      </div>
+    </div>
+    [% ELSE %]
+    <h4 class="feed-title" id="collapse-today-[% loop.index %]"><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h4>
+
+    [% END %]
+    <div class="feed-item">
+        [% IF current %]
+        <div class="feed-content">
+        [% item.content %]
+        </div>
+        [% ELSE %]
+        <div class="feed-summary">
+        <img src="[% item.poster_image %]" />
+        [% item.summary %]
+        </div>
+        [% END %]
+    </div>
+  </div>
+</div>

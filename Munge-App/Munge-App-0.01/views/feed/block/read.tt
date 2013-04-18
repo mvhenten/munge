@@ -1,0 +1,10 @@
+<div class="float-wrap feed-list feed-list-compact">
+    <div id="header-read" class="padding">
+        <h4>Items you've read</h4>
+    </div>
+    [% FOREACH item IN items %]
+        [% NEXT IF NOT item.read %]
+        [% NEXT IF item.uuid_string == feed.uuid_string %]
+        [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
+    [% END %]
+</div>

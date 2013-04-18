@@ -1,0 +1,14 @@
+[% INCLUDE 'feed/block/head.tt' title = feed.feed_title, uuid_string = feed.feed_uuid_string, description = feed.feed_description %]
+<div class="float-wrap feed-list">
+[% INCLUDE 'feed/block/item.tt' item = feed, feed = feed %]
+[% FOREACH item IN items %]
+    [% SET current = item.uuid_string == feed.uuid_string ? 1 : 0  %]
+    [% NEXT IF NOT current AND item.read %]
+    [% IF current %]
+        [% INCLUDE 'feed/block/item.tt' item = item, feed = feed, skip_current = 1 %]
+    [% ELSE %]
+        [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, %]
+    [% END %]
+[% END %]
+</div>
+[% INCLUDE 'feed/block/read.tt', items = items, feed = feed %]

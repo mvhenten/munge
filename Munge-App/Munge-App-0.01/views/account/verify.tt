@@ -1,0 +1,32 @@
+[% WRAPPER 'layouts/main.tt'
+   title = 'Munge - Login'
+   body_class = 'login-form'
+%]
+<a href="https://github.com/mvhenten/munge"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+<div id="login-form-wrapper">
+  <h1>Feed me. Munge</h1>
+  <div id="login-form">
+    <form class="form-horizontal" action='' method="POST">
+        <div class="alert alert-success" style="width: 640px">
+            Allmost done... please enter your chosen password/username to login!
+        </div>
+      <fieldset>
+        <div class="control-group">
+          <input type="text" id="username" name="username" placeholder="username" class="input-xlarge">
+        </div>
+
+        <div class="control-group">
+          <input type="password" id="password" name="password" placeholder="password" class="input-xlarge">
+        </div>
+        <input value="[% token %]" type="hidden" name="verification" />
+
+        <div class="control-group">
+          <button class="btn btn-success">Login</button>
+        </div>
+        <a href="http://mvhenten.wufoo.com/forms/want-in/">Want more information? need an account?</a>
+      </fieldset>
+    </form>
+  </div>
+</div>
+[% END %]
