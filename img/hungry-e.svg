@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="24"
+   height="24"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="hungry-e.svg"
+   inkscape:export-filename="/home/matthijs/Development/Sites/Munge/img/hungry-e.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="3.959798"
+     inkscape:cx="2.7496948"
+     inkscape:cy="-18.892909"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1146"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-269.08705,-536.33851)">
+    <g
+       transform="matrix(0.70710678,-0.70710678,0.70710678,0.70710678,0.13124064,-0.99834896)"
+       style="font-size:40px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Droid Sans;-inkscape-font-specification:Droid Sans"
+       id="text2985"
+       inkscape:export-xdpi="298.59164"
+       inkscape:export-ydpi="298.59164"
+       inkscape:export-filename="/home/matthijs/Development/Sites/Munge/img/hungry-e.png">
+      <path
+         d="m -190.34201,579.47797 c -1.0547,10e-6 -1.9336,0.37111 -2.63672,1.11328 -0.69011,0.7422 -1.08725,1.90756 -1.19141,3.49609 2.43785,-2.24128 5.50705,-2.33598 7.59766,0 -0.013,-0.66405 -0.0977,-1.27603 -0.25391,-1.83594 -0.15626,-0.55988 -0.39064,-1.04165 -0.70312,-1.44531 -0.31251,-0.41665 -0.70314,-0.74217 -1.17188,-0.97656 -0.46876,-0.23436 -1.01563,-0.35155 -1.64062,-0.35156 m 0.76172,18.39843 c -1.56251,0 -3.00131,-0.22786 -4.31641,-0.68359 -1.31511,-0.45573 -2.44792,-1.13932 -3.39844,-2.05078 -0.95052,-0.92448 -1.69271,-2.08333 -2.22656,-3.47656 -0.52083,-1.40625 -0.78125,-3.05338 -0.78125,-4.94141 0,-1.91405 0.24089,-3.58723 0.72266,-5.01953 0.48177,-1.43228 1.15234,-2.62368 2.01172,-3.57422 0.87239,-0.96352 1.91405,-1.68618 3.125,-2.16797 1.22395,-0.48175 2.57811,-0.72263 4.0625,-0.72265 1.4453,2e-5 2.74738,0.22137 3.90625,0.66406 1.17186,0.42971 2.16144,1.06773 2.96875,1.91406 0.82029,0.84637 1.44529,1.88804 1.875,3.125 0.44268,1.22397 0.88055,2.64504 0.66406,4.21875 l -0.29018,2.10938 c -0.21891,0.10882 -0.21734,1.0791 -0.4471,0.98335 l -0.91948,-0.3832 -0.31867,1.19399 -1.14469,-0.71364 -0.58499,1.12604 -0.96103,-0.78695 -0.57638,0.95809 -1.03817,-0.78171 -0.89552,0.84639 -0.77344,-0.85409 -0.89511,0.8579 -0.81414,-1.07122 -1.06621,0.99256 -0.66919,-1.43297 -0.91775,0.67009 -0.82969,-1.359 c 0.026,0.83334 -0.0223,2.12425 0.21205,2.80133 0.24739,0.66407 0.58593,1.23047 1.01563,1.69922 l 0.86146,-0.42131 0.72057,1.476 1.22418,-0.79311 0.90472,1.1642 0.96679,-0.87265 0.90821,0.77495 0.83914,-0.94516 0.89915,0.61313 0.65637,-1.08746 1.00378,0.56012 0.62917,-1.13769 1.05052,0.37597 0,4.60938 c -0.52085,0.27343 -1.0482,0.50781 -1.58203,0.70312 -0.52085,0.18229 -1.07424,0.33854 -1.66016,0.46875 -0.58595,0.13021 -1.21746,0.22135 -1.89453,0.27344 -0.6771,0.0651 -1.41928,0.0977 -2.22656,0.0977"
+         style="font-weight:bold;font-family:Droid Sans;-inkscape-font-specification:Droid Sans Bold"
+         id="path2990"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccccccsccssccccccscscccccccccccccccccccccccccccccccscc" />
+    </g>
+  </g>
+</svg>
