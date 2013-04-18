@@ -1,2 +1,0 @@
-MAILTO="matthijs@ischen.nl"
-*/5 * * * *  PERL5LIB=/home/dotcloud/perl5/lib/perl5 /opt/perl5/perls/current/bin/perl ~/current/cron/run.pl ~/current/bin/sync.pl
