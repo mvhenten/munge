@@ -90,14 +90,19 @@ class Munge::Model::Account {
         my $valid = Crypt::SaltedHash->validate( $verification,  join( ':', $account->password, $plaintext_password, $account->created->epoch, $username ) );
         return 0 if not $valid;
 
-        $account->update({ verification => '' });
+        $self->set_verified( $account );
 
+        return 1;
+    }
+
+    method set_verified ( $account ) {
+        $account->update({ verification => '' });
         return 1;
     }
 
     method validate ( Account $account, Str $plaintext_password ) {
         return 0 if not $account->verified;
-        
+
         my $valid = Crypt::SaltedHash->validate( $account->password, $plaintext_password );
 
         return $valid;

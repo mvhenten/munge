@@ -3,9 +3,12 @@ package Munge::Controller::Account;
 use Crypt::SaltedHash;
 use Dancer ':syntax';
 use Data::Dumper;
+use Data::Validate::Email qw|is_email|;
+use Munge::Util qw|random_string|;
 use Munge::Email::Verification;
 use Munge::Model::Account;
-use Data::Validate::Email qw|is_email|;
+use OAuth2::Google::Plus;
+use OAuth2::Google::Plus::UserInfo;
 
 prefix '/account';
 
@@ -49,11 +52,21 @@ post '/create' => sub {
 get '/login' => sub {
     return redirect '/' if session('authenticated');
 
+    my $uri = URI->new( request()->uri_base );
+    $uri->path('account/authorize/google/plus');
+
+    my $plus = OAuth2::Google::Plus->new(
+        client_id     => $ENV{google_api_client_id},
+        client_secret => $ENV{google_api_client_secret},
+        redirect_uri  => $uri->as_string,
+    );
+
     return template 'account/login',
       {
         verifcation_sent  => param('signup'),
         need_verification => param('need_verification'),
         login_failed      => param('failed'),
+        google_plus_buton => $plus->authorization_uri(),
       },
       { layout => undef };
 };
@@ -65,6 +78,48 @@ get '/logout' => sub {
     redirect 'account/login';
 };
 
+get '/account/authorize/google/plus' => sub {
+    return redirect '/' if not param('code');
+
+    my $uri = URI->new( request()->uri_base );
+    $uri->path('account/authorize/google/plus');
+
+    my $plus = OAuth2::Google::Plus->new(
+        client_id     => $ENV{google_api_client_id},
+        client_secret => $ENV{google_api_client_secret},
+        redirect_uri  => $uri->as_string,
+    );
+
+    # callback returns with a code in url
+    my $access_token = $plus->authorize( param('code') );
+    return redirect 'account/login?google_auth_error=1' if not $access_token;
+
+    my $info =
+      OAuth2::Google::Plus::UserInfo->new( access_token => $access_token );
+
+    my $account    = Munge::Model::Account->new();
+    my $account_rs = $account->load( $info->email );
+
+    if ($account_rs) {
+        redirect_user_logged_in($account_rs);
+        return;
+    }
+
+    my $created_user =
+      Munge::Model::Account->new()->create( $info->email, random_string() );
+
+    if ( $info->verified_email eq 'True' ) {
+        $account->update( { verification => '' } );
+    }
+    else {
+        my $mail = Munge::Email::Verification->new( account => $created_user );
+        $mail->submit();
+    }
+
+    redirect_user_logged_in($created_user);
+    return;
+};
+
 post '/login' => sub {
     my ( $username, $password ) = @{ params() }{qw|username password|};
 
@@ -72,9 +127,7 @@ post '/login' => sub {
     my $account_rs = $account->load($username);
 
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
-        session authenticated => true;
-        session account       => { $account_rs->get_inflated_columns() };
-        redirect '/';
+        redirect_user_logged_in($account_rs);
         return;
     }
 
@@ -112,11 +165,7 @@ post '/verify/:token' => sub {
 
     if ( $account->verificate( $username, $password, $token ) ) {
         my $account_rs = $account->load($username);
-
-        session authenticated => true;
-        session account       => { $account_rs->get_inflated_columns() };
-        redirect '/';
-        return;
+        redirect_user_logged_in($account_rs);
     }
     else {
         debug "Cannot verificate $username with token $token";
@@ -124,5 +173,14 @@ post '/verify/:token' => sub {
 
     redirect 'account/verify?failed=1';
 };
+
+sub redirect_user_logged_in {
+    my ($account_rs) = @_;
+
+    session authenticated => true;
+    session account       => { $account_rs->get_inflated_columns() };
+    redirect '/';
+    return;
+}
 
 true;

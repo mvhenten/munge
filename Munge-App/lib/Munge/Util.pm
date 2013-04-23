@@ -23,6 +23,7 @@ use Munge::Types qw|UUID|;
 use Proc::Fork;
 use List::MoreUtils qw|any|;
 use URI;
+use List::Util qw|shuffle|;
 
 our @EXPORT_OK = qw|
   find_interesting_image_source
@@ -35,7 +36,8 @@ our @EXPORT_OK = qw|
   strip_html
   strip_html_comments
   uuid_string
-  |;
+  random_string
+|;
 
 sub HTML5_TAGS {
     return qw|
@@ -51,6 +53,23 @@ sub HTML4_TAGS {
       sub sup table td tfoot th thead tr tt u ul
       |;
 }
+
+sub random_string {
+    my ( $length ) = @_;
+
+    $length ||= 25;
+    my @chars = ( 0 .. 9, 'A' .. 'Z', 'a' .. 'z' );
+
+    my $str;
+
+    foreach ( 1..$length ) {
+        @chars = shuffle @chars;
+        $str .= $chars[0];
+    }
+
+    return $str;
+}
+
 
 =item uuid_string ( $binary_uuid )
 
