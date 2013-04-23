@@ -109,8 +109,8 @@ sub main {
     my $duration = DateTime->now - SYNC_START_TIME();
 
     my $mail = Munge::Email->new(
-        to      => $ENV{MUNGE_SMTP_USERNAME},
-        subject => sprintf( 'Sync finished in %dm%ds',
+        to      => Munge::Email::MUNGE_MAILER_ADDRESS(),
+        subject => sprintf( '[CRON] Sync finished in %dm%ds',
             $duration->in_units( 'minutes', 'seconds' ) ),
         body => join( "\n", get_log_messages() ),
     );

@@ -15,15 +15,15 @@ Wrapper around Email::Send for simple emails
 =head1 SYNOPSIS
 
     use Munge::Email;
-    
+
     my $mail = Munge::Email->new(
         to      => 'someone@example.com',
         subject => 'test',
         body    => 'lorem ipsum sit amet'
     );
-    
+
     $mail->submit();
-    
+
     if( $mail->has_error ){
         # log errors
     }
@@ -33,9 +33,11 @@ Wrapper around Email::Send for simple emails
 class Munge::Email {
     use Try::Tiny;
     use Carp::Assert;
-    use Email::Send;
-    use Email::Send::Gmail;
+    use Email::Sender::Simple qw(sendmail);
+    use Email::Simple;
     use Email::Simple::Creator;
+
+    sub MUNGE_MAILER_ADDRESS { return 'munge-mailer@munge.eu' };
 
     has to => (
         is       => 'ro',
@@ -68,19 +70,6 @@ class Munge::Email {
         writer    => '_set_error',
     );
 
-    has _password => (
-        is      => 'ro',
-        isa     => 'Str',
-        default => $ENV{MUNGE_SMTP_PASSWORD}
-
-    );
-
-    has _username => (
-        is      => 'ro',
-        isa     => 'Str',
-        default => $ENV{MUNGE_SMTP_USERNAME}
-    );
-
     has _email => (
         is         => 'ro',
         isa        => 'Email::Simple',
@@ -88,13 +77,13 @@ class Munge::Email {
     );
 
     method _build_from {
-        return $self->_username;
+        return MUNGE_MAILER_ADDRESS();
     }
 
     method _build__email {
         return Email::Simple->create(
             header => [
-                From    => $self->_username,
+                From    => $self->from,
                 To      => $self->to,
                 Subject => $self->subject,
             ],
@@ -104,27 +93,11 @@ class Munge::Email {
     }
 
     method submit() {
-        assert(
-            $self->_username and $self->_password,
-            'Username and password are not empty'
-        );
-
-          my $sender = Email::Send->new(
-            {
-                mailer      => 'Gmail',
-                mailer_args => [
-                    username => $self->_username,
-                    password => $self->_password,
-                ]
-            }
-          );
-
-          try {
-            $sender->send( $self->_email );
+        try {
+            sendmail( $self->_email );
         }
         catch {
             $self->_set_error($_);
         };
     };
 }
-
