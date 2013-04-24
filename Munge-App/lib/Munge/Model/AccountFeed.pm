@@ -26,16 +26,20 @@ class Munge::Model::AccountFeed {
         isa      => 'Munge::Model::Feed',
         required => 1,
     );
-    
+
     method subscribe ( $class: Account $account, Uri $uri, $title='(Unknown Title)' ) {
         my $uuid = Munge::UUID->new( uri => $uri );
+        my $feed = Munge::Model::Feed->load( $uuid );
 
-        my $feed = Munge::Model::Feed->new(
-            link    => $uri->as_string,
-            uuid    => $uuid->uuid_bin,
-            account => $account,
-            title   => $title,
-        );
+        if( not $feed ) {
+            $feed = Munge::Model::Feed->new(
+                link    => $uri->as_string,
+                uuid    => $uuid->uuid_bin,
+                account => $account,
+                title   => $title,
+                updated => DateTime->now->subtract( years => 1 ), # force update NOW!
+            );
+        }
 
         $feed->store();
 
