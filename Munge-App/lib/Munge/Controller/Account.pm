@@ -78,7 +78,7 @@ get '/logout' => sub {
     redirect 'account/login';
 };
 
-get '/account/authorize/google/plus' => sub {
+get '/authorize/google/plus' => sub {
     return redirect '/' if not param('code');
 
     my $uri = URI->new( request()->uri_base );
@@ -91,25 +91,20 @@ get '/account/authorize/google/plus' => sub {
     );
 
     # callback returns with a code in url
-    my $access_token = $plus->authorize( param('code') );
+    my $access_token = $plus->authorize( authorization_code => param('code') );
     return redirect 'account/login?google_auth_error=1' if not $access_token;
 
     my $info =
       OAuth2::Google::Plus::UserInfo->new( access_token => $access_token );
 
-    my $account    = Munge::Model::Account->new();
-    my $account_rs = $account->load( $info->email );
-
-    if ($account_rs) {
-        redirect_user_logged_in($account_rs);
-        return;
-    }
+    my $account_rs    = Munge::Model::Account->new()->load( $info->email );
+    redirect_user_logged_in($account_rs) if $account_rs;
 
     my $created_user =
       Munge::Model::Account->new()->create( $info->email, random_string() );
 
-    if ( $info->verified_email eq 'True' ) {
-        $account->update( { verification => '' } );
+    if ( $info->verified_email ) {
+        $created_user->update( { verification => '' } );
     }
     else {
         my $mail = Munge::Email::Verification->new( account => $created_user );

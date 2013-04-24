@@ -58,9 +58,10 @@ hook 'before' => sub {
     set_cors_headers() if is_api_request();
 
     if ( not session('authenticated')
-        and request->path_info !~ m{/account/(login|create|verify\/([\w=]+))$} )
+        and request->path_info !~ m{/account/(login|create|verify|authorize\/.+)$} )
     {
         send_error( 'Autentication required', 403 ) if is_api_request();
+        debug 'REFUSING TO GO ANY FURTHER';
         redirect 'account/login';
     }
 };
