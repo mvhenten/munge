@@ -90,29 +90,27 @@ get '/authorize/google/plus' => sub {
         redirect_uri  => $uri->as_string,
     );
 
-    # callback returns with a code in url
     my $access_token = $plus->authorize( authorization_code => param('code') );
-    return redirect 'account/login?google_auth_error=1' if not $access_token;
+    return redirect_authencation_failed('invalid authorization request')
+      if not $access_token;
 
     my $info =
       OAuth2::Google::Plus::UserInfo->new( access_token => $access_token );
+    return redirect_authencation_failed('api access failed') if not $info;
 
-    my $account_rs    = Munge::Model::Account->new()->load( $info->email );
-    redirect_user_logged_in($account_rs) if $account_rs;
+    my $account_rs = Munge::Model::Account->new()->load( $info->email );
+    return redirect_user_logged_in($account_rs) if $account_rs;
 
     my $created_user =
       Munge::Model::Account->new()->create( $info->email, random_string() );
 
     if ( $info->verified_email ) {
         $created_user->update( { verification => '' } );
-    }
-    else {
-        my $mail = Munge::Email::Verification->new( account => $created_user );
-        $mail->submit();
+        return redirect_user_logged_in($created_user);
     }
 
-    redirect_user_logged_in($created_user);
-    return;
+    my $mail = Munge::Email::Verification->new( account => $created_user );
+    $mail->submit();
 };
 
 post '/login' => sub {
@@ -122,26 +120,19 @@ post '/login' => sub {
     my $account_rs = $account->load($username);
 
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
-        redirect_user_logged_in($account_rs);
-        return;
+        return redirect_user_logged_in($account_rs);
     }
 
-    if ( not $account_rs ) {
-        debug "Cannot load $username";
-    }
-    else {
-        debug "Validation failed for $username";
-    }
+    debug "Cannot load $username" if not $account_rs;
+    debug "Validation failed for $username" if $account_rs;
 
-    if ( $account_rs and not $account_rs->verified ) {
-        my $mail = Munge::Email::Verification->new( account => $account_rs );
-        $mail->submit();
+    return redirect_authencation_failed('invalid credentials')
+      if not $account_rs;
 
-        redirect 'account/login?need_verification=1';
-    }
+    my $mail = Munge::Email::Verification->new( account => $account_rs );
+    $mail->submit();
 
-    redirect 'account/login?failed=1';
-
+    return redirect_authencation_failed('need verification');
 };
 
 get '/verify/:token' => sub {
@@ -160,13 +151,11 @@ post '/verify/:token' => sub {
 
     if ( $account->verificate( $username, $password, $token ) ) {
         my $account_rs = $account->load($username);
-        redirect_user_logged_in($account_rs);
-    }
-    else {
-        debug "Cannot verificate $username with token $token";
+        return redirect_user_logged_in($account_rs);
     }
 
-    redirect 'account/verify?failed=1';
+    debug "Cannot verificate $username with token $token";
+    return redirect_authencation_failed('verification failed');
 };
 
 sub redirect_user_logged_in {
@@ -174,8 +163,14 @@ sub redirect_user_logged_in {
 
     session authenticated => true;
     session account       => { $account_rs->get_inflated_columns() };
-    redirect '/';
-    return;
+    return redirect '/';
+}
+
+sub redirect_authencation_failed {
+    my ($error_string) = @_;
+
+    session authenticated => false;
+    return redirect qq|/account/login?failed=1&error=$error_string|;
 }
 
 true;
