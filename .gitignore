@@ -12,4 +12,5 @@ dotcloud/static/
 dotcloud/www.log
 perltidy.LOG
 caches
+blacklist.json
 munge-env
