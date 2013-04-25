@@ -26,8 +26,14 @@ use Munge::Email;
 use Munge::Model::Feed;
 use Munge::Schema::Connection;
 use Munge::Util qw|uuid_string|;
+use LockFile::Simple qw|lock trylock unlock|;
 
 main(@ARGV);
+
+sub LOCK_FILE {
+    return dirname(__FILE__) . '/sync.lock';
+}
+
 
 {
     my $start;
@@ -59,6 +65,9 @@ sub RECENT_IN_MINUTES {
 }
 
 sub main {
+    my $lock = trylock( LOCK_FILE() );
+    return if not $lock;
+
     my $schema = Munge::Schema::Connection->schema();
 
     my $rs = $schema->resultset('Munge::Schema::Result::Feed')->search();
@@ -117,6 +126,7 @@ sub main {
 
     $mail->submit();
     write_blacklist();
+    unlock(LOCK_FILE());
 }
 
 {
