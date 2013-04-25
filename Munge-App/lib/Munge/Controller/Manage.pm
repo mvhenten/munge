@@ -6,7 +6,7 @@ use warnings;
 use Dancer ':syntax';
 use Data::Dumper;
 
-use Munge::Helper qw|account feed_view|;
+use Munge::Helper qw|account feed_view synchronize_feed|;
 use Munge::Model::AccountFeed;
 use Munge::Model::OPML;
 use Munge::Model::Google::ReaderAPI;
@@ -48,15 +48,9 @@ post '/import' => sub {
     my $opml_importer = Munge::Model::OPML->new( account => account() );
     my $imported_feeds = $opml_importer->import_feeds( $upload->tempname );
 
+
     # TODO Notify user that feeds have been importeded
     return redirect('/feed/');
-
-    #template 'manage/import',
-    #  {
-    #    feeds    => feed_view()->all_feeds,
-    #    imported => opml_feed_view($imported_feeds),
-    #  };
-
 };
 
 post '/subscribe' => sub {
@@ -67,7 +61,9 @@ post '/subscribe' => sub {
         my $subscription =
           Munge::Model::AccountFeed->subscribe( account(), $uri );
 
-        return redirect( q|/feed/| . uuid_string( $subscription->feed->uuid ) );
+        synchronize_feed(  $subscription->feed );
+
+        return redirect( q|/feed/read/| . uuid_string( $subscription->feed->uuid ) );
     }
 
     template 'manage/subscribe', { url => $url, };
