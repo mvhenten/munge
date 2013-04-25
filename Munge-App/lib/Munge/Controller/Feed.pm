@@ -21,13 +21,14 @@ prefix '/feed';
 get '/' => sub {
     my $feed_view = feed_view();
 
-    my $all_feeds_list = $feed_view->all_feeds;
-    my $item_list_view = feed_item_view( undef, scalar( @{$all_feeds_list} ) );
+    my $subscriptions = $feed_view->all_feeds;
+    my $item_list_view = feed_item_view( undef, scalar( @{$subscriptions} ) );
 
     return template 'feed/index',
       {
-        feeds => $all_feeds_list,
+        feeds => $subscriptions,
         items => $item_list_view,
+        authorization_url => scalar( @{$subscriptions} ) == 0 ? google_reader_link() : undef,
       };
 
 };
@@ -165,6 +166,18 @@ sub _get_feed_info {
     }
 
     return $feed_info;
+}
+
+sub google_reader_link {
+    my $uri = URI->new( request()->uri_base );
+    $uri->path('manage/import/reader');
+
+    my $api = Munge::Model::Google::ReaderAPI->new(
+        redirect_uri => $uri,
+        account      => account()
+    );
+
+    return $api->get_auth_code_uri->as_string;
 }
 
 sub _get_template {

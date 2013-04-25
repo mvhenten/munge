@@ -21,7 +21,7 @@ use Try::Tiny;
 use Proc::Fork;
 use Data::Dumper;
 
-my @EXPORT_OK = qw|account feed_view synchronize_feed|;
+my @EXPORT_OK = qw|account init_account feed_view synchronize_feed|;
 
 =item account
 
@@ -29,10 +29,19 @@ Instantiates an account from current dancer session.
 
 =cut
 
-sub account {
-    my $account = Munge::Model::Account->new()->find( session('account') );
-    return $account;
+{
+    my $account;
+
+    sub init_account {
+        $account = Munge::Model::Account->new()->find( session('account') );
+        return $account;
+    }
+
+    sub account {
+        return $account;
+    }
 }
+
 
 =item feed_view
 

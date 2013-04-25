@@ -24,7 +24,7 @@ use Munge::Model::View::FeedItem;
 use Munge::Env;
 use Munge::Storage;
 use Munge::UUID;
-use Munge::Helper qw|account|;
+use Munge::Helper qw|init_account|;
 
 our $VERSION = '0.1';
 
@@ -62,9 +62,17 @@ hook 'before' => sub {
         and request->path_info !~
         m{/account/(login|create|verify|authorize\/.+)$} )
     {
-        send_error( 'Autentication required', 403 ) if is_api_request();
-        debug 'REFUSING TO GO ANY FURTHER';
-        redirect 'account/login';
+        return send_error( 'Autentication required', 403 ) if is_api_request();
+        return redirect 'account/login';
+    }
+
+    if( session('authenticated') ) {
+        my $account = init_account();
+
+        if( not $account ) {
+            session->destroy();
+            redirect '/account/login';
+        }
     }
 };
 

@@ -35,7 +35,7 @@ class Munge::Model::AccountFeed {
         if( not $feed ) {
             $feed = Munge::Model::Feed->new(
                 link    => $uri->as_string,
-                uuid    => $uuid->uuid_bin,
+                uuid    => $uuid,
                 title   => $title,
                 updated => DateTime->now->subtract( years => 10 ), # force update NOW!
             );

@@ -34,28 +34,12 @@ get '/import/reader' => sub {
       { authorization_url => $api->get_auth_code_uri->as_string };
 };
 
-#get '/reader/token' => sub {
-#        my $uri = $self->base_uri->clone;
-#        $uri->path( 'manage/reader/token' );
-#
-#
-#    my $base_uri = URI->new( request()->uri_base );
-#
-#    my $api = Munge::Model::Google::ReaderAPI->new(
-#        base_uri => $base_uri,
-#        account  => account()
-#    );
-#    $api->import_feeds( param('code') );
-#
-#    # TODO Notify user that feeds have been importeded
-#    return redirect('/feed/');
-#};
-#
 get '/import' => sub {
 
-    #    my $api = Munge::Model::Google::ReaderAPI->new( account => account() );
-
-    template 'manage/import', { feeds => feed_view()->all_feeds, };
+    template 'manage/import', {
+        feeds => feed_view()->all_feeds,
+        authorization_url => google_reader_api()->get_auth_code_uri->as_string,
+    };
 };
 
 post '/import' => sub {
@@ -98,6 +82,16 @@ sub opml_feed_view {
       } @{$imported_feeds};
 
     return \@feeds;
+}
+
+sub google_reader_api {
+    my $uri = URI->new( request()->uri_base );
+    $uri->path('manage/import/reader');
+
+    return Munge::Model::Google::ReaderAPI->new(
+        redirect_uri => $uri,
+        account      => account()
+    );
 }
 
 1;

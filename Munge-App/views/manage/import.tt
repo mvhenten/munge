@@ -1,5 +1,8 @@
+[% INCLUDE 'manage/import/reader.tt' authorization_url = authorization_url %]
 <div class="form-wrap">
     <form class="padding" enctype="multipart/form-data" method="post" action="/manage/import">
+      <h1>Import subscriptions from an OPML file</h1>
+      <p>The OPML file format is the most common format to exchange lists of web feeds between web feed aggregators. Most feed aggregators should be able to export such a file.</p>
       <p>
         <label for="subscriptions">Upload an OPML xml file here</label>
       </p>

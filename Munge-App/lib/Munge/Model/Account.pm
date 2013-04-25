@@ -68,13 +68,31 @@ class Munge::Model::Account {
         return $rs;
     }
 
+    method delete( Str $username ) {
+        my ( $account ) = $self->resultset('Account')->search({ email => $username });
+
+        return if not $account;
+
+        $self->resultset('AccountFeedItem')->search({
+            account_id     => $account->id,
+        })->delete();
+
+        $self->resultset('AccountFeed')->search({
+            account_id     => $account->id,
+        })->delete();
+
+        $account->delete();
+
+        return 1;
+    }
+
     method find( HashRef $columns ){
         return if not $columns->{id};
         assert( defined( $columns->{id} ), 'columns have id');
 
         my ( $rs ) = $self->resultset('Account')->search({ id => $columns->{id} });
 
-        assert( defined( $rs ), 'there is an account' );
+#        assert( defined( $rs ), 'there is an account' );
 
         return $rs;
     }
