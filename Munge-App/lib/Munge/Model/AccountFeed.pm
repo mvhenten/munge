@@ -27,17 +27,17 @@ class Munge::Model::AccountFeed {
         required => 1,
     );
 
+
     method subscribe ( $class: Account $account, Uri $uri, $title='(Unknown Title)' ) {
-        my $uuid = Munge::UUID->new( uri => $uri );
+        my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
         my $feed = Munge::Model::Feed->load( $uuid );
 
         if( not $feed ) {
             $feed = Munge::Model::Feed->new(
                 link    => $uri->as_string,
                 uuid    => $uuid->uuid_bin,
-                account => $account,
                 title   => $title,
-                updated => DateTime->now->subtract( years => 1 ), # force update NOW!
+                updated => DateTime->now->subtract( years => 10 ), # force update NOW!
             );
         }
 
@@ -48,8 +48,20 @@ class Munge::Model::AccountFeed {
 
     method subscribe_feed( $class: Account $account, UUID $feed_uuid ) {
         my $feed = Munge::Model::Feed->load( $feed_uuid );
-
         return $class->_subscribe_feed( $account, $feed );
+    }
+
+    method unsubscribe_feed ( $class: Account $account, UUID $feed_uuid ) {
+        my $feed = Munge::Model::Feed->load( $feed_uuid );
+
+        my $subscription = $class->new(
+            account => $account,
+            feed    => $feed,
+        );
+
+        $subscription->delete();
+
+        return;
     }
 
     method _subscribe_feed( $class: $account, $feed ) {
@@ -70,6 +82,18 @@ class Munge::Model::AccountFeed {
         });
 
         return;
+    }
+
+    method delete {
+        $self->resultset('AccountFeedItem')->search({
+            feed_uuid     => $self->feed->uuid,
+            account_id     => $self->account->id,
+        })->delete();
+
+        $self->resultset('AccountFeed')->search({
+            feed_uuid     => $self->feed->uuid,
+            account_id     => $self->account->id,
+        })->delete();
     }
 
 }

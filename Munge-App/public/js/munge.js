@@ -35,15 +35,15 @@ $(document).ready(function() {
       $('#article').scrollTo(40);
     });
 
-    $('#feed-heading a').ahah('#sidebar');
+//    $('#feed-heading a').ahah('#sidebar');
 
-    $('#feed-heading a').click(function(evt) {
-      evt.preventDefault();
-      if ($(this).is('#mark-read')) {
-        $('#header-read').after($('.summary.unread').removeClass('unread').remove());
-      }
-
-    });
+    //$('#feed-heading a').click(function(evt) {
+    //  evt.preventDefault();
+    //  if ($(this).is('#mark-read')) {
+    //    $('#header-read').after($('.summary.unread').removeClass('unread').remove());
+    //  }
+    //
+    //});
 
   });
 

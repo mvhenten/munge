@@ -60,7 +60,7 @@ sub synchronize_feed {
 
     try {
         debug('Start working on feed');
-        $feed->synchronize();
+        $feed->synchronize(1);
         $feed->store();
     }
     catch {

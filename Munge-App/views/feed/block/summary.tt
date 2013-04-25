@@ -1,7 +1,7 @@
 <div id="[%  current ? 'article' : 'summary-' _ loop.index %]" class="[% item.read ? 'read' : 'unread' %] [%  current ? 'article' : 'summary' %]">
   <div class="padding">
     <div class="poster-image">
-      <a href="/item/[% item.uuid_string %]#article"><img src="[% item.poster_image %]" /></a>                
+      <a href="/item/[% item.uuid_string %]#article"><img src="[% item.poster_image %]" /></a>
     </div>
     <div class="summary-body">
       <h4 class="feed-title" id="collapse-today-[% loop.index %]"><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h4>
@@ -9,9 +9,9 @@
           <div class="feed-summary">
           [% item.summary %]
           </div>
-      </div>            
+      </div>
       <div class="summary-footer">
-        [% item.human_date %] ago by [% item.author %] - <a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a>
+        [% item.human_date %] ago by [% item.author %] - <a href="/feed/read/[% item.feed_uuid_string %]">[% item.feed_title %]</a>
       </div>
     </div>
   </div>

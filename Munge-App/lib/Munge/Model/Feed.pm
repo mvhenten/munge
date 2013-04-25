@@ -36,6 +36,7 @@ class Munge::Model::Feed {
     use Munge::Model::Feed::Client;
     use Munge::Model::FeedItem;
     use Munge::Model::Feed::Parser;
+    use MooseX::StrictConstructor;
     use Munge::Types qw|UUID|;
     use Munge::UUID;
     use Munge::Storage;

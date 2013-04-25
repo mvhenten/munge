@@ -56,7 +56,7 @@ get '/unread/:uuid' => sub {
     $account_feed_item->set_unread();
     $account_feed_item->store();
 
-    redirect '/feed/' . uuid_string( $account_feed_item->feed_uuid );
+    redirect '/feed/read/' . uuid_string( $account_feed_item->feed_uuid );
 };
 
 get '/star/:uuid' => sub {
@@ -67,7 +67,7 @@ get '/star/:uuid' => sub {
     $account_feed_item->toggle_star();
     $account_feed_item->store();
 
-    redirect '/feed/' . uuid_string( $account_feed_item->feed_uuid );
+    redirect '/feed/read/' . uuid_string( $account_feed_item->feed_uuid );
 
     return;
 };

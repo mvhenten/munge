@@ -8,16 +8,12 @@
     <link href="/css/style.css" rel="stylesheet">
     <link rel="shortcut icon" href="[% request.uri_base %]/favicon.ico">
     <script src="[% request.uri_base %]/js/jquery.js"></script>
+    <script src="[% request.uri_base %]/js/bootstrap.js"></script>
     <script src="[% request.uri_base %]/js/munge.js"></script>
   <body class="[% body_class %]">
     [% content %]
-    <script>
-      $(document).ready( function(){
-        $('head').append('<script src="[% request.uri_base %]/js/bootstrap.js"><\/script>');
-      });
-    </script>
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700,400italic,700italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=PT+Sans+Narrow:400,700&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
     <link href="/css/bootstrap-responsive.css" rel="stylesheet">
-  </body>
+</body>
 </html>

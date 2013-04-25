@@ -4,7 +4,7 @@ use Crypt::SaltedHash;
 use Dancer ':syntax';
 use Data::Dumper;
 use Data::Validate::Email qw|is_email|;
-use Env qw|GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET|;
+use Munge::Env qw|GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET|;
 use Munge::Email::Verification;
 use Munge::Model::Account;
 use Munge::Util qw|random_string|;

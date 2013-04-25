@@ -40,7 +40,7 @@
             </ul>
             <ul id="sidebar" class="nav nav-stacked">
                 [% FOREACH f IN feeds %]
-                <li><a class="[% IF f.unread_items %]unread[% END %]" href="/feed/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
+                <li><a class="[% IF f.unread_items %]unread[% END %]" href="/feed/read/[% f.uuid_string %]">[% f.title %] [% IF f.unread_items %]([% f.unread_items %])[% END %]</a></li>
                 [% END %]
             </ul>
         </div>

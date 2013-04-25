@@ -51,7 +51,7 @@ get '/refresh/:feed' => sub {
     # todo 404
     redirect('/') if not to_UUID($feed_id);
 
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), account() );
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id) );
 
     proc_fork(
         sub {
@@ -60,10 +60,10 @@ get '/refresh/:feed' => sub {
         }
     );
 
-    return redirect(qq|/feed/$feed_id|);
+    return redirect(qq|/feed/read/$feed_id|);
 };
 
-get '/read/:feed' => sub {
+get '/all/read/:feed' => sub {
     my $feed_id = param('feed');
 
     # todo 404
@@ -79,69 +79,73 @@ get '/read/:feed' => sub {
 
     $collection->read(1);
 
-    return redirect(qq|/feed/$feed_id|);
+    return redirect(qq|/feed/read/$feed_id|);
 };
 
 get '/remove/:feed' => sub {
-    my $feed_id = param('feed');
+    my $uuid = to_UUID( param('feed') );
 
-    # todo 404
-    redirect('/') if not to_UUID($feed_id);
+    return status('not_found') if not $uuid;
 
-    my $account = account();
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
-
-    $feed->delete();
+    Munge::Model::AccountFeed->unsubscribe_feed( account(), $uuid );
 
     return redirect('/feed/');
 };
 
-get '/refresh' => sub {
-    my $account = account();
-
-    redirect('/') if session('refresh_lock');
-
-    debug('reloading feeds');
-
-    # todo logging
-    session( 'refresh_lock', 1 );
-
-    proc_fork(
-        sub {
-            my @feeds = reverse $account->feeds;
-            foreach my $feed_rs (@feeds) {
-                my $feed = Munge::Model::Feed->load( $feed_rs->uuid, $account );
-                synchronize_feed($feed);
-            }
-
-            session( 'refresh_lock', 0 );
-
-        }
-    );
-
-    return redirect('/');
-};
-
-get '/:feed' => sub {
+get '/read/:feed' => sub {
     my $feed_id   = param('feed');
-    my $account   = account();
-    my $feed_view = Munge::Model::View::Feed->new( account => $account );
+    my $feed_uuid = to_UUID($feed_id);
 
+    return status('not_found') if not $feed_uuid;
+
+    my $feed           = Munge::Model::Feed->load($feed_uuid);
+    my $feed_view      = Munge::Model::View::Feed->new( account => account() );
     my $all_feeds_list = $feed_view->all_feeds;
+
     my $item_list_view =
       feed_item_view( $feed_id, scalar( @{$all_feeds_list} ) );
 
-    my $feed_info = _get_feed_info( $feed_id, $item_list_view );
     my $template = _get_template($feed_id);
 
     return template "feed/$template",
       {
-        feed  => $feed_info,
+        feed => {
+            title       => $feed->title,
+            description => $feed->description,
+            uuid_string => $feed_id,
+        },
         feeds => $all_feeds_list,
         items => $item_list_view || undef,
       };
 
 };
+
+get '/starred' => sub {
+    return special_view('starred');
+};
+
+get '/archive' => sub {
+    return special_view('archive');
+};
+
+sub special_view {
+    my ($action) = @_;
+
+    my $template      = _get_template($action);
+    my $feed_view     = Munge::Model::View::Feed->new( account => account() );
+    my $subscriptions = $feed_view->all_feeds;
+
+    return template "feed/$template",
+      {
+        feed => {
+            title       => ucfirst($action),
+            description => 'Unread posts'
+        },
+        feeds => $subscriptions,
+        items => feed_item_view( $action, scalar( @{$subscriptions} ) )
+          || undef,
+      };
+}
 
 sub _get_feed_info {
     my ( $feed_id, $item_list_view ) = @_;
