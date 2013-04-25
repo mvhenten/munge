@@ -4,9 +4,10 @@ use Crypt::SaltedHash;
 use Dancer ':syntax';
 use Data::Dumper;
 use Data::Validate::Email qw|is_email|;
-use Munge::Util qw|random_string|;
+use Env qw|GOOGLE_CLIENT_ID GOOGLE_CLIENT_SECRET|;
 use Munge::Email::Verification;
 use Munge::Model::Account;
+use Munge::Util qw|random_string|;
 use OAuth2::Google::Plus;
 use OAuth2::Google::Plus::UserInfo;
 
@@ -85,8 +86,8 @@ get '/authorize/google/plus' => sub {
     $uri->path('account/authorize/google/plus');
 
     my $plus = OAuth2::Google::Plus->new(
-        client_id     => $ENV{google_api_client_id},
-        client_secret => $ENV{google_api_client_secret},
+        client_id     => GOOGLE_CLIENT_ID(),
+        client_secret => GOOGLE_CLIENT_SECRET(),
         redirect_uri  => $uri->as_string,
     );
 
