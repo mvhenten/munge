@@ -36,10 +36,11 @@ get '/import/reader' => sub {
 
 get '/import' => sub {
 
-    template 'manage/import', {
-        feeds => feed_view()->all_feeds,
+    template 'manage/import',
+      {
+        feeds             => feed_view()->all_feeds,
         authorization_url => google_reader_api()->get_auth_code_uri->as_string,
-    };
+      };
 };
 
 post '/import' => sub {
@@ -47,7 +48,6 @@ post '/import' => sub {
 
     my $opml_importer = Munge::Model::OPML->new( account => account() );
     my $imported_feeds = $opml_importer->import_feeds( $upload->tempname );
-
 
     # TODO Notify user that feeds have been importeded
     return redirect('/feed/');
@@ -61,9 +61,10 @@ post '/subscribe' => sub {
         my $subscription =
           Munge::Model::AccountFeed->subscribe( account(), $uri );
 
-        synchronize_feed(  $subscription->feed );
+        synchronize_feed( $subscription->feed );
 
-        return redirect( q|/feed/read/| . uuid_string( $subscription->feed->uuid ) );
+        return redirect(
+            q|/feed/read/| . uuid_string( $subscription->feed->uuid ) );
     }
 
     template 'manage/subscribe', { url => $url, };

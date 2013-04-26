@@ -14,6 +14,9 @@ layout: "layout"
 # about unicode within your app when this setting is set (recommended).
 charset: "UTF-8"
 
+# where system mails go to
+app_email: "munge-mailer@munge.eu"
+
 
 # template engine
 # simple: default and very basic template engine

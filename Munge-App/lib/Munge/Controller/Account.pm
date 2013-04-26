@@ -120,7 +120,10 @@ post '/login' => sub {
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
 
+    debug 'VERIFICATION', $account_rs->verified;
+
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
+        debug 'VOORBIJ DE VALIDATAIE';
         return redirect_user_logged_in($account_rs);
     }
 

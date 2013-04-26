@@ -42,7 +42,6 @@ Instantiates an account from current dancer session.
     }
 }
 
-
 =item feed_view
 
 Retrieves the full list of feeds for the current account in sesion

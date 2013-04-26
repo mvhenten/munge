@@ -9,6 +9,8 @@ use Dancer ':syntax';
 use MIME::Base64 qw|encode_base64|;
 use MooseX::Method::Signatures;
 use Munge::Email;
+use Data::Dumper;
+use Munge::Config;
 
 with 'Munge::Role::Account';
 
@@ -60,7 +62,7 @@ method submit {
     debug( 'EMAIL SEND TO ', $mail->to );
 
     my $copy = Munge::Email->new(
-        to      => $ENV{MUNGE_SMTP_USERNAME},
+        to      => Munge::Config::APP_EMAIL(),
         subject => '[COPY] Account verification for ' . $verification_uri->host,
         body    => _MAIL_BODY($verification_uri),
     );

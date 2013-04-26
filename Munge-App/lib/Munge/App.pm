@@ -66,10 +66,10 @@ hook 'before' => sub {
         return redirect 'account/login';
     }
 
-    if( session('authenticated') ) {
+    if ( session('authenticated') ) {
         my $account = init_account();
 
-        if( not $account ) {
+        if ( not $account ) {
             session->destroy();
             redirect '/account/login';
         }

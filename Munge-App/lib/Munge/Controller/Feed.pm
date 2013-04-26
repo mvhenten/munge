@@ -26,9 +26,11 @@ get '/' => sub {
 
     return template 'feed/index',
       {
-        feeds => $subscriptions,
-        items => $item_list_view,
-        authorization_url => scalar( @{$subscriptions} ) == 0 ? google_reader_link() : undef,
+        feeds             => $subscriptions,
+        items             => $item_list_view,
+        authorization_url => scalar( @{$subscriptions} ) == 0
+        ? google_reader_link()
+        : undef,
       };
 
 };

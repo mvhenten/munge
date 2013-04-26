@@ -34,7 +34,6 @@ sub LOCK_FILE {
     return dirname(__FILE__) . '/sync.lock';
 }
 
-
 {
     my $start;
 
@@ -126,7 +125,7 @@ sub main {
 
     $mail->submit();
     write_blacklist();
-    unlock(LOCK_FILE());
+    unlock( LOCK_FILE() );
 }
 
 {
