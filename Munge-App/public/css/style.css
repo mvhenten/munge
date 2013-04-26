@@ -1,6 +1,6 @@
+/*http://colorschemedesigner.com/#0031Tw0w0vyxQ*/
 body {
     font-size: 15px;
-    background: #333 url('debut_dark.png');
     color: #555;
     font-family: 'PT Sans', sans-serif;
 }
@@ -22,13 +22,40 @@ body.login-form {
     box-shadow: inset 0px 5px 15px 1px #202020;
     border-bottom: 1px solid #202020;
     padding: 3em 0;
-
     padding-left: 15%;
     background: #333 url('debut_dark.png');
 }
 
-a/*, a:hover, a:visited, a:active */{
-    color: #DB4900;
+#feed-menu {
+    padding:0;
+    margin:0;
+}
+
+#feed-menu li {
+    list-style: none;
+    position:relative;
+}
+
+#feed-menu li i {
+    padding: 0.4em 1em;
+    display:inline;
+}
+
+#feed-menu li a {
+    font-size:1.8em;
+    color: #555;
+}
+
+.green {
+    background-color: #99AD6F;
+}
+
+.blue {
+    background-color:  rgb(28, 115, 115);
+}
+
+.orange {
+    background-color: rgb(255, 67, 67);
 }
 
 h1 {
@@ -43,7 +70,6 @@ h1 {
 }
 
 #sidebar {
-    background-color: #efefef;
     padding:1em;
     border-radius: 3px;
 }
@@ -78,7 +104,6 @@ h1 {
 }
 
 #nav-main .nav-tabs li a {
-    background-color: #eee;
 }
 
 #nav-main .nav-tabs li a:hover {
@@ -121,7 +146,6 @@ h1 {
 .form-wrap, .summary {
     overflow:hidden;
     min-width: 165px;
-    background-color: #efefef;
     border-radius: 3px;
     margin-bottom:1em;
 }
@@ -140,8 +164,6 @@ h1 {
 
  .feed-list-compact {
     padding: 0 1em;
-    background-color: rgba( 33, 33, 33, 0.4 );
-    border-radius: 3px;
  }
 
  .feed-list-compact .poster-image {

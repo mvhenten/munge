@@ -32,11 +32,11 @@
     <div class="container-fluid">
       <div class="row-fluid">
         [% IF feeds.0 %]
-        <div id="nav-main" class="span3">
-            <ul class="nav nav-tabs nav-stacked">
-                <li><a href="/"><i class="icon-th-large"></i> Recent</a></li>
-                <li><a href="/feed/archive"><i class="icon-list"></i> Crunch</a></li>
-                <li><a href="/feed/starred"><i class="icon-time"></i> Saved</a></li>
+        <div id="nav-main" class="span4">
+            <ul id="feed-menu">
+                <li class="green"><a href="/"><i class="icon-th-large"></i> Recent</a></li>
+                <li class="blue"><a href="/feed/archive"><i class="icon-list"></i> Crunch</a></li>
+                <li class="orange"><a href="/feed/starred"><i class="icon-time"></i> Saved</a></li>
             </ul>
             <ul id="sidebar" class="nav nav-stacked">
                 [% FOREACH f IN feeds %]
