@@ -13,4 +13,5 @@ dotcloud/www.log
 perltidy.LOG
 caches
 blacklist.json
+*.lock
 munge-env
