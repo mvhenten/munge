@@ -17,6 +17,10 @@ body.login-form {
     padding-left: 15%;
 }
 
+.container-fluid {
+    padding-left:0;
+}
+
 #login-form {
     -webkit-box-shadow: inset 0px 5px 15px 1px #222;
     box-shadow: inset 0px 5px 15px 1px #202020;
@@ -29,21 +33,24 @@ body.login-form {
 #feed-menu {
     padding:0;
     margin:0;
+
 }
 
 #feed-menu li {
     list-style: none;
     position:relative;
+   line-height: 3em;
+    margin-right:4em;
+   padding: 0 2em;
 }
 
 #feed-menu li i {
-    padding: 0.4em 1em;
-    display:inline;
+    vertical-align: middle;
 }
 
 #feed-menu li a {
     font-size:1.8em;
-    color: #555;
+    color: #333;
 }
 
 .green {
@@ -51,11 +58,11 @@ body.login-form {
 }
 
 .blue {
-    background-color:  rgb(28, 115, 115);
+    background-color: rgb(56, 126, 139);
 }
 
 .orange {
-    background-color: rgb(255, 67, 67);
+    background-color: rgb(202, 110, 81);
 }
 
 h1 {
@@ -70,7 +77,7 @@ h1 {
 }
 
 #sidebar {
-    padding:1em;
+    padding:1em 2em;
     border-radius: 3px;
 }
 
@@ -111,7 +118,6 @@ h1 {
 }
 
 #content-main {
-    padding: 0 1em;
     overflow:auto;
 }
 
@@ -126,14 +132,10 @@ h1 {
 }
 
 .article {
-    border-radius: 3px;
     max-width: 640px;
-    border: 1px solid #eee  ;
     float: left;
     clear: left;
     background-color: #fff;
-    margin: 0 1em 1em 0;
-
 }
 
 .article img {
@@ -196,7 +198,6 @@ h1 {
 
 .summary-list .padding,
 .article .padding {
-    padding: 20px 30px;
 }
 
 .article .feed-title {

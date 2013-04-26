@@ -40,6 +40,7 @@ class Munge::Model::View::Feed {
             WHERE af.account_id = ?
             GROUP BY fi.feed_uuid
             ORDER BY unread DESC, f.title ASC
+            LIMIT 50
         ';
 
         my $dbh = $self->schema->storage->dbh;
