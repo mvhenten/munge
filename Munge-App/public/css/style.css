@@ -3,10 +3,15 @@ body {
     font-size: 15px;
     color: #555;
     font-family: 'PT Sans', sans-serif;
+    background-color:#f0f0f0;
 }
 
 body.login-form {
     background: #efefef;
+}
+
+a {
+    color: #387E8B;
 }
 
 #login-form-wrapper {
@@ -61,11 +66,11 @@ body.login-form {
 }
 
 .blue {
-    background-color: rgb(56, 126, 139);
+    background-color: #387E8B;
 }
 
 .orange {
-    background-color: rgb(202, 110, 81);
+    background-color: #CA6E51;
 }
 
 h1 {
@@ -79,13 +84,22 @@ h1 {
     float:none;
 }
 
+
+#nav-main {
+    min-width: 240px;
+}
+
+#nav-main a {
+    font: 0.9em/1.6em 'PT Sans Narrow', sans-serif
+}
+
 #sidebar {
     padding: 1em 0 0 2em;
     border-radius: 3px;
 }
 
 #sidebar a {
-    font: normal 1em/1.6em 'PT Sans Narrow', sans-serif;
+    line-height: 1.8em;
 }
 
 #sidebar a.unread {
@@ -97,13 +111,6 @@ h1 {
     margin:0;
 }
 
-#nav-main {
-    min-width: 240px;
-}
-
-#nav-main a {
-    font: 0.9em/1.6em 'PT Sans Narrow', sans-serif
-}
 
 .feed-description {
     color: #999;
@@ -163,7 +170,7 @@ h1 {
     overflow:hidden;
     width: 165px;
     max-height: 140px;
-    float: left;
+    float: right;
     margin-bottom: 0.5em;
 }
 

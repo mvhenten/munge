@@ -17,10 +17,10 @@ class Munge::Model::View::Feed {
     use Data::Dumper;
     use Data::UUID;
     use DateTime;
-    use URI;
-
-    use Munge::Util qw|uuid_string|;
+    use List::Util qw|max|;
     use Munge::Types qw|UUID|;
+    use Munge::Util qw|uuid_string|;
+    use URI;
 
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
@@ -40,7 +40,7 @@ class Munge::Model::View::Feed {
             WHERE af.account_id = ?
             GROUP BY fi.feed_uuid
             ORDER BY unread DESC, f.title ASC
-            LIMIT 50
+            LIMIT 100
         ';
 
         my $dbh = $self->schema->storage->dbh;
@@ -54,8 +54,8 @@ class Munge::Model::View::Feed {
     method _get_list_view ( $feed ) {
         return {
             uuid_string => uuid_string( $feed->{uuid} ),
-            title       => $feed->{title} || $feed->{link},
-            unread_items => $feed->{unread} || 0,
+            title       => $feed->{title} || $feed->{link} || $feed->{description},
+            unread_items => max( $feed->{unread} || 0, 0),
         }
     }
 }
