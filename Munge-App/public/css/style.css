@@ -1,6 +1,6 @@
 /*http://colorschemedesigner.com/#0031Tw0w0vyxQ*/
 body {
-    font-size: 15px;
+    font-size: 18px;
     color: #555;
     font-family: 'PT Sans', sans-serif;
     background-color:#f0f0f0;
@@ -43,13 +43,11 @@ a {
 
 #feed-menu li {
     list-style: none;
-    position:relative;
-    line-height: 3em;
-    margin-right:4em;
     margin-bottom:0.5em;
     padding: 0 2em;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    margin-right:4em;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
 }
 
 #feed-menu li i {
@@ -94,16 +92,35 @@ h1 {
 }
 
 #sidebar {
-    padding: 1em 0 0 2em;
+    padding: 1em 0 0 1em;
     border-radius: 3px;
+    background-color:#fff;
+    margin-right:1em;
+}
+
+#sidebar li {
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    margin-right:0.5em;
 }
 
 #sidebar a {
+    display:inline;
     line-height: 1.8em;
+    padding: 0 0 0 2em;
 }
 
 #sidebar a.unread {
     font-weight: 700;
+    padding:0;
+}
+
+
+.unread-count {
+    display: block;
+    float: left;
+    width: 2em;
 }
 
 .summary-body h4 {
@@ -163,7 +180,7 @@ h1 {
     overflow:hidden;
     min-width: 165px;
     border-radius: 3px;
-    margin-bottom:1em;
+    background-color:#fff;
 }
 
 .poster-image {
@@ -195,7 +212,9 @@ h1 {
     font-size: .9em;
     overflow:hidden;
     min-width: 140px;
+    padding-right:1em;
     padding-bottom: 1em;
+    
 }
 
 .summary-footer {
