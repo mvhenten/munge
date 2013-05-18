@@ -49,6 +49,11 @@ a {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
     float: left;
+    width: 94px;
+}
+
+#feed-menu li.active {
+    width: 115px;
 }
 
 #feed-menu li i {
@@ -190,6 +195,15 @@ h1 {
 
 .article img {
     margin: 1em 0;
+}
+
+.date-header {
+    background-color: #fff;
+    padding: 0.5em 1.4em;
+    text-align: right;
+    color: #999;
+    font-weight:bold;
+    font-size:90%;
 }
 
 .feed-list {

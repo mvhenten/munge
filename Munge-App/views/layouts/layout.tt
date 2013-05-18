@@ -34,9 +34,9 @@
         [% IF feeds.0 %]
         <div id="nav-main" class="span3">
             <ul id="feed-menu">
-                <li class="green"><a href="/"><i class="icon-th-large"></i>today</a></li>
-                <li class="blue"><a href="/feed/archive"><i class="icon-list"></i>crunch</a></li>
-                <li class="orange"><a href="/feed/starred"><i class="icon-time"></i>saved</a></li>
+                <li class="[% IF NOT feed %]active[% END %] green"><a href="/"><i class="icon-th-large"></i>today</a></li>
+                <li class="[% IF feed.uuid_string == 'archive' %]active[% END %] blue"><a href="/feed/archive"><i class="icon-list"></i>crunch</a></li>
+                <li class="[% IF feed.uuid_string == 'starred' %]active[% END %] orange"><a href="/feed/starred"><i class="icon-time"></i>saved</a></li>
             </ul>
             <ul id="sidebar" class="nav nav-stacked">
                 [% FOREACH f IN feeds %]

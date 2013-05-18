@@ -142,7 +142,8 @@ sub special_view {
       {
         feed => {
             title       => ucfirst($action),
-            description => 'Unread posts'
+            description => 'Unread posts',
+            uuid_string => $action,
         },
         feeds => $subscriptions,
         items => feed_item_view( $action, scalar( @{$subscriptions} ) )

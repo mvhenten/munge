@@ -27,7 +27,7 @@ class Munge::Model::View::Feed {
 
     method all_feeds {
         my $sql = '
-            SELECT COUNT(fi.feed_uuid) - afi.read_count AS unread, f.title, f.uuid
+            SELECT COUNT(fi.feed_uuid) - afi.read_count AS unread, f.title, f.description, f.uuid
             FROM account_feed af
             LEFT JOIN feed f ON f.uuid = af.feed_uuid
             LEFT JOIN feed_item fi ON fi.feed_uuid = af.feed_uuid
