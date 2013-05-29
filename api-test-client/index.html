@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+        <script src="./script/swig.pack.min.js"></script>
+    </head>
+    <body>
+        <br/>
+        <div id="app" class="container">
+            here it goes
+        </div>
+
+        <script id="tpl-login" type="text/x-swig-template">
+            <form id="login-form" method="post" action="#feed">
+                <div>
+                    <input name="email" type="email" placeholder="email" />
+                </div>
+                <div>
+                    <input name="password" type="password" placeholder="password" />
+                </div>
+                <div>
+                    <input type="submit" value="login" />
+                </div>
+            </form>
+        </script>
+
+        <script id="tpl-feed" type="text/x-swig-template">
+            {{hello}}
+        </script>
+    </body>
+    <script>
+(function($){
+    var controller = {
+        'default': function(){
+            _template( 'login', { hello: 'Hello World' });
+
+            $('#login-form').submit( function(evt){
+                evt.preventDefault();
+                console.log( $(this).serializeArray(), 'this' );
+
+            })
+
+        },
+        'feed': function(){
+            _template( 'feed', { hello: 'Hello Feed' });
+        }
+    }
+
+    function _template(id, stash ){
+        id = '#tpl-' + id;
+        var template = swig.compile( $( id ).html(), { filename: id });
+
+        $('#app').html( template( stash )  );
+    }
+
+    function _route( id ){
+        id = id || 'default';
+        controller[id.replace('#', '')]();
+    }
+
+    $(window).on( 'hashchange', function(e) {
+        console.log('hashchange');
+        _route(window.location.hash);
+    });
+
+    _route(window.location.hash);
+})(jQuery);
+    </script>
+</html>
