@@ -7,7 +7,7 @@
     <div class="float-wrap">
       <small>
         <em>[% item.human_date %] ago</em>
-        <em><a href="/feed/[% item.feed_uuid_string %]">[% item.feed_title %]</a></em>
+        <em><a href="/feed/read/[% item.feed_uuid_string %]">[% item.feed_title %]</a></em>
         <em> - <a target="_blank" href="[% item.link %]">website</a></em>
       </small>
     </div>

@@ -1,3 +1,4 @@
+*.ERR
 *.db
 .tidyall.d
 *.komodoproject
@@ -10,4 +11,7 @@ dotcloud/App/
 dotcloud/static/
 dotcloud/www.log
 perltidy.LOG
-
+caches
+blacklist.json
+*.lock
+munge-env

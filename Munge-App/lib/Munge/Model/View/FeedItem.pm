@@ -69,8 +69,8 @@ sub FEED_ITEM_UNREAD_TODAY_SQL {
             ON afi.account_id = af.account_id
             AND afi.feed_item_uuid = fi.uuid
         WHERE af.account_id = ?
-        AND fi.issued > DATE_SUB( NOW(), INTERVAL 1 DAY )
-        AND afi.`read` IS NULL OR afi.`read` = 0
+        AND fi.issued > DATE_SUB( NOW(), INTERVAL 2 DAY )
+        AND ( afi.`read` IS NULL OR afi.`read` = 0 )
         ORDER BY fi.issued DESC
         LIMIT 50
 SQL
@@ -94,8 +94,29 @@ sub FEED_ITEM_UNREAD_OLDER_THEN_TODAY {
             ON afi.feed_item_uuid = fi.uuid
             AND afi.account_id = af.account_id
         WHERE fi.issued < DATE_SUB( NOW(), INTERVAL 1 DAY )
-        AND afi.`read` IS NULL OR afi.`read` = 0
+        AND ( afi.`read` IS NULL OR afi.`read` = 0 )
         AND af.account_id = ?
+        ORDER BY fi.issued DESC
+        LIMIT 25
+SQL
+;
+    return $sql;
+}
+
+
+sub FEED_ITEM_NO_SUBSCRIPTIONS {
+    my $sql = <<'SQL'
+        SELECT
+            fi.*,
+            f.title AS feed_title,
+            f.description AS feed_description,
+            f.link AS feed_link,
+            0 as `read`,
+            0 as starred
+        FROM feed_item fi
+        LEFT JOIN feed f ON fi.feed_uuid = f.uuid
+        AND fi.issued > DATE_SUB( NOW(), INTERVAL 2 WEEK )
+        GROUP BY f.uuid
         ORDER BY fi.issued DESC
         LIMIT 25
 SQL
@@ -160,6 +181,21 @@ SQL
         );
 
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
+    }
+    
+    method no_subscriptions {
+        my $sql = FEED_ITEM_NO_SUBSCRIPTIONS();
+
+        my $dbh = $self->schema->storage->dbh;
+        my $items = $dbh->selectall_arrayref( $sql,
+            { Slice => {} },
+        );
+
+        return [ map { $self->_create_list_view( $_ ) } @{$items} ];
+    }
+    
+    method _retrieve_feed_items_from_sql {
+        
     }
 
     method list( UUID $feed_uuid, Int $page=1 ){

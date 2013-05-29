@@ -1,12 +1,17 @@
+/*http://colorschemedesigner.com/#0031Tw0w0vyxQ*/
 body {
-    font-size: 15px;
-    background: #333 url('debut_dark.png');
+    font-size: 18px;
     color: #555;
     font-family: 'PT Sans', sans-serif;
+    background-color:#f0f0f0;
 }
 
 body.login-form {
     background: #efefef;
+}
+
+a {
+    color: #387E8B;
 }
 
 #login-form-wrapper {
@@ -17,19 +22,78 @@ body.login-form {
     padding-left: 15%;
 }
 
+.container-fluid {
+    padding-left:0;
+}
+
 #login-form {
     -webkit-box-shadow: inset 0px 5px 15px 1px #222;
     box-shadow: inset 0px 5px 15px 1px #202020;
     border-bottom: 1px solid #202020;
     padding: 3em 0;
-
     padding-left: 15%;
     background: #333 url('debut_dark.png');
 }
 
-a/*, a:hover, a:visited, a:active */{
-    color: #DB4900;
+#feed-menu {
+    padding:0;
+    margin:0;
+    overflow:auto;
 }
+
+#feed-menu li {
+    list-style: none;
+    margin-bottom:0.5em;
+    padding: 0 2em;
+    margin-right:4em;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    float: left;
+    width: 94px;
+}
+
+#feed-menu li.active {
+    width: 115px;
+}
+
+#feed-menu li i {
+    vertical-align: middle;
+    margin-left:-0.4em;
+    margin-right:0.4em;
+}
+
+#feed-menu li a {
+    font-size:1.8em;
+    color: #333;
+}
+
+.green {
+    background-color: #99AD6F;
+}
+
+.blue {
+    background-color: #387E8B;
+}
+
+.orange {
+    background-color: #CA6E51;
+}
+
+/* overrides bootstrap.css
+ */
+.navbar-inverse .navbar-inner {
+    border-radius: 0;
+    background: #333;
+}
+
+.navbar .brand {
+    font-size: 1.4em;
+    font-weight: bold;
+    font-style:italic;
+    text-transform: lowercase;
+    color:#ccc;
+}
+
 
 h1 {
     color: #999;
@@ -42,18 +106,45 @@ h1 {
     float:none;
 }
 
+
+#nav-main {
+    min-width: 240px;
+}
+
+#nav-main a {
+    font: 0.9em/1.6em 'PT Sans Narrow', sans-serif
+}
+
 #sidebar {
-    background-color: #efefef;
-    padding:1em;
+    padding: 1em 0 0 1em;
     border-radius: 3px;
+    background-color:#fff;
+    margin-right:1em;
+}
+
+#sidebar li {
+    overflow:hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    margin-right:0.5em;
 }
 
 #sidebar a {
-    font: normal 1em/1.6em 'PT Sans Narrow', sans-serif;
+    display:inline;
+    line-height: 1.8em;
+    padding: 0 0 0 2em;
 }
 
 #sidebar a.unread {
     font-weight: 700;
+    padding:0;
+}
+
+
+.unread-count {
+    display: block;
+    float: left;
+    width: 2em;
 }
 
 .summary-body h4 {
@@ -61,9 +152,6 @@ h1 {
     margin:0;
 }
 
-#nav-main a {
-    font: 16px 'PT Sans Narrow', sans-serif;
-}
 
 .feed-description {
     color: #999;
@@ -78,7 +166,6 @@ h1 {
 }
 
 #nav-main .nav-tabs li a {
-    background-color: #eee;
 }
 
 #nav-main .nav-tabs li a:hover {
@@ -86,7 +173,6 @@ h1 {
 }
 
 #content-main {
-    padding: 0 1em;
     overflow:auto;
 }
 
@@ -101,36 +187,40 @@ h1 {
 }
 
 .article {
-    border-radius: 3px;
     max-width: 640px;
-    border: 1px solid #eee  ;
     float: left;
     clear: left;
     background-color: #fff;
-    margin: 0 1em 1em 0;
-
 }
 
 .article img {
     margin: 1em 0;
 }
 
+.date-header {
+    background-color: #fff;
+    padding: 0.5em 1.4em;
+    text-align: right;
+    color: #999;
+    font-weight:bold;
+    font-size:90%;
+}
+
 .feed-list {
 }
 
-.summary {
+.form-wrap, .summary {
     overflow:hidden;
     min-width: 165px;
-    background-color: #efefef;
     border-radius: 3px;
-    margin-bottom:1em;
+    background-color:#fff;
 }
 
 .poster-image {
     overflow:hidden;
-    width: 165px;
+    max-width: 165px;
     max-height: 140px;
-    float: left;
+    float: right;
     margin-bottom: 0.5em;
 }
 
@@ -140,8 +230,6 @@ h1 {
 
  .feed-list-compact {
     padding: 0 1em;
-    background-color: rgba( 33, 33, 33, 0.4 );
-    border-radius: 3px;
  }
 
  .feed-list-compact .poster-image {
@@ -157,7 +245,9 @@ h1 {
     font-size: .9em;
     overflow:hidden;
     min-width: 140px;
+    padding-right:1em;
     padding-bottom: 1em;
+    
 }
 
 .summary-footer {
@@ -174,7 +264,6 @@ h1 {
 
 .summary-list .padding,
 .article .padding {
-    padding: 20px 30px;
 }
 
 .article .feed-title {
@@ -183,11 +272,11 @@ h1 {
 }
 
 .summary .padding {
-    padding: 1em 1.4em;
+    padding: 1em 1.4em 0;
 }
 
 .article .navbar {
-    margin-bottom: 10px;
+    margin-bottom: 1em;
 }
 
 .summary small {

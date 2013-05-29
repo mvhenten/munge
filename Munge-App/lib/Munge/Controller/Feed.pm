@@ -21,12 +21,31 @@ prefix '/feed';
 get '/' => sub {
     my $feed_view = feed_view();
 
+    my $subscriptions = $feed_view->all_feeds;
+    my $item_list_view = feed_item_view( undef, scalar( @{$subscriptions} ) );
+
     return template 'feed/index',
       {
-        feeds => $feed_view->all_feeds,
-        items => feed_item_view(),
+        feeds             => $subscriptions,
+        items             => $item_list_view,
+        authorization_url => scalar( @{$subscriptions} ) == 0
+        ? google_reader_link()
+        : undef,
       };
 
+};
+
+get '/subscribe/:feed' => sub {
+    my $feed_id = param('feed');
+
+    my $feed_uuid = to_UUID($feed_id);
+
+    redirect('/') if not $feed_uuid;
+
+    my $subscription =
+      Munge::Model::AccountFeed->subscribe_feed( account(), $feed_uuid );
+
+    redirect( '/feed/' . $feed_id );
 };
 
 get '/refresh/:feed' => sub {
@@ -35,7 +54,7 @@ get '/refresh/:feed' => sub {
     # todo 404
     redirect('/') if not to_UUID($feed_id);
 
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), account() );
+    my $feed = Munge::Model::Feed->load( to_UUID($feed_id) );
 
     proc_fork(
         sub {
@@ -44,10 +63,10 @@ get '/refresh/:feed' => sub {
         }
     );
 
-    return redirect(qq|/feed/$feed_id|);
+    return redirect(qq|/feed/read/$feed_id|);
 };
 
-get '/read/:feed' => sub {
+get '/all/read/:feed' => sub {
     my $feed_id = param('feed');
 
     # todo 404
@@ -63,56 +82,79 @@ get '/read/:feed' => sub {
 
     $collection->read(1);
 
-    return redirect(qq|/feed/$feed_id|);
+    return redirect(qq|/feed/read/$feed_id|);
 };
 
 get '/remove/:feed' => sub {
-    my $feed_id = param('feed');
+    my $uuid = to_UUID( param('feed') );
 
-    # todo 404
-    redirect('/') if not to_UUID($feed_id);
+    return status('not_found') if not $uuid;
 
-    my $account = account();
-    my $feed = Munge::Model::Feed->load( to_UUID($feed_id), $account );
-
-    $feed->delete();
+    Munge::Model::AccountFeed->unsubscribe_feed( account(), $uuid );
 
     return redirect('/feed/');
 };
 
-get '/refresh' => sub {
-    my $account = account();
+get '/read/:feed' => sub {
+    my $feed_id   = param('feed');
+    my $feed_uuid = to_UUID($feed_id);
 
-    redirect('/') if session('refresh_lock');
+    return status('not_found') if not $feed_uuid;
 
-    debug('reloading feeds');
+    my $feed           = Munge::Model::Feed->load($feed_uuid);
+    my $feed_view      = Munge::Model::View::Feed->new( account => account() );
+    my $all_feeds_list = $feed_view->all_feeds;
 
-    # todo logging
-    session( 'refresh_lock', 1 );
+    my $item_list_view =
+      feed_item_view( $feed_id, scalar( @{$all_feeds_list} ) );
 
-    proc_fork(
-        sub {
-            my @feeds = reverse $account->feeds;
-            foreach my $feed_rs (@feeds) {
-                my $feed = Munge::Model::Feed->load( $feed_rs->uuid, $account );
-                synchronize_feed($feed);
-            }
+    my $template = _get_template($feed_id);
 
-            session( 'refresh_lock', 0 );
+    return template "feed/$template",
+      {
+        feed => {
+            title       => $feed->title,
+            description => $feed->description,
+            uuid_string => $feed_id,
+        },
+        feeds => $all_feeds_list,
+        items => $item_list_view || undef,
+      };
 
-        }
-    );
-
-    return redirect('/');
 };
 
-get '/:feed' => sub {
-    my $feed_id   = param('feed');
-    my $account   = account();
-    my $feed_view = Munge::Model::View::Feed->new( account => $account );
+get '/starred' => sub {
+    return special_view('starred');
+};
+
+get '/archive' => sub {
+    return special_view('archive');
+};
+
+sub special_view {
+    my ($action) = @_;
+
+    my $template      = _get_template($action);
+    my $feed_view     = Munge::Model::View::Feed->new( account => account() );
+    my $subscriptions = $feed_view->all_feeds;
+
+    return template "feed/$template",
+      {
+        feed => {
+            title       => ucfirst($action),
+            description => 'Unread posts',
+            uuid_string => $action,
+        },
+        feeds => $subscriptions,
+        items => feed_item_view( $action, scalar( @{$subscriptions} ) )
+          || undef,
+      };
+}
+
+sub _get_feed_info {
+    my ( $feed_id, $item_list_view ) = @_;
 
     my $feed_info;
-    my $item_list_view = feed_item_view($feed_id);
 
     if ( $feed_id and to_UUID($feed_id) ) {
         $feed_info = {
@@ -126,16 +168,20 @@ get '/:feed' => sub {
           { title => ucfirst($feed_id), description => 'Unread posts' };
     }
 
-    my $template = _get_template($feed_id);
+    return $feed_info;
+}
 
-    return template "feed/$template",
-      {
-        feed  => $feed_info,
-        feeds => $feed_view->all_feeds,
-        items => $item_list_view || undef,
-      };
+sub google_reader_link {
+    my $uri = URI->new( request()->uri_base );
+    $uri->path('manage/import/reader');
 
-};
+    my $api = Munge::Model::Google::ReaderAPI->new(
+        redirect_uri => $uri,
+        account      => account()
+    );
+
+    return $api->get_auth_code_uri->as_string;
+}
 
 sub _get_template {
     my ($feed_id) = @_;
@@ -147,16 +193,16 @@ sub _get_template {
 }
 
 sub feed_item_view {
-    my ($feed_id) = @_;
-
+    my ( $feed_id, $subscription_count ) = @_;
     $feed_id ||= 'today';
 
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->today()   if $feed_id eq 'today';
-    return $view->crunch()  if $feed_id eq 'archive';
-    return $view->starred() if $feed_id eq 'starred';
+    return $view->no_subscriptions()        if $subscription_count == 0;
+    return $view->today()                   if $feed_id eq 'today';
+    return $view->crunch()                  if $feed_id eq 'archive';
+    return $view->starred()                 if $feed_id eq 'starred';
     return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);
     return;
 }

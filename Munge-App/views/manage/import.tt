@@ -1,20 +1,14 @@
-<form enctype="multipart/form-data" method="post">
-  <p><label for="subscriptions">Upload an OPML xml file
-  here</label></p>
-
-  <p><input type="file" name="subscriptions" id=
-  "subscriptions"></p>
-
-  <p><input type="submit" value="upload"></p>
-</form>
-
-[% IF imported.size %]
-    <ul>
-    [% FOREACH feed IN imported %]
-        <li>
-            <strong>[% feed.title %]</strong><br/>
-            <em>[% feed.description %]</em>
-       </li>        
-    [% END %]
-    </ul>
-[% END %]    
+[% INCLUDE 'manage/import/reader.tt' authorization_url = authorization_url %]
+<div class="form-wrap">
+    <form class="padding" enctype="multipart/form-data" method="post" action="/manage/import">
+      <h1>Import subscriptions from an OPML file</h1>
+      <p>The OPML file format is the most common format to exchange lists of web feeds between web feed aggregators. Most feed aggregators should be able to export such a file.</p>
+      <p>
+        <label for="subscriptions">Upload an OPML xml file here</label>
+      </p>
+      <p>
+        <input accept="application/xml" type="file" name="subscriptions" id="subscriptions">
+      </p>
+      <p><input type="submit" class="btn" value="Upload"></p>
+    </form>
+</div>

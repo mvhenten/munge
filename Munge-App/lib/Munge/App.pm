@@ -11,7 +11,8 @@ use Munge::Controller::Account;
 use Munge::Controller::Feed;
 use Munge::Controller::Item;
 use Munge::Controller::Manage;
-use Munge::Controller::REST;
+
+# use Munge::Controller::REST;
 
 # most not needed, but preloading
 use Munge::Model::Account;
@@ -20,9 +21,10 @@ use Munge::Model::Feed::Client;
 use Munge::Model::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;
+use Munge::Env;
 use Munge::Storage;
 use Munge::UUID;
-use Munge::Helper qw|account|;
+use Munge::Helper qw|init_account|;
 
 our $VERSION = '0.1';
 
@@ -57,10 +59,20 @@ hook 'before' => sub {
     set_cors_headers() if is_api_request();
 
     if ( not session('authenticated')
-        and request->path_info !~ m{/account/(login|create)$} )
+        and request->path_info !~
+        m{/account/(login|create|verify|authorize\/.+)$} )
     {
-        send_error( 'Autentication required', 403 ) if is_api_request();
-        redirect 'account/login';
+        return send_error( 'Autentication required', 403 ) if is_api_request();
+        return redirect 'account/login';
+    }
+
+    if ( session('authenticated') ) {
+        my $account = init_account();
+
+        if ( not $account ) {
+            session->destroy();
+            redirect '/account/login';
+        }
     }
 };
 

@@ -1,8 +1,11 @@
 Munge - Feed Me
 ===============
 Munge is a simple, no-frills RSS/Atom Feedreader webapp. It does what a Feed reader should do: aggregate feeds from
-various sources and display them in a variety of manners. It's written in Modern Perl, using Dancer as it's framework, and hosted on
-dotclouds's sandbox http://munge-mvhenten.dotcloud.com ( Send me an e-mail if you want to try ).
+various sources and display them in a variety of manners. It's written in Modern Perl, using Dancer as it's framework.
+
+[UPDATE]
+Dotcloud has been shutting down their service. The demo no longer lives there, but you can try
+here: http://munge.eu ( Feedback is welcome! )
 
 Motivation
 ----------
@@ -12,7 +15,6 @@ My interests and habits are my own, and not a commodity to be traded by others.
 Most companies use their data in a discrete manner, and most company have agreable privacy statements.
 However, even if I **might trust your company**, I will not *trust your buyer*.
 
-Runner up: watch this space for my Gmail Killer.
 
 Installation
 ------------

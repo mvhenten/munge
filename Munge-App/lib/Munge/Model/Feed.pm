@@ -36,6 +36,7 @@ class Munge::Model::Feed {
     use Munge::Model::Feed::Client;
     use Munge::Model::FeedItem;
     use Munge::Model::Feed::Parser;
+    use MooseX::StrictConstructor;
     use Munge::Types qw|UUID|;
     use Munge::UUID;
     use Munge::Storage;
@@ -119,7 +120,7 @@ class Munge::Model::Feed {
 
         if ( not $feed_parser->xml_feed ) {
             warn 'Cannot parse feed: ' . $self->link;
-            return;
+            return 1;
         }
 
         $self->_set_title( $feed_parser->title );

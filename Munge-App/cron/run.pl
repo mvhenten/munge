@@ -17,6 +17,7 @@ sub run {
     
     open my $fh, "<", "/home/dotcloud/environment.json" or die $!;
     my $json = decode_json(join '', <$fh>);
+    close $fh;
     
     foreach my $key ( keys %{$json}  ) {
         $ENV{$key} = $json->{$key};

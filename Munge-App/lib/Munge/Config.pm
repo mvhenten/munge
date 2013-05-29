@@ -25,6 +25,10 @@ sub APPLICATION_PATH {
     return $path;
 }
 
+sub APP_EMAIL {
+    return config()->{app_email};
+}
+
 sub HOST {
     return
          $ENV{DOTCLOUD_DB_MYSQL_HOST}
