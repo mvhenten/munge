@@ -56,18 +56,24 @@ get '/login' => sub {
     my $uri = URI->new( request()->uri_base );
     $uri->path('account/authorize/google/plus');
 
-    my $plus = OAuth2::Google::Plus->new(
-        client_id     => $ENV{google_api_client_id},
-        client_secret => $ENV{google_api_client_secret},
-        redirect_uri  => $uri->as_string,
-    );
+    my $authorization_url;
+
+    if ( $ENV{google_api_client_id} && $ENV{google_api_client_secret} ) {
+        my $plus = OAuth2::Google::Plus->new(
+            client_id     => $ENV{google_api_client_id},
+            client_secret => $ENV{google_api_client_secret},
+            redirect_uri  => $uri->as_string,
+        );
+
+        $authorization_url = $plus->authorization_uri();
+    }
 
     return template 'account/login',
       {
         verifcation_sent  => param('signup'),
         need_verification => param('need_verification'),
         login_failed      => param('failed'),
-        google_plus_buton => $plus->authorization_uri(),
+        google_plus_buton => $authorization_url,
       },
       { layout => undef };
 };
@@ -120,10 +126,7 @@ post '/login' => sub {
     my $account    = Munge::Model::Account->new();
     my $account_rs = $account->load($username);
 
-    debug 'VERIFICATION', $account_rs->verified;
-
     if ( $account_rs && $account->validate( $account_rs, $password ) ) {
-        debug 'VOORBIJ DE VALIDATAIE';
         return redirect_user_logged_in($account_rs);
     }
 
