@@ -12,6 +12,7 @@ use Munge::Model::View::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Types qw|UUID|;
 use Munge::Util qw|uuid_string|;
+use Munge::Helper qw|get_account_feed_item|;
 
 prefix '/item';
 
@@ -28,28 +29,8 @@ sub account {
     return $account;
 }
 
-sub _get_account_feed_item {
-    my ($uuid_string) = @_;
-
-    my $uuid = to_UUID($uuid_string);
-    return if not $uuid;
-
-    my $account = account();
-    my $item_view = Munge::Model::View::FeedItem->new( account => $account );
-    my $feed_item_data = $item_view->get_feed_item_data($uuid);
-
-    return if not $feed_item_data;
-
-    my $model =
-      Munge::Model::AccountFeedItem->load( $uuid,
-        to_UUID( $feed_item_data->{feed_uuid} ), $account );
-
-    return $model;
-
-}
-
 get '/unread/:uuid' => sub {
-    my $account_feed_item = _get_account_feed_item( param('uuid') );
+    my $account_feed_item = get_account_feed_item( param('uuid') );
 
     return status('not_found') if not $account_feed_item;
 
@@ -60,7 +41,7 @@ get '/unread/:uuid' => sub {
 };
 
 get '/star/:uuid' => sub {
-    my $account_feed_item = _get_account_feed_item( param('uuid') );
+    my $account_feed_item = get_account_feed_item( param('uuid') );
 
     return status('not_found') if not $account_feed_item;
 
@@ -78,7 +59,9 @@ get '/:feed' => sub {
     my $item_view = Munge::Model::View::FeedItem->new( account => $account );
     my $feed_view = Munge::Model::View::Feed->new( account => $account );
 
-    return status('not_found') if not to_UUID($item_id);
+    my $feed_item_uuid = to_UUID($item_id);
+
+    return status('not_found') if not $feed_item_uuid;
 
     my $feed_item_data = $item_view->get_feed_item_data($item_id);
 
@@ -87,11 +70,16 @@ get '/:feed' => sub {
     my $item_list_view = $item_view->list( $feed_item_data->{feed_uuid} );
 
     my $model =
-      Munge::Model::AccountFeedItem->load( to_UUID($item_id),
-        to_UUID( $feed_item_data->{feed_uuid} ), $account );
+      Munge::Model::AccountFeedItem->find( $feed_item_uuid, $account );
 
-    #my $model = Munge::Model::FeedItem->load( to_UUID($item_id), $account );
-    #
+    if ( not $model ) {
+        $model = Munge::Model::AccountFeedItem->new(
+            feed_item_uuid => $feed_item_uuid,
+            feed_uuid      => $feed_item_data->{feed_uuid},
+            account        => $account,
+        );
+    }
+
     if ( ( not $model->read ) or $model->starred ) {
         $model->unset_star();
         $model->set_read();

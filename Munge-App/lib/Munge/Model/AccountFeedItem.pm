@@ -14,16 +14,16 @@ TODO
 
 =cut
 
-use Munge::Types qw|UUID Account ParserItem|;
+use Munge::Types qw|UUID Account|;
 
 
 class Munge::Model::AccountFeedItem {
 
-    use Munge::Types qw|UUID ParserItem|;
+    use Munge::Types qw|UUID|;
 
     with 'Munge::Role::Schema';
     with 'Munge::Role::Account';
-
+    
     has feed_uuid => (
         is       => 'ro',
         isa      => UUID,
@@ -59,24 +59,23 @@ class Munge::Model::AccountFeedItem {
         }
     );
     
-    
-    method load ( $class: UUID $uuid, UUID $feed_uuid, Account $account ){       
+    method find( $class: UUID $uuid, Account $account ) {
         my $row = Munge::Schema::Connection->schema()->resultset('AccountFeedItem')->find({
             feed_item_uuid => $uuid,
-            feed_uuid     => $feed_uuid,
             account_id     => $account->id,
         });
         
-        my %arguments = (
-            defined($row) ? $row->get_inflated_columns() : (), 
-            feed_item_uuid => $uuid,
-            feed_uuid       => $feed_uuid,
-            account         => $account,
-        );
-        
-        return $class->new( %arguments );
+        if( $row ) {
+            my %arguments = (
+                 $row->get_columns(),
+                feed_item_uuid => $uuid,
+                account         => $account,
+            );
+            
+            return $class->new( %arguments );                        
+        }
     }
-    
+        
     method store {
         my $row = $self->resultset('AccountFeedItem')->update_or_create({
             'feed_item_uuid' => $self->feed_item_uuid,
