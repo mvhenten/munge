@@ -1,0 +1,14 @@
+{
+    "name": "munge-client",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "./node_modules/nodemon/nodemon.js server.js -e '.js|.html|.less'"
+    },
+    "dependencies": {
+        "express": "3.2.6",
+        "stitch": "0.3.3",
+        "swig": "*",
+        "nodemon": "*"
+    }
+}

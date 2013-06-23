@@ -1,0 +1,1 @@
+module.exports = function(swig){ return swig.compile("\u003Ch1\u003EHello World\u003C/h1\u003E\u000A\u003Cdiv\u003E\u000A    bla bla bla\u000A\u003C/div\u003E") }
