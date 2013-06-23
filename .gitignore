@@ -4,6 +4,7 @@
 *.komodoproject
 *.bak
 .build
+Client/node_nodules
 Munge-App/sessions/
 Munge-App/caches/
 Munge-App/logs/
