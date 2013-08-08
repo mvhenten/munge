@@ -1,4 +1,4 @@
-package Munge::App;
+package Munge::FeedReader;
 use strict;
 use warnings;
 
