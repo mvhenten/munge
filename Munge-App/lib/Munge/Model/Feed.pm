@@ -39,9 +39,8 @@ class Munge::Model::Feed {
     use MooseX::StrictConstructor;
     use Munge::Types qw|UUID|;
     use Munge::UUID;
-    use Munge::Storage;
 
-    with 'Munge::Role::Storage';
+    with 'Munge::Role::Schema';
 
     has link => (
         is       => 'ro',
@@ -61,12 +60,6 @@ class Munge::Model::Feed {
         writer => '_set_description',
     );
 
-    has id => (
-        is     => 'ro',
-        isa    => 'Int',
-        writer => '_set_id',
-    );
-
     has link => (
         is     => 'ro',
         isa    => 'Str',
@@ -80,34 +73,60 @@ class Munge::Model::Feed {
     );
 
     has updated => (
-        is     => 'ro',
-        isa    => 'Maybe[DateTime]',
-        writer => '_set_updated',
+        is  => 'ro',
+        isa => 'Maybe[DateTime]',
     );
 
     has created => (
-        is         => 'ro',
-        isa        => 'Maybe[DateTime]',
-        writer     => '_set_created',
-        lazy_build => 1,
+        is  => 'ro',
+        isa => 'Maybe[DateTime]',
     );
 
-    method _build_created {
-        return DateTime->now();
+    method store {
+        my @keys = grep { defined $self->$_ } qw|uuid description link title|;
+        my %values = map { $_ => $self->$_ } @keys;
+
+        if ( $self->created ) {
+            my $row = $self->resultset('Feed')
+                ->search_rs( { uuid => $self->uuid } )
+                ->update( { map { $_ => $self->$_ } @keys } );
+
+            return $self;
+        }
+
+        Munge::Schema::Connection->schema()->resultset('Feed')->create({
+            %values,
+            link    => $self->link,
+            uuid    => $self->uuid,
+            created => DateTime->now,
+        });
+
+        return  Munge::Model::Feed->load( $self->uuid );
     }
 
-    method create( $class: Uri $link ) {
+    method create( $class : Uri $link ) {
         my $uuid = Munge::UUID->new( uri => $link )->uuid_bin;
 
-          return $class->new(
-            link    => $link->as_string,
-            uuid    => $uuid,
-          );
-      }
+        my $feed = Munge::Model::Feed->new(
+            link => $link->as_string,
+            uuid => $uuid
+        );
 
-      method synchronize( Bool $force = 0 ) {
-        if ($force)
-        {
+        return $feed->store();
+    }
+
+    method load( $class : UUID $uuid ) {
+        my $row = Munge::Schema::Connection->schema()->resultset('Feed')->find({
+            uuid => $uuid,
+        });
+
+        if ($row) {
+            return $class->new( { $row->get_inflated_columns() } );
+        }
+    }
+
+    method synchronize( Bool $force = 0 ) {
+        if ($force) {
             $self->_set_updated(undef);
         }
 
@@ -124,15 +143,14 @@ class Munge::Model::Feed {
         }
 
         $self->_set_title( $feed_parser->title );
-        $self->_set_updated( DateTime->now );
         $self->_set_description( $feed_parser->description || '' );
 
         for my $item ( $feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
         }
-      }
+    }
 
-      method _get_feed_client {
+    method _get_feed_client {
         my $uri = URI->new( $self->link );
 
         return Munge::Model::Feed::Client->new(
@@ -143,7 +161,7 @@ class Munge::Model::Feed {
 
     method _get_feed_parser( Str $content ) {
         return Munge::Model::Feed::Parser->new( content => $content );
-      }
+    }
 
 }
 

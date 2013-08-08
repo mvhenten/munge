@@ -11,7 +11,6 @@ role Test::Munge::Role::Feed {
     use Cwd qw|realpath|;
     use URI;
     use Munge::Model::Feed;
-    use Munge::Storage;
     use Munge::UUID;
 
     requires qw|create_test_account|;
@@ -58,27 +57,30 @@ role Test::Munge::Role::Feed {
 
         my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
 
-        my $storage = Munge::Storage->new(
-            account     => $account,
-            schema_name => Munge::Model::Feed->_schema_class(),
-            schema      => $self->schema,
-        );
+        die('TODO REFACTOR');
 
-        return Munge::Model::Feed->new(
-            uuid     => $uuid,
-            account  => $account,
-            link     => $uri->as_string,
-            _storage => $storage,
-        );
+        #my $storage = Munge::Storage->new(
+        #    account     => $account,
+        #    schema_name => Munge::Model::Feed->_schema_class(),
+        #    schema      => $self->schema,
+        #);
+        #
+        #return Munge::Model::Feed->new(
+        #    uuid     => $uuid,
+        #    account  => $account,
+        #    link     => $uri->as_string,
+        #    _storage => $storage,
+        #);
     }
 
 
     method add_feed_item ( Munge::Model::Feed $feed, %item_data ) {
-        my $storage = Munge::Storage->new(
-            account     => $feed->account,
-            schema_name => Munge::Model::FeedItem->_schema_class(),
-            schema      => $self->schema,
-        );
+        die('Munge::Storage deleted');
+        #my $storage = Munge::Storage->new(
+        #    account     => $feed->account,
+        #    schema_name => Munge::Model::FeedItem->_schema_class(),
+        #    schema      => $self->schema,
+        #);
 
         my $uri     = URI->new( $self->create_test_feed_uri );
         $uri->query_form( q => rand % 99999 );
@@ -103,11 +105,12 @@ role Test::Munge::Role::Feed {
     }
 
     method _test_storage ( Account $account, $schema_name ) {
-        my $storage = Munge::Storage->new(
-            account     => $account,
-            schema_name => $schema_name,
-            schema      => $self->schema,``
-        );
+        die('STORAGE IS NO MORE');
+        #my $storage = Munge::Storage->new(
+        #    account     => $account,
+        #    schema_name => $schema_name,
+        #    schema      => $self->schema,``
+        #);
     }
 
 }

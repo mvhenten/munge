@@ -50,7 +50,8 @@ class Munge::Model::FeedItem {
     use Munge::Types qw|UUID ParserItem|;
     use Munge::Util qw|find_interesting_image_source|;
 
-    with 'Munge::Role::Storage';
+    with 'Munge::Role::Schema';
+#    with 'Munge::Role::Storage';
 
     sub MUTABLE_ATTRIBUTES {
         return qw|
@@ -84,7 +85,6 @@ class Munge::Model::FeedItem {
     has created => (
         is         => 'ro',
         isa        => 'DateTime',
-        lazy_build => 1
     );
 
     has modified => (
@@ -139,10 +139,6 @@ class Munge::Model::FeedItem {
         writer => '_set_summary',
     );
 
-    sub _build_created {
-        return DateTime->now();
-    }
-
     sub _build_modified {
         return DateTime->now();
     }
@@ -153,6 +149,39 @@ class Munge::Model::FeedItem {
 
     method _build_poster_image {
         return find_interesting_image_source( $self->content );
+    }
+
+    method store {
+        my %values = map { $_ => $self->$_ || '' } MUTABLE_ATTRIBUTES();
+
+
+        if ( $self->created ) {
+            my $row = $self->resultset('FeedItem')
+                ->search_rs( { uuid => $self->uuid } )
+                ->update( \%values );
+
+            return $self;
+        }
+
+        $self->resultset('FeedItem')->create({
+            %values,
+            feed_uuid   => $self->feed_uuid,
+            uuid        => $self->uuid,
+            created     => DateTime->now,
+            link        => $self->link,
+        });
+
+        return Munge::Model::FeedItem->load( $self->uuid );
+    }
+
+    method load( $class : UUID $uuid ) {
+        my $row = Munge::Schema::Connection->schema()->resultset('FeedItem')->find({
+            uuid => $uuid,
+        });
+
+        if ($row) {
+            return $class->new( { $row->get_inflated_columns() } );
+        }
     }
 
     method synchronize( $class: Feed $feed, ParserItem $parser_item ) {

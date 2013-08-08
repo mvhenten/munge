@@ -33,10 +33,6 @@ package Munge::Model::View::FeedItem;
 
 # fooling prereq scanner
 
-package Munge::Storage;
-
-# fooling prereq scanner
-
 package Munge::UUID;
 
 # fooling prereq scanner

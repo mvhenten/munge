@@ -22,7 +22,6 @@ use Munge::Model::FeedItem;
 use Munge::Model::View::Feed;
 use Munge::Model::View::FeedItem;
 use Munge::Env;
-use Munge::Storage;
 use Munge::UUID;
 use Munge::Helper qw|init_account|;
 

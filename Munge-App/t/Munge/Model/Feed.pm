@@ -8,7 +8,6 @@ class t::Munge::Model::Feed {
     use Test::Sweet;
     use URI;
     use Sub::Override qw|sub_override|;
-    use Munge::Storage;
 
     with 'Test::Munge::Role::Schema';
     with 'Test::Munge::Role::Account';
@@ -29,7 +28,6 @@ class t::Munge::Model::Feed {
 
         lives_ok {
             $feed = Munge::Model::Feed->create($uri);
-            $feed->store();
         }
         'create lives';
 
@@ -38,26 +36,25 @@ class t::Munge::Model::Feed {
 
     }
 
-    test feed_store {
-        my $override = $self->override_schema;
-
-        my $uri = URI->new( $self->create_test_feed_uri );
-        my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
-
-        my $feed = Munge::Model::Feed->new(
-            uuid => $uuid,
-            link => $uri->as_string,
-        );
-
-        $feed->store();
-
-        ok( $self->resultset('Feed')->find( { uuid => $uuid } ),
-            'Feed was stored' );
-    }
+    #test feed_store {
+    #    my $override = $self->override_schema;
+    #
+    #    my $uri = URI->new( $self->create_test_feed_uri );
+    #    my $uuid = Munge::UUID->new( uri => $uri )->uuid_bin;
+    #
+    #    my $feed = Munge::Model::Feed->new(
+    #        uuid => $uuid,
+    #        link => $uri->as_string,
+    #    );
+    #
+    #    $feed->store();
+    #
+    #    ok( $self->resultset('Feed')->find( { uuid => $uuid } ),
+    #        'Feed was stored' );
+    #}
 
     test load_by_uuid {
-        my $feed =
-          Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
+        my $feed = Munge::Model::Feed->create( $self->create_test_feed_uri );
 
         ok( $self->resultset('Feed')->search( { uuid => $feed->uuid } ),
             'Feed was stored' );
@@ -70,12 +67,11 @@ class t::Munge::Model::Feed {
     test feed_synchronize {
         my $override = $self->override_schema;
 
-        my $feed =
-          Munge::Model::Feed->create( $self->create_test_feed_uri )->store();
+        my $feed = Munge::Model::Feed->create( $self->create_test_feed_uri );
 
         is( $feed->updated,     undef, 'Updated is not yet defined' );
-        is( $feed->title,       undef, 'Title is not yet set' );
-        is( $feed->description, undef, 'Description is not yet set' );
+        is( $feed->title,       '',    'Title is not yet set' );
+        is( $feed->description, '',    'Description is not yet set' );
 
         lives_ok {
             $feed->synchronize();
