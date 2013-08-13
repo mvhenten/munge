@@ -124,10 +124,6 @@ get '/starred' => sub {
     return special_view('starred');
 };
 
-get '/archive' => sub {
-    return special_view('archive');
-};
-
 sub special_view {
     my ($action) = @_;
 
@@ -179,14 +175,12 @@ sub _get_template {
 
 sub feed_item_view {
     my ( $feed_id, $subscription_count ) = @_;
-    $feed_id ||= 'today';
 
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
+    return $view->unread()                   if not $feed_id;
     return $view->no_subscriptions()        if $subscription_count == 0;
-    return $view->today()                   if $feed_id eq 'today';
-    return $view->crunch()                  if $feed_id eq 'archive';
     return $view->starred()                 if $feed_id eq 'starred';
     return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);
     return;

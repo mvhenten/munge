@@ -33,12 +33,10 @@
       <div class="row-fluid">
         [% IF feeds.0 %]
         <div id="nav-main" class="span3">
-            <ul id="feed-menu">
-                <li class="[% IF NOT feed %]active[% END %] green"><a href="/"><i class="icon-th-large"></i>today</a></li>
-                <li class="[% IF feed.uuid_string == 'archive' %]active[% END %] blue"><a href="/feed/archive"><i class="icon-list"></i>crunch</a></li>
-                <li class="[% IF feed.uuid_string == 'starred' %]active[% END %] orange"><a href="/feed/starred"><i class="icon-time"></i>saved</a></li>
-            </ul>
             <ul id="sidebar" class="nav nav-stacked">
+                <li class="[% IF NOT feed %]active[% END %]"><a href="/"> all feeds</a></li>
+                <li class="[% IF feed.uuid_string == 'starred' %]active[% END %]"><a href="/feed/starred">
+                saved for later</a></li>
                 [% FOREACH f IN feeds %]
                 <li><a class="[% IF f.unread_items %]unread[% END %]" href="/feed/read/[% f.uuid_string %]">
                     <span class="unread-count">[% IF f.unread_items %][% f.unread_items %] [% END %]</span>

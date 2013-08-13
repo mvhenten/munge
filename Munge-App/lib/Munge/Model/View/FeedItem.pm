@@ -53,7 +53,7 @@ SQL
     return $sql;
 }
 
-sub FEED_ITEM_UNREAD_TODAY_SQL {
+sub FEED_ITEM_UNREAD {
     my $sql = <<'SQL'
         SELECT
             fi.*,
@@ -69,40 +69,13 @@ sub FEED_ITEM_UNREAD_TODAY_SQL {
             ON afi.account_id = af.account_id
             AND afi.feed_item_uuid = fi.uuid
         WHERE af.account_id = ?
-        AND fi.issued > DATE_SUB( NOW(), INTERVAL 2 DAY )
         AND ( afi.`read` IS NULL OR afi.`read` = 0 )
         ORDER BY fi.issued DESC
-        LIMIT 50
+        LIMIT 30
 SQL
 ;
     return $sql;
 }
-
-sub FEED_ITEM_UNREAD_OLDER_THEN_TODAY {
-    my $sql = <<'SQL'
-        SELECT
-            fi.*,
-            f.title AS feed_title,
-            f.description AS feed_description,
-            f.link AS feed_link,
-            afi.`read`,
-            afi.starred
-        FROM feed_item fi
-        LEFT JOIN feed f ON fi.feed_uuid = f.uuid
-        LEFT JOIN account_feed af ON af.feed_uuid = fi.feed_uuid
-        LEFT JOIN account_feed_item afi
-            ON afi.feed_item_uuid = fi.uuid
-            AND afi.account_id = af.account_id
-        WHERE fi.issued < DATE_SUB( NOW(), INTERVAL 1 DAY )
-        AND ( afi.`read` IS NULL OR afi.`read` = 0 )
-        AND af.account_id = ?
-        ORDER BY fi.issued DESC
-        LIMIT 25
-SQL
-;
-    return $sql;
-}
-
 
 sub FEED_ITEM_NO_SUBSCRIPTIONS {
     my $sql = <<'SQL'
@@ -149,24 +122,13 @@ SQL
         return $dtf->format_datetime( $dt );
     }
 
-    method today {
-        my $sql = FEED_ITEM_UNREAD_TODAY_SQL();
+    method unread {
+        my $sql = FEED_ITEM_UNREAD();
 
         my $dbh = $self->schema->storage->dbh;
 
         my $items = $dbh->selectall_arrayref( $sql,
             { Slice => {} }, $self->account->id,
-        );
-
-        return [ map { $self->_create_list_view( $_ ) } @{$items} ];
-    }
-
-    method crunch {
-        my $sql = FEED_ITEM_UNREAD_OLDER_THEN_TODAY();
-        my $dbh = $self->schema->storage->dbh;
-
-        my $items = $dbh->selectall_arrayref( $sql,
-            { Slice => {} }, $self->account->id
         );
 
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
@@ -192,10 +154,6 @@ SQL
         );
 
         return [ map { $self->_create_list_view( $_ ) } @{$items} ];
-    }
-    
-    method _retrieve_feed_items_from_sql {
-        
     }
 
     method list( UUID $feed_uuid, Int $page=1 ){
