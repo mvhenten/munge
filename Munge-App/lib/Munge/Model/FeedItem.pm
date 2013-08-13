@@ -188,18 +188,13 @@ class Munge::Model::FeedItem {
         my $feed_item =
           Munge::Model::FeedItem->load( $parser_item->uuid_bin );
 
-        if ($feed_item and $feed_item->feed_uuid eq $feed->uuid ) {
-            return $feed_item
-              if DateTime->compare( $feed_item->modified,
-                $parser_item->modified ) eq 0;
-        }
-        else {
-            $feed_item = Munge::Model::FeedItem->new(
-                uuid        => $parser_item->uuid_bin,
-                feed_uuid   => $feed->uuid,
-                link        => $parser_item->link,
-            );
-        }
+        return if $feed_item;
+
+        $feed_item = Munge::Model::FeedItem->new(
+            uuid        => $parser_item->uuid_bin,
+            feed_uuid   => $feed->uuid,
+            link        => $parser_item->link,
+        );
 
         for my $attr ( MUTABLE_ATTRIBUTES() ) {
             my $setter = "_set_$attr";
