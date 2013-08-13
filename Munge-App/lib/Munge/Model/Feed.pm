@@ -125,11 +125,7 @@ class Munge::Model::Feed {
         }
     }
 
-    method synchronize( Bool $force = 0 ) {
-        if ($force) {
-            $self->_set_updated(undef);
-        }
-
+    method synchronize() {
         my $feed_client = $self->_get_feed_client();
 
         return unless $feed_client->updated;
