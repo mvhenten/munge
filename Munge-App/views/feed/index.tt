@@ -5,7 +5,6 @@
 <div class="alert alert-info">
     You haven't subscribed any feeds yet. Best way to get started is to upload the subscription list (OPML file format) from your <em>"other"</em> reader...
 </div>
-[% INCLUDE 'manage/import/reader.tt' authorization_url = authorization_url %]
 <div class="alert alert-success">
     Meanwhile, munge away on these feeds that others have been enjoying:
 </div>

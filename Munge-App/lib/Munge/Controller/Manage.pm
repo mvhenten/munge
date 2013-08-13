@@ -9,37 +9,17 @@ use Data::Dumper;
 use Munge::Helper qw|account feed_view synchronize_feed|;
 use Munge::Model::AccountFeed;
 use Munge::Model::OPML;
-use Munge::Model::Google::ReaderAPI;
 use Munge::Types qw|UUID|;
 use Munge::Util qw|is_url proc_fork uuid_string|;
 use URI;
 
 prefix '/manage';
 
-get '/import/reader' => sub {
-    my $uri = URI->new( request()->uri_base );
-    $uri->path('manage/import/reader');
-
-    my $api = Munge::Model::Google::ReaderAPI->new(
-        redirect_uri => $uri,
-        account      => account()
-    );
-
-    if ( my $auth_code = param('code') ) {
-        $api->import_feeds($auth_code);
-        return redirect '/feed';
-    }
-
-    template 'manage/import/reader',
-      { authorization_url => $api->get_auth_code_uri->as_string };
-};
-
 get '/import' => sub {
 
     template 'manage/import',
       {
         feeds             => feed_view()->all_feeds,
-        authorization_url => google_reader_api()->get_auth_code_uri->as_string,
       };
 };
 
@@ -79,16 +59,6 @@ sub opml_feed_view {
       } @{$imported_feeds};
 
     return \@feeds;
-}
-
-sub google_reader_api {
-    my $uri = URI->new( request()->uri_base );
-    $uri->path('manage/import/reader');
-
-    return Munge::Model::Google::ReaderAPI->new(
-        redirect_uri => $uri,
-        account      => account()
-    );
 }
 
 1;

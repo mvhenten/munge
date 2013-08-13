@@ -54,13 +54,13 @@ can be used to retrieve information about the user who authorized.
 
     has client_id => (
         is       => 'ro',
-        isa      => 'Str',
+        isa      => 'Maybe[Str]',
         required => 1,
     );
 
     has client_secret => (
         is       => 'ro',
-        isa      => 'Str',
+        isa      => 'Maybe[Str]',
         required => 1,
     );
 

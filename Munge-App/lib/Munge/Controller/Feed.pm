@@ -28,9 +28,6 @@ get '/' => sub {
       {
         feeds             => $subscriptions,
         items             => $item_list_view,
-        authorization_url => scalar( @{$subscriptions} ) == 0
-        ? google_reader_link()
-        : undef,
       };
 
 };
@@ -169,18 +166,6 @@ sub _get_feed_info {
     }
 
     return $feed_info;
-}
-
-sub google_reader_link {
-    my $uri = URI->new( request()->uri_base );
-    $uri->path('manage/import/reader');
-
-    my $api = Munge::Model::Google::ReaderAPI->new(
-        redirect_uri => $uri,
-        account      => account()
-    );
-
-    return $api->get_auth_code_uri->as_string;
 }
 
 sub _get_template {

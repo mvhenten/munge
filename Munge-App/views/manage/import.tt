@@ -1,4 +1,3 @@
-[% INCLUDE 'manage/import/reader.tt' authorization_url = authorization_url %]
 <div class="form-wrap">
     <form class="padding" enctype="multipart/form-data" method="post" action="/manage/import">
       <h1>Import subscriptions from an OPML file</h1>
