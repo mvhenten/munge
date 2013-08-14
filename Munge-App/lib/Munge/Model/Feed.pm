@@ -64,6 +64,7 @@ class Munge::Model::Feed {
         is     => 'ro',
         isa    => 'Bool',
         writer => 'set_blacklist',
+        default => 0,
     );
 
     has link => (
@@ -106,7 +107,7 @@ class Munge::Model::Feed {
     }
 
     method store {
-        my @keys = grep { defined $self->$_ } qw|uuid description link title|;
+        my @keys = grep { defined $self->$_ } qw|blacklist uuid description link title|;
         my %values = map { $_ => $self->$_ } @keys;
 
         $values{synchronized} = $self->_get_synchronized_timestamp;
