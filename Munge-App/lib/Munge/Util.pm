@@ -243,6 +243,7 @@ image found or undef.
             my $src = $image->attr('src');
 
             # jpeg currently is the only sensible format
+            next if not $src;
             next if $src !~ qr{[.]jp[e]?g};
 
             # TODO blacklist is not up to date
