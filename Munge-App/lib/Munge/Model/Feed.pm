@@ -98,19 +98,11 @@ class Munge::Model::Feed {
         isa => 'Maybe[DateTime]',
     );
 
-    method _get_synchronized_timestamp {
-        my $dtf = $self->schema->storage->datetime_parser;
-
-        if ( $self->synchronized ) {
-            return $dtf->format_datetime( $self->synchronized );
-        }
-    }
-
     method store {
         my @keys = grep { defined $self->$_ } qw|blacklist uuid description link title|;
         my %values = map { $_ => $self->$_ } @keys;
 
-        $values{synchronized} = $self->_get_synchronized_timestamp;
+        $values{synchronized} = $self->_format_datetime( $self->synchronized );
 
         if ( $self->created ) {
             my $row = $self->resultset('Feed')
@@ -154,11 +146,12 @@ class Munge::Model::Feed {
     method synchronize() {
         my $feed_client = $self->_get_feed_client();
 
+        $self->_set_synchronized( DateTime->now );
+
         return 1 unless $feed_client->updated;
         return 1 unless $feed_client->success;
 
         my $feed_parser = $self->_get_feed_parser( $feed_client->content );
-        $self->_set_synchronized( DateTime->now );
 
         if ( not $feed_parser->xml_feed ) {
             warn 'Cannot parse feed: ' . $self->link;
