@@ -16,4 +16,11 @@ role Munge::Role::Schema {
     method dbh {
         return $self->schema->storage->dbh;
     }
+
+    method _format_datetime( $dt ) {
+        return if not $dt;
+        my $dtf = $self->schema->storage->datetime_parser;
+
+        return $dtf->format_datetime( $dt );
+    }
 }
