@@ -157,8 +157,6 @@ class Munge::Model::FeedItem {
         $values{issued}         = $self->_format_datetime( $self->issued );
         $values{poster_image}   = $self->poster_image;
 
-        warn $values{poster_image};
-
         if ( $self->created ) {
             my $row = $self->resultset('FeedItem')
                 ->search_rs( { uuid => $self->uuid } )

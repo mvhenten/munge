@@ -25,7 +25,7 @@ sub LOCK_FILE {
 
 sub SQL {
     return
-      'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 DAY ) LIMIT 10';
+      'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 day ) LIMIT 1000';
 }
 
 {
@@ -60,6 +60,8 @@ sub main {
         printf( "Cannot open lockfile %s, exiting\n", LOCK_FILE() );
         return;
     }
+
+    SYNC_START_TIME();
 
     my $schema = Munge::Schema::Connection->schema();
 
