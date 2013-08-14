@@ -27,7 +27,7 @@ use base 'DBIx::Class::Core';
 
 =cut
 
-__PACKAGE__->load_components( "InflateColumn::DateTime", "TimeStamp" );
+__PACKAGE__->load_components("InflateColumn::DateTime", "TimeStamp");
 
 =head1 TABLE: C<feed>
 
@@ -61,7 +61,7 @@ __PACKAGE__->table("feed");
 
   data_type: 'timestamp'
   datetime_undef_if_invalid: 1
-  default_value: '0000-00-00 00:00:00'
+  default_value: current_timestamp
   is_nullable: 0
 
 =head2 created
@@ -77,41 +77,53 @@ __PACKAGE__->table("feed");
   is_nullable: 0
   size: 16
 
+=head2 blacklist
+
+  data_type: 'tinyint'
+  default_value: 0
+  is_nullable: 0
+
+=head2 synchronized
+
+  data_type: 'timestamp'
+  datetime_undef_if_invalid: 1
+  default_value: '0000-00-00 00:00:00'
+  is_nullable: 0
+
 =cut
 
 __PACKAGE__->add_columns(
-    "link",
-    { data_type => "varchar", is_nullable => 0, size => 2048 },
-    "title",
-    {
-        data_type     => "varchar",
-        default_value => "",
-        is_nullable   => 0,
-        size          => 512
-    },
-    "description",
-    {
-        data_type     => "varchar",
-        default_value => "",
-        is_nullable   => 0,
-        size          => 4096
-    },
-    "updated",
-    {
-        data_type                 => "timestamp",
-        datetime_undef_if_invalid => 1,
-        default_value             => "0000-00-00 00:00:00",
-        is_nullable               => 0,
-    },
-    "created",
-    {
-        data_type                 => "timestamp",
-        datetime_undef_if_invalid => 1,
-        default_value             => "0000-00-00 00:00:00",
-        is_nullable               => 0,
-    },
-    "uuid",
-    { data_type => "binary", is_nullable => 0, size => 16 },
+  "link",
+  { data_type => "varchar", is_nullable => 0, size => 2048 },
+  "title",
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 512 },
+  "description",
+  { data_type => "varchar", default_value => "", is_nullable => 0, size => 4096 },
+  "updated",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => \"current_timestamp",
+    is_nullable => 0,
+  },
+  "created",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00 00:00:00",
+    is_nullable => 0,
+  },
+  "uuid",
+  { data_type => "binary", is_nullable => 0, size => 16 },
+  "blacklist",
+  { data_type => "tinyint", default_value => 0, is_nullable => 0 },
+  "synchronized",
+  {
+    data_type => "timestamp",
+    datetime_undef_if_invalid => 1,
+    default_value => "0000-00-00 00:00:00",
+    is_nullable => 0,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -137,10 +149,10 @@ Related object: L<Munge::Schema::Result::AccountFeedItem>
 =cut
 
 __PACKAGE__->has_many(
-    "account_feed_items",
-    "Munge::Schema::Result::AccountFeedItem",
-    { "foreign.feed_uuid" => "self.uuid" },
-    { cascade_copy        => 0, cascade_delete => 0 },
+  "account_feed_items",
+  "Munge::Schema::Result::AccountFeedItem",
+  { "foreign.feed_uuid" => "self.uuid" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 account_feeds
@@ -152,10 +164,10 @@ Related object: L<Munge::Schema::Result::AccountFeed>
 =cut
 
 __PACKAGE__->has_many(
-    "account_feeds",
-    "Munge::Schema::Result::AccountFeed",
-    { "foreign.feed_uuid" => "self.uuid" },
-    { cascade_copy        => 0, cascade_delete => 0 },
+  "account_feeds",
+  "Munge::Schema::Result::AccountFeed",
+  { "foreign.feed_uuid" => "self.uuid" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 feed_items
@@ -167,10 +179,10 @@ Related object: L<Munge::Schema::Result::FeedItem>
 =cut
 
 __PACKAGE__->has_many(
-    "feed_items",
-    "Munge::Schema::Result::FeedItem",
-    { "foreign.feed_uuid" => "self.uuid" },
-    { cascade_copy        => 0, cascade_delete => 0 },
+  "feed_items",
+  "Munge::Schema::Result::FeedItem",
+  { "foreign.feed_uuid" => "self.uuid" },
+  { cascade_copy => 0, cascade_delete => 0 },
 );
 
 =head2 accounts
@@ -181,10 +193,11 @@ Composing rels: L</account_feeds> -> account
 
 =cut
 
-__PACKAGE__->many_to_many( "accounts", "account_feeds", "account" );
+__PACKAGE__->many_to_many("accounts", "account_feeds", "account");
 
-# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-01-20 00:36:16
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:YV+WvpoRNvGDQ6czPPrZkA
+
+# Created by DBIx::Class::Schema::Loader v0.07033 @ 2013-08-14 02:02:10
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CLye9xR/KmXbWJZUsNCa+Q
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->has_many(

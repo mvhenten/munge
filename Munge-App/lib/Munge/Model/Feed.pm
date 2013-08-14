@@ -60,6 +60,12 @@ class Munge::Model::Feed {
         writer => '_set_description',
     );
 
+    has blacklist => (
+        is     => 'ro',
+        isa    => 'Bool',
+        writer => 'set_blacklist',
+    );
+
     has link => (
         is     => 'ro',
         isa    => 'Str',
@@ -72,6 +78,15 @@ class Munge::Model::Feed {
         writer => '_set_title',
     );
 
+    has synchronized => (
+        is  => 'ro',
+        isa => 'Maybe[DateTime]',
+        writer => '_set_synchronized',
+        default => sub {
+            return DateTime->now;
+        },
+    );
+
     has updated => (
         is  => 'ro',
         isa => 'Maybe[DateTime]',
@@ -82,14 +97,24 @@ class Munge::Model::Feed {
         isa => 'Maybe[DateTime]',
     );
 
+    method _get_synchronized_timestamp {
+        my $dtf = $self->schema->storage->datetime_parser;
+
+        if ( $self->synchronized ) {
+            return $dtf->format_datetime( $self->synchronized );
+        }
+    }
+
     method store {
         my @keys = grep { defined $self->$_ } qw|uuid description link title|;
         my %values = map { $_ => $self->$_ } @keys;
 
+        $values{synchronized} = $self->_get_synchronized_timestamp;
+
         if ( $self->created ) {
             my $row = $self->resultset('Feed')
                 ->search_rs( { uuid => $self->uuid } )
-                ->update( { map { $_ => $self->$_ } @keys } );
+                ->update( \%values );
 
             return $self;
         }
@@ -128,22 +153,26 @@ class Munge::Model::Feed {
     method synchronize() {
         my $feed_client = $self->_get_feed_client();
 
-        return unless $feed_client->updated;
-        return unless $feed_client->success;
+        return 1 unless $feed_client->updated;
+        return 1 unless $feed_client->success;
 
         my $feed_parser = $self->_get_feed_parser( $feed_client->content );
+        $self->_set_synchronized( DateTime->now );
 
         if ( not $feed_parser->xml_feed ) {
             warn 'Cannot parse feed: ' . $self->link;
-            return 1;
+            return 0;
         }
 
-        $self->_set_title( $feed_parser->title );
+        $self->_set_title( $feed_parser->title || '' );
         $self->_set_description( $feed_parser->description || '' );
 
         for my $item ( $feed_parser->items ) {
             my $feed_item = Munge::Model::FeedItem->synchronize( $self, $item );
         }
+
+
+        return 1;
     }
 
     method _get_feed_client {
