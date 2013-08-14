@@ -20,6 +20,7 @@ class Munge::Model::View::FeedItem {
     use DateTime;
     use Munge::Types qw|UUID|;
     use Data::Dumper;
+    use DateTime;
     use DateTime::Format::MySQL;
     use Munge::Util qw|human_date_string|;
 
@@ -199,14 +200,13 @@ SQL
     }
 
     method _create_list_view ( HashRef $item ) {
+        my $issued = $item->{issued};
+        my $issued_dt = DateTime::Format::MySQL->parse_datetime( $issued );
 
-        my $issued_dt    = DateTime::Format::MySQL->parse_datetime( $item->{issued} );
+        $item->{human_date} = human_date_string( $issued_dt  );
+        $item->{feed_uuid_string} = $self->uuid_to_string( $item->{feed_uuid} );
+        $item->{uuid_string} = $self->uuid_to_string( $item->{uuid} );
 
-        return {
-            %{ $item },
-            human_date          => human_date_string( $issued_dt  ),
-            feed_uuid_string => $self->uuid_to_string( $item->{feed_uuid} ),
-            uuid_string => $self->uuid_to_string( $item->{uuid} ),
-        };
+        return $item;
     }
 }
