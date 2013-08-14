@@ -222,7 +222,9 @@ image found or undef.
 {
     sub BLACKLIST {
         return (
-            qr{.*gif$},
+            qr{__utm[.]gif},
+            qr{[.]gif},
+            qr{[.]png},
             qr{^\Qhttp://blogger.googleusercontent.com/tracker\E.*},
             qr{\Qflattr-badge-large.png\E$},
             qr{^\Qhttp://feeds.feedburner.com/\E.*},
@@ -240,7 +242,12 @@ image found or undef.
         foreach my $image ( reverse @images ) {
             my $src = $image->attr('src');
 
-            next if any { $src =~ $_ } BLACKLIST();
+            # jpeg currently is the only sensible format
+            next if $src !~ qr{[.]jp[e]?g};
+
+            # TODO blacklist is not up to date
+            # however, the check for jpeg images is better
+            # next if any { $src =~ $_ } BLACKLIST();
 
             if( $src !~ /^http.*/ ){
                 my $uri = URI->new( $feed_link );
