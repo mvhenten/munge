@@ -26,8 +26,8 @@ get '/' => sub {
 
     return template 'feed/index',
       {
-        feeds             => $subscriptions,
-        items             => $item_list_view,
+        feeds => $subscriptions,
+        items => $item_list_view,
       };
 
 };
@@ -179,7 +179,7 @@ sub feed_item_view {
     my $account = account();
     my $view = Munge::Model::View::FeedItem->new( account => $account );
 
-    return $view->unread()                   if not $feed_id;
+    return $view->unread()                  if not $feed_id;
     return $view->no_subscriptions()        if $subscription_count == 0;
     return $view->starred()                 if $feed_id eq 'starred';
     return $view->list( to_UUID($feed_id) ) if to_UUID($feed_id);

@@ -24,7 +24,8 @@ sub LOCK_FILE {
 }
 
 sub SQL {
-    return 'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 DAY )';
+    return
+      'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 DAY )';
 }
 
 {
@@ -52,7 +53,6 @@ sub SQL {
     }
 }
 
-
 sub main {
     my $lock = trylock( LOCK_FILE() );
 
@@ -63,25 +63,25 @@ sub main {
 
     my $schema = Munge::Schema::Connection->schema();
 
-
-    my $dbh = $schema->storage->dbh;
+    my $dbh    = $schema->storage->dbh;
     my $result = $dbh->selectcol_arrayref( SQL() );
 
-    foreach my $uuid ( @{$result} ){
-        my $feed = Munge::Model::Feed->load( $uuid );
+    foreach my $uuid ( @{$result} ) {
+        my $feed = Munge::Model::Feed->load($uuid);
 
-        if( not $feed->synchronize() ){
-            log_message(sprintf("blacklisting %s\n", $feed->title || $feed->link ));
+        if ( not $feed->synchronize() ) {
+            log_message(
+                sprintf( "blacklisting %s\n", $feed->title || $feed->link ) );
             $feed->set_blacklist(1);
             $feed->store;
             next();
         }
 
-        log_message(sprintf("synchronized %s\n", $feed->title || $feed->link));
+        log_message(
+            sprintf( "synchronized %s\n", $feed->title || $feed->link ) );
         $feed->store();
 
     }
-
 
     my $duration = DateTime->now - SYNC_START_TIME();
 
@@ -92,7 +92,7 @@ sub main {
         body => join( "\n", get_log_messages() ),
     );
 
-    printf("%s\n", $mail->subject );
+    printf( "%s\n", $mail->subject );
 
     $mail->submit();
     unlock( LOCK_FILE() );

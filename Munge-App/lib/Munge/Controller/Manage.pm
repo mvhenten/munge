@@ -18,9 +18,7 @@ prefix '/manage';
 get '/import' => sub {
 
     template 'manage/import',
-      {
-        feeds             => feed_view()->all_feeds,
-      };
+      { feeds => feed_view()->all_feeds, };
 };
 
 post '/import' => sub {
