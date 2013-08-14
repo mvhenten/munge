@@ -51,7 +51,6 @@ class Munge::Model::FeedItem {
     use Munge::Util qw|find_interesting_image_source|;
 
     with 'Munge::Role::Schema';
-#    with 'Munge::Role::Storage';
 
     sub MUTABLE_ATTRIBUTES {
         return qw|
@@ -90,7 +89,7 @@ class Munge::Model::FeedItem {
     has modified => (
         is         => 'ro',
         isa        => 'Maybe[DateTime]',
-        writer => '_set_modified',
+        writer     => '_set_modified',
         lazy_build => 1
     );
 
@@ -148,12 +147,17 @@ class Munge::Model::FeedItem {
     }
 
     method _build_poster_image {
-        return find_interesting_image_source( $self->content );
+        return find_interesting_image_source( $self->content ) || '';
     }
 
     method store {
         my %values = map { $_ => $self->$_ || '' } MUTABLE_ATTRIBUTES();
 
+        $values{modified}       = $self->_format_datetime( $self->modified );
+        $values{issued}         = $self->_format_datetime( $self->issued );
+        $values{poster_image}   = $self->poster_image;
+
+        warn $values{poster_image};
 
         if ( $self->created ) {
             my $row = $self->resultset('FeedItem')
@@ -189,25 +193,17 @@ class Munge::Model::FeedItem {
           Munge::Model::FeedItem->load( $parser_item->uuid_bin );
 
         return if $feed_item;
+        return if not $parser_item->link;
+
+        my @keys = grep { defined $parser_item->$_ } MUTABLE_ATTRIBUTES();
+        my %values = map { $_ => $parser_item->$_ } @keys;
 
         $feed_item = Munge::Model::FeedItem->new(
+            %values,
             uuid        => $parser_item->uuid_bin,
             feed_uuid   => $feed->uuid,
             link        => $parser_item->link,
         );
-
-        for my $attr ( MUTABLE_ATTRIBUTES() ) {
-            my $setter = "_set_$attr";
-
-            my $value = $parser_item->$attr || '';
-
-            if ( ref $value eq 'ARRAY' ) {
-                $value = join( ', ', @$value );
-            }
-
-
-            $feed_item->$setter( $value );
-        }
 
         $feed_item->store();
 
