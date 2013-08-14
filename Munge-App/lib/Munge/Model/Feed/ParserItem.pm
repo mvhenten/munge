@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 class Munge::Model::Feed::ParserItem {
-    use Encode qw|decode_utf8|;
+    use Encode qw|encode_utf8|;
     use Data::UUID qw|NameSpace_URL|;
     use Munge::Util qw|strip_html string_ellipsize sanitize_html|;
     use DateTime;
@@ -108,7 +108,7 @@ class Munge::Model::Feed::ParserItem {
         my $uuid = Data::UUID->new();
 
         return $uuid->create_from_name_str( NameSpace_URL,
-            decode_utf8( $self->link ) );
+            encode_utf8( $self->link ) );
     }
 
     method _build_uuid_bin {
