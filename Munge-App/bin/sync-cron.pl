@@ -25,7 +25,7 @@ sub LOCK_FILE {
 
 sub SQL {
     return
-      'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 DAY )';
+      'SELECT uuid FROM feed WHERE NOT blacklist = 1 AND updated < DATE_SUB( NOW(), INTERVAL 1 DAY ) LIMIT 10';
 }
 
 {
@@ -71,14 +71,14 @@ sub main {
 
         if ( not $feed->synchronize() ) {
             log_message(
-                sprintf( "blacklisting %s\n", $feed->title || $feed->link ) );
+                sprintf( 'blacklisting %s', $feed->title || $feed->link ) );
             $feed->set_blacklist(1);
             $feed->store;
             next();
         }
 
         log_message(
-            sprintf( "synchronized %s\n", $feed->title || $feed->link ) );
+            sprintf( 'synchronized %s', $feed->title || $feed->link ) );
         $feed->store();
 
     }
