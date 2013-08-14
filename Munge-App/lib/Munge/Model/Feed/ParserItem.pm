@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 class Munge::Model::Feed::ParserItem {
+    use Encode qw|decode_utf8|;
     use Data::UUID qw|NameSpace_URL|;
     use Munge::Util qw|strip_html string_ellipsize sanitize_html|;
     use DateTime;
@@ -15,7 +16,6 @@ class Munge::Model::Feed::ParserItem {
         handles  => {
             title      => 'title',
             link       => 'link',
-            author     => 'author',
             '_summary' => 'summary',
             '_content' => 'content',
         },
@@ -58,6 +58,11 @@ class Munge::Model::Feed::ParserItem {
         lazy_build => 1,
     );
 
+    has author => (
+        is         => 'ro',
+        lazy_build => 1,
+    );
+
     method _build_modified {
         return
              $self->entry->modified
@@ -89,10 +94,21 @@ class Munge::Model::Feed::ParserItem {
         return join( q|,|, @tags );
     }
 
+    method _build_author {
+        my $author = $self->entry->author;
+
+        if ( ref $author eq 'ARRAY' ) {
+            $author = join( ', ', @$author );
+        }
+
+        return $author;
+    }
+
     method _build_uuid {
         my $uuid = Data::UUID->new();
 
-        return $uuid->create_from_name_str( NameSpace_URL, $self->link );
+        return $uuid->create_from_name_str( NameSpace_URL,
+            decode_utf8( $self->link ) );
     }
 
     method _build_uuid_bin {
