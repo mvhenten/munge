@@ -89,7 +89,7 @@ class Munge::Model::FeedItem {
 
     has modified => (
         is         => 'ro',
-        isa        => 'DateTime',
+        isa        => 'Maybe[DateTime]',
         writer => '_set_modified',
         lazy_build => 1
     );
@@ -198,7 +198,15 @@ class Munge::Model::FeedItem {
 
         for my $attr ( MUTABLE_ATTRIBUTES() ) {
             my $setter = "_set_$attr";
-            $feed_item->$setter( $parser_item->$attr );
+
+            my $value = $parser_item->$attr;
+
+            if ( ref $value eq 'ARRAY' ) {
+                $value = join( ', ', @$value );
+            }
+
+
+            $feed_item->$setter( $value );
         }
 
         $feed_item->store();
