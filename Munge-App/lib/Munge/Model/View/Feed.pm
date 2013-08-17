@@ -27,20 +27,21 @@ class Munge::Model::View::Feed {
 
     method all_feeds {
         my $sql = '
-            SELECT COUNT(fi.feed_uuid) - afi.read_count AS unread, f.title, f.description, f.uuid
+            SELECT f.uuid, f.title, f.description,
+                COUNT(fi.feed_uuid) - COALESCE( items_read, 0) AS unread
             FROM account_feed af
-            LEFT JOIN feed f ON f.uuid = af.feed_uuid
-            LEFT JOIN feed_item fi ON fi.feed_uuid = af.feed_uuid
             LEFT JOIN (
-                SELECT feed_uuid, count(*) as read_count
+                SELECT feed_uuid, count(*) AS items_read
                 FROM account_feed_item
                 WHERE account_id = ?
+                AND `read` = 1
                 GROUP BY feed_uuid
-            ) afi ON afi.feed_uuid = fi.feed_uuid
+            ) afi ON afi.feed_uuid = af.feed_uuid
+            LEFT JOIN feed_item fi ON fi.feed_uuid = af.feed_uuid
+            LEFT JOIN feed f ON f.uuid = af.feed_uuid
             WHERE af.account_id = ?
             GROUP BY fi.feed_uuid
-            ORDER BY unread DESC, f.title ASC
-            LIMIT 100
+            ORDER BY f.title ASC
         ';
 
         my $dbh = $self->schema->storage->dbh;
