@@ -57,22 +57,27 @@ SQL
 sub FEED_ITEM_UNREAD {
     my $sql = <<'SQL'
         SELECT
-            fi.*,
+            r.*,
             f.title AS feed_title,
             f.description AS feed_description,
             f.link AS feed_link,
-            afi.`read`,
-            afi.starred
-        FROM account_feed af
-        INNER JOIN feed f ON f.uuid = af.feed_uuid
-        INNER JOIN feed_item fi ON fi.feed_uuid = f.uuid
+            COALESCE( afi.`read`, 0) AS `read`,
+            COALESCE( afi.starred, 0) AS starred
+        FROM (
+            SELECT fi.*, af.account_id
+            FROM account_feed af, feed_item fi
+            WHERE af.account_id = ?
+            AND fi.issued > DATE_SUB( NOW(), INTERVAL 1 WEEK )
+            AND fi.feed_uuid = af.feed_uuid
+            ORDER BY fi.issued DESC
+        ) r
         LEFT JOIN account_feed_item afi
-            ON afi.account_id = af.account_id
-            AND afi.feed_item_uuid = fi.uuid
-        WHERE af.account_id = ?
-        AND ( afi.`read` IS NULL OR afi.`read` = 0 )
-        ORDER BY fi.issued DESC
-        LIMIT 30
+            ON afi.feed_item_uuid = r.uuid
+            AND afi.account_id = r.account_id
+        LEFT JOIN feed f
+            ON f.uuid = r.feed_uuid
+        WHERE COALESCE( afi.`read`, 0) = 0
+        ORDER BY r.issued DESC
 SQL
 ;
     return $sql;
