@@ -57,27 +57,37 @@ SQL
 sub FEED_ITEM_UNREAD {
     my $sql = <<'SQL'
         SELECT
-            r.*,
+            fi.*,
             f.title AS feed_title,
             f.description AS feed_description,
             f.link AS feed_link,
             COALESCE( afi.`read`, 0) AS `read`,
             COALESCE( afi.starred, 0) AS starred
         FROM (
-            SELECT fi.*, af.account_id
-            FROM account_feed af, feed_item fi
+            SELECT af.account_id, af.feed_uuid, COUNT( fi.uuid ) - COUNT( afi.`read` ) AS unread
+            FROM account_feed af
+            LEFT JOIN feed_item fi
+                ON fi.feed_uuid = af.feed_uuid
+            LEFT JOIN account_feed_item afi
+                ON ( afi.feed_item_uuid = fi.uuid AND af.account_id = afi.account_id AND afi.`read` = 1 )
             WHERE af.account_id = ?
+            GROUP BY af.feed_uuid
+        ) af
+        RIGHT JOIN feed_item fi ON (
+            fi.feed_uuid = af.feed_uuid
             AND fi.issued > DATE_SUB( NOW(), INTERVAL 1 WEEK )
-            AND fi.feed_uuid = af.feed_uuid
-            ORDER BY fi.issued DESC
-        ) r
-        LEFT JOIN account_feed_item afi
-            ON afi.feed_item_uuid = r.uuid
-            AND afi.account_id = r.account_id
+        )
+        LEFT JOIN account_feed_item afi ON (
+            afi.feed_item_uuid = fi.uuid
+            AND af.account_id = afi.account_id
+            AND afi.`read` = 1
+        )
         LEFT JOIN feed f
-            ON f.uuid = r.feed_uuid
-        WHERE COALESCE( afi.`read`, 0) = 0
-        ORDER BY r.issued DESC
+            ON f.uuid = af.feed_uuid
+        WHERE af.unread > 0
+        AND COALESCE( afi.`read`, 0 ) = 0
+        ORDER BY fi.issued DESC
+        LIMIT 30
 SQL
 ;
     return $sql;
