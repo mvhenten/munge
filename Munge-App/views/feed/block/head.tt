@@ -1,14 +1,18 @@
-<div id="feed-heading">
-  <h1>[% title %]</h1>
-  <div class="feed-description"><em>[% description %]</em></div>
-  [% IF feeds.0 %]
-  <div class="btn-group">
-    <a class="btn btn-mini" href="/feed/remove/[% uuid_string %]"><i class="icon-trash"></i>remove</a>
-    <a id="mark-read" class="btn btn-mini" href="/feed/all/read/[% uuid_string %]"><i class="icon-ok"></i>mark read</a>
-    <a class="btn btn-mini" href="/feed/refresh/[% uuid_string %]"><i class="icon-refresh"></i>refresh</a>
-  </div>
-  [% END %]
+<h3>[% title %] <small[% description %]</small>
+[% IF feeds.0 %]
+<div class="btn-group">
+  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+    <span class="glyphicon glyphicon-cog"></span> <span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu">
+    <li><a href="/feed/all/read/[% uuid_string %]">mark all read</a></li>
+    <li><a href="/feed/refresh/[% uuid_string %]">refresh subscription</a></li>
+    <li><a href="/feed/remove/[% uuid_string %]">delete subscription</a></li>
+  </ul>
 </div>
+[% END %]
+</h3>
+
 [% UNLESS feeds.0 %]
 <div class="alert alert-success">
     You are viewing a feed you haven't subscribed to yet. Would you like to add this feed to your subscriptions?

@@ -1,54 +1,68 @@
 [% WRAPPER 'layouts/main.tt'
    title = 'Munge - Feed Me!'
 %]
-    <div class="navbar navbar-inverse">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="brand" href="#">Munge</a>
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <div class="nav-collapse collapse navbar-responsive-collapse">
-            <form class="navbar-form pull-right" action="/manage/subscribe" method="post">
-              <input placeholder="import feed url" type="text" name="feed_url" id="subscribe-feed-url" />
-              <button type="submit" class="btn"><i class="icon-ok-sign"></i>import</button>
-            </form>
-            <ul class="nav pull-right">
-              <li class="divider-vertical"></li>
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% account.email %] <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="/account/logout">  logout</a></li>
-                  <li><a href="/manage/import">import feeds</a></li>
-                </ul>
-              </li>
+
+   <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+     <!-- Brand and toggle get grouped for better mobile display -->
+     <div class="navbar-header">
+       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+         <span class="sr-only">Toggle navigation</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+       </button>
+       <a class="navbar-brand" href="#">Munge <small><em>feedreader</em></small></a>
+     </div>
+     <!-- Collect the nav links, forms, and other content for toggling -->
+     <div class="collapse navbar-collapse navbar-ex1-collapse">
+       <form class="navbar-form navbar-right" action="/manage/subscribe" method="post">
+         <div class="form-group">
+            <input placeholder="import feed url" type="text" name="feed_url" id="subscribe-feed-url" class="form-control" />
+         </div>
+         <button type="submit" class="btn btn-default">add</button>
+      </form>
+       <ul class="nav navbar-nav navbar-right">
+         <li class="dropdown">
+           <a href="#" class="dropdown-toggle" data-toggle="dropdown">[% account.email %]  <b class="caret"></b></a>
+           <ul class="dropdown-menu">
+            <li><a href="/account/logout">logout</a></li>
+            <li><a href="/manage/import">import feeds</a></li>
+           </ul>
+         </li>
+       </ul>
+     </div><!-- /.navbar-collapse -->
+   </nav>
+
+    <div style="margin: 0;" class="container">
+      <div class="row row-offcanvas row-offcanvas-right">
+        <div class="col-md-8 col-md-push-4 col-lg-10 col-lg-push-2">
+          <p class="pull-right visible-xs">
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Toggle nav</button>
+          </p>
+          <div class="row">
+             [% content %]
+          </div><!--/row-->
+        </div><!--/span-->
+
+        <div class="col-md-4 col-lg-2 col-md-pull-8 col-lg-pull-10" id="sidebar" role="navigation">
+          <div class="sidebar-nav well well-sm">
+            <ul class="nav">
+               <li class="[% IF NOT feed %]active[% END %]"><a class="btn-sm" style="padding: 0.5em" href="/"> All feeds</a></li>
+               <li class="[% IF feed.uuid_string == 'starred' %]active[% END %]"><a class="btn-sm" style="padding: 0.5em" href="/feed/starred">Saved for later</a></li>
+               [% FOREACH f IN feeds %]
+                  [% SET css_active = f.uuid_string == feed.uuid_string ? 'active' : '' %]
+                  [% SET title = f.title ? f.title : '(Unknown title)' %]
+                  <li class="[% css_active %]"><a style="padding: 0.5em" class="btn-sm" href="/feed/read/[% f.uuid_string %]">
+                  [% IF f.unread_items %]
+                     <strong>[% title %]</strong>
+                  [% ELSE %]
+                     [% title %]
+                  [% END %]
+                  </a></li>
+               [% END %]
             </ul>
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-    </div>
-    <div class="container-fluid">
-      <div class="row-fluid">
-        [% IF feeds.0 %]
-        <div id="nav-main" class="span3">
-            <ul id="sidebar" class="nav nav-stacked">
-                <li class="[% IF NOT feed %]active[% END %]"><a href="/"> all feeds</a></li>
-                <li class="[% IF feed.uuid_string == 'starred' %]active[% END %]"><a href="/feed/starred">
-                saved for later</a></li>
-                [% FOREACH f IN feeds %]
-                <li><a class="[% IF f.unread_items %]unread[% END %]" href="/feed/read/[% f.uuid_string %]">
-                    <span class="unread-count">[% IF f.unread_items %][% f.unread_items %] [% END %]</span>
-                    [%~ f.title %]</a></li>
-                [% END %]
-            </ul>
-        </div>
-        [% END %]
-        <div id="content-main" class="">
-          [% content %]
-        </div>
-      </div>
-    </div>
-  </body>
+          </div><!--/.well -->
+        </div><!--/span-->
+      </div><!--/row-->
+    </div><!--/.container-->
 [% END %]

@@ -1,18 +1,15 @@
-<div id="[%  current ? 'article' : 'summary-' _ loop.index %]" class="[% item.read ? 'read' : 'unread' %] [%  current ? 'article' : 'summary' %]">
-  <div class="padding">
-    <div class="poster-image">
-      <a href="/item/[% item.uuid_string %]#article"><img src="[% item.poster_image %]" /></a>
-    </div>
-    <div class="summary-body">
-      <h4 class="feed-title" id="collapse-today-[% loop.index %]"><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h4>
-      <div class="feed-item">
-          <div class="feed-summary">
-          [% item.summary %]
-          </div>
+  <div id="[%  current ? 'article' : 'summary-' _ loop.index %]" class="list-group-item [% item.read ? 'read' : 'unread' %] [%  current ? 'active' : 'summary' %]">
+    <div class="list-group-item-text row">
+      <div class="[% IF item.poster_image %]col-md-8[% else %]col-md-12[% end %]">
+        <h4 class="list-group-item-heading feed-title" id="collapse-today-[% loop.index %]"><a href="/item/[% item.uuid_string %]#article">[% item.title %]</a></h4>
+        [% item.summary %]
       </div>
-      <div class="summary-footer">
+      [% IF item.poster_image %]
+        <a class="col-md-4" href="/item/[% item.uuid_string %]#article"><img width="200" src="[% item.poster_image %]" /></a>
+      [% END %]
+      <div class="clearfix col-md-12">
         [% item.human_date %] ago by [% item.author %] - <a href="/feed/read/[% item.feed_uuid_string %]">[% item.feed_title %]</a>
       </div>
     </div>
   </div>
-</div>
+

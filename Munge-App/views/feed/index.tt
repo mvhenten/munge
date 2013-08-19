@@ -13,14 +13,17 @@
 [% SET current_date_header = '' %]
 [% FOREACH item IN items %]
     [% NEXT IF item.read %]
-    [% IF current_date_header != item.human_date %]
-    <div class="date-header">
-        <em>[% item.human_date %] ago</em>
-    </div>
+        [% IF NOT feed %]
+            [% IF current_date_header != item.human_date %]
+            <div class="page-header">
+              <h1>All feeds <small>[% item.human_date %] ago</small></h1>
+            </div>
+            [% END %]
     [% current_date_header = item.human_date %]
     [% END %]
-
-    [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
+    <div class="list-group">
+        [% INCLUDE 'feed/block/summary.tt' item = item, feed = feed, skip_current = 1 %]
+    </div>
 [% END %]
 </div>
 [% IF feed %]
