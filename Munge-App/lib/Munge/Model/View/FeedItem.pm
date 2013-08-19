@@ -54,6 +54,9 @@ SQL
     return $sql;
 }
 
+# this query is heavily optimized
+# the sub-selects are actually optimizations,
+# beating a proper joined query by 100x on mariadb
 sub FEED_ITEM_UNREAD {
     my $sql = <<'SQL'
         SELECT
