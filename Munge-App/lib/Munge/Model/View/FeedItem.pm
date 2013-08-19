@@ -64,14 +64,18 @@ sub FEED_ITEM_UNREAD {
             COALESCE( afi.`read`, 0) AS `read`,
             COALESCE( afi.starred, 0) AS starred
         FROM (
-            SELECT af.account_id, af.feed_uuid, COUNT( fi.uuid ) - COUNT( afi.`read` ) AS unread
+            SELECT af.*, COUNT(fi.feed_uuid) - COALESCE( items_read, 0) AS unread
             FROM account_feed af
-            LEFT JOIN feed_item fi
-                ON fi.feed_uuid = af.feed_uuid
-            LEFT JOIN account_feed_item afi
-                ON ( afi.feed_item_uuid = fi.uuid AND af.account_id = afi.account_id AND afi.`read` = 1 )
+            LEFT JOIN (
+                SELECT feed_uuid, count(`read`) AS items_read
+                FROM account_feed_item
+                WHERE account_id = 3
+                AND `read` = 1
+                GROUP BY feed_uuid
+            ) afi ON afi.feed_uuid = af.feed_uuid
+            LEFT JOIN feed_item fi ON fi.feed_uuid = af.feed_uuid
             WHERE af.account_id = ?
-            GROUP BY af.feed_uuid
+            GROUP BY fi.feed_uuid
         ) af
         RIGHT JOIN feed_item fi ON (
             fi.feed_uuid = af.feed_uuid
